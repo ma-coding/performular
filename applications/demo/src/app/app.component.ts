@@ -1,10 +1,17 @@
 import { Component } from '@angular/core';
 
+/**
+ * Entry Component
+ * @export
+ */
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'pfd-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+    /**
+     * member that holds the application title
+     */
+    public title: string = 'app';
 }
