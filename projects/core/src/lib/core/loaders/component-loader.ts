@@ -4,7 +4,7 @@ import { AbstractSchema } from '../schemas/abstract/abstract-schema';
 import { AbstractLoader } from './abstract-loader';
 
 /**
- * Interface that gives the Form Component access to the AbstractSchema (see {@link AbstractSchema})
+ * Interface that gives the Form Component access to the AbstractSchema ({@link AbstractSchema}).
  * @export
  */
 export interface IOnInitField<T extends AbstractSchema<any>> {
@@ -21,7 +21,7 @@ export type IComponentDefinition = Type<IOnInitField<any>> | string;
 
 /**
  * Class that handle the loading of the Component from
- * several Componentdefinitions (see {@link IComponentDefinition}).
+ * several Componentdefinitions ({@link IComponentDefinition}).
  */
 export class ComponentLoader extends AbstractLoader<IOnInitField<any>> {
     constructor(
