@@ -1,7 +1,4 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { Store } from './store';
-import { Action } from './actions';
-import { Observable } from 'rxjs';
 
 export interface ITestState {
     count: number;
@@ -9,29 +6,11 @@ export interface ITestState {
     value: any;
 }
 
-export class TestStore extends Store<ITestState> {
-    public initStore(state: ITestState): void {
-        this._initStore(state);
-    }
-
-    public getState(): ITestState {
-        return super._getState();
-    }
-
-    public dispatch(action: Action): void {
-        super._dispatch(action);
-    }
-
-    public _select<K>(map: (state: ITestState) => K): Observable<K> {
-        return this._select<K>(map);
-    }
-}
-
 describe('Store', () => {
-    let store: TestStore;
+    let store: Store<ITestState>;
 
     function createStore(): void {
-        store = new TestStore();
+        store = new Store<ITestState>();
     }
 
     function initStore(): void {
