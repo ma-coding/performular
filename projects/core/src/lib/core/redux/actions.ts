@@ -8,7 +8,6 @@ export abstract class Action { }
 /**
  * Abstract Action that manipulates the Store.
  * @export
- * @extends {Action}
  */
 export abstract class ReducedAction<StateType> extends Action {
     /**

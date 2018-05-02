@@ -3,6 +3,7 @@ import { Injectable, Injector } from '@angular/core';
 /**
  * Injectable Service that holds the Injector inside a static member, for usage outside Angular.
  * @export
+ * @dynamic
  */
 @Injectable()
 export class LoaderService {

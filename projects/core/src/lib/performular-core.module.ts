@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { Injector, NgModule, Provider, Type } from '@angular/core';
 
-import { DefaultConverter } from './buildin/converter/default.converter';
+import { DefaultConverter } from './build-in/converter/default.converter';
 import { ComponentLoaderInjectionToken, IOnInitField } from './core/loaders/component-loader';
 import { ConverterLoaderInjectionToken, IOnConvert } from './core/loaders/converter-loader';
 import { IOnRun, TriggerLoaderInjectionToken } from './core/loaders/trigger-loader';
