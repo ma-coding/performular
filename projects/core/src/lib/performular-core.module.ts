@@ -5,6 +5,7 @@ import { Injector, NgModule, Provider, Type } from '@angular/core';
 import { DefaultConverter } from './build-in/converter/default.converter';
 import { ComponentLoaderInjectionToken, IOnInitField } from './core/loaders/component-loader';
 import { ConverterLoaderInjectionToken, IOnConvert } from './core/loaders/converter-loader';
+import { GeneratorLoaderInjectionToken, IOnGenerate } from './core/loaders/generator-loader';
 import { IOnRun, TriggerLoaderInjectionToken } from './core/loaders/trigger-loader';
 import { LoaderService } from './services/loader.service';
 
@@ -41,6 +42,24 @@ export function converterExporter(converter: Type<IOnConvert<any, any, any>>): P
     };
 }
 
+/**
+ * Function that creates an Generator Provider.
+ */
+export function generatorExporter(converter: Type<IOnGenerate<any, any, any>>): Provider {
+    return {
+        provide: GeneratorLoaderInjectionToken,
+        useValue: converter,
+        multi: true
+    };
+}
+
+export interface IPerformularCoreConfig {
+    fields?: Type<IOnInitField<any>>[];
+    triggers?: Type<IOnRun<any, any>>[];
+    converters?: Type<IOnConvert<any, any, any>>[];
+    generators?: Type<IOnGenerate<any, any, any>>[];
+}
+
 export const declarations: any[] = [
 ];
 
@@ -52,6 +71,9 @@ export const buildInTriggers: Type<IOnRun<any, any>>[] = [
 
 export const buildInConverters: Type<IOnConvert<any, any, any>>[] = [
     DefaultConverter
+];
+
+export const buildInGenerators: Type<IOnGenerate<any, any, any>>[] = [
 ];
 
 /**
@@ -74,8 +96,9 @@ export const buildInConverters: Type<IOnConvert<any, any, any>>[] = [
         buildInFields.map(componentExporter),
         buildInTriggers.map(triggerExporter),
         buildInConverters.map(converterExporter),
-        ...buildInTriggers,
-        ...buildInConverters
+        buildInGenerators.map(generatorExporter),
+        buildInTriggers,
+        buildInConverters
     ], exports: [
         declarations
     ]
@@ -89,9 +112,17 @@ export class PerformulerCoreModule {
         this._loaderService.connect(this._injector);
     }
 
-    public static withConfig(): ModuleWithProviders {
+    public static withConfig(config: IPerformularCoreConfig): ModuleWithProviders {
         return {
-            providers: [],
+            providers: [
+                (config.fields || []).map(componentExporter),
+                (config.triggers || []).map(triggerExporter),
+                (config.converters || []).map(converterExporter),
+                (config.generators || []).map(generatorExporter),
+                (config.triggers || []),
+                (config.converters || []),
+                (config.generators || [])
+            ],
             ngModule: PerformulerCoreModule
         };
     }
