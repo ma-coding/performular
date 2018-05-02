@@ -185,14 +185,14 @@ export abstract class FieldSchema<BindingsType> extends AbstractSchema<BindingsT
     public abstract patchValue(value: any, emitUpdate: boolean): void;
 
     public setForceDisabled(disabled: boolean): void {
-        this._getStore<IFieldSchemaState<BindingsType>>().dispatch(
+        this._getStore().dispatch(
             new FieldSchemaActions.SetForceDisabledAction(disabled)
         );
         (this.root as any)._updateSubject.next([this.uuid]);
     }
 
     public setForceHidden(hidden: boolean): void {
-        this._getStore<IFieldSchemaState<BindingsType>>().dispatch(
+        this._getStore().dispatch(
             new FieldSchemaActions.SetForceHiddenAction(hidden)
         );
         (this.root as any)._updateSubject.next([this.uuid]);
@@ -213,7 +213,7 @@ export abstract class FieldSchema<BindingsType> extends AbstractSchema<BindingsT
         }, this);
     }
 
-    protected abstract _buildValue(state: IFieldSchemaState<BindingsType>): any;
+    protected abstract _buildValue(children: AbstractSchema<any>[]): any;
 
     protected _init(initial: IFieldSchemaInitState<BindingsType>): IFieldSchemaState<BindingsType> {
         return {
@@ -289,7 +289,7 @@ export abstract class FieldSchema<BindingsType> extends AbstractSchema<BindingsT
     protected _bottomUpUpdate(): void {
         const anyChildInvalid: boolean = this._getChildFields().some((child: FieldSchema<any>) => child.invalid);
         if (!this.invalid && anyChildInvalid) {
-            this._getStore<IFieldSchemaState<BindingsType>>().dispatch(
+            this._getStore().dispatch(
                 new FieldSchemaActions.SetInvalidAction(true)
             );
         }
@@ -331,8 +331,8 @@ export abstract class FieldSchema<BindingsType> extends AbstractSchema<BindingsT
     }
 
     protected _updateValue(): void {
-        const newValue: any = this._buildValue(this.state as IFieldSchemaState<BindingsType>);
-        this._getStore<IFieldSchemaState<BindingsType>>().dispatch(
+        const newValue: any = this._buildValue(this.state.children);
+        this._getStore().dispatch(
             new FieldSchemaActions.SetValueAction(newValue)
         );
     }
@@ -350,10 +350,10 @@ export abstract class FieldSchema<BindingsType> extends AbstractSchema<BindingsT
         ).pipe(
             map((results: T[]) => {
                 results.pop();
-                this._getStore<IFieldSchemaState<BindingsType>>().dispatch(
+                this._getStore().dispatch(
                     new resultAction(results)
                 );
-                this._getStore<IFieldSchemaState<BindingsType>>().dispatch(
+                this._getStore().dispatch(
                     new keyAction(
                         keyConditionFunction(results)
                     )

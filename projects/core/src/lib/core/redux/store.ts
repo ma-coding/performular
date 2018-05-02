@@ -28,7 +28,7 @@ export class Store<StateType extends {}> {
      * Initialize the Store and sets the initial State.
      * @param initialState The initial State.
      */
-    public initStore(initialState: StateType): void {
+    constructor(initialState: StateType) {
         this.state$ = new BehaviorSubject(initialState);
         // Start listening to the dispatched Actions.
         this.actionSubscription =
@@ -36,7 +36,7 @@ export class Store<StateType extends {}> {
                 // Manipulate the actual state if the current {@link Action} is an ReducedAction,
                 // otherwise untouch the state.
                 scan((state: StateType, action: Action) =>
-                    action instanceof ReducedAction ? action.reduce(state, action) : state,
+                    action instanceof ReducedAction ? action.reduce(state) : state,
                     initialState
                 )
 

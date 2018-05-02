@@ -34,10 +34,10 @@ export interface IFieldSchemaNonInitState extends IAbstractSchemaNonInitState {
 
 export interface IFieldSchemaState<BindingsType> extends IAbstractSchemaState<BindingsType>, IFieldSchemaNonInitState {
     type: FieldType;
+    value: any;
     focus?: boolean;
     forceDisabled?: boolean;
     forceHidden?: boolean;
-    value?: any;
 }
 
 export interface IFieldSchemaInitState<BindingsType>

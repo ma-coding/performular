@@ -3,7 +3,7 @@ import { ElementRef } from '@angular/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
-import { DefaultConverter } from '../../../buildin/converter/default.converter';
+import { DefaultConverter } from '../../../build-in/converter/default.converter';
 import { ComponentLoader } from '../../loaders/component-loader';
 import { ConverterLoader } from '../../loaders/converter-loader';
 import { flatten } from '../../misc/flatten';
@@ -123,6 +123,12 @@ export abstract class AbstractSchema<BindingsType> {
         );
     }
 
+    public setParent(parent: AbstractSchema<any>): void {
+        this._getStore().dispatch(
+            new AbstractSchemaActions.SetParentAction(parent)
+        );
+    }
+
     public setInstance(instance: any, elementRef: ElementRef): void {
         this._getStore().dispatch(
             new AbstractSchemaActions.SetInstanceAction(instance, elementRef)
@@ -147,12 +153,18 @@ export abstract class AbstractSchema<BindingsType> {
     protected abstract _getStore<T extends IAbstractSchemaState<BindingsType>>(): Store<T>;
 
     protected _init(initial: IAbstractSchemaInitState<BindingsType>): IAbstractSchemaState<BindingsType> {
+        initial.children.forEach((child: AbstractSchema<any>) => {
+            child.setParent(this);
+        });
+        const converter: ConverterLoader<any, BindingsType, any> =
+            new ConverterLoader(initial.converter || { converter: DefaultConverter });
         return {
             ...initial,
             uuid: generateUUID(),
             hidden: false,
             component: new ComponentLoader(initial.component),
-            converter: new ConverterLoader(initial.converter || { converter: DefaultConverter })
+            converter: converter,
+            bindings: converter.callConverter(initial.bindings)
         };
     }
 

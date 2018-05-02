@@ -46,7 +46,7 @@ export namespace AbstractSchemaActions {
 
     }
 
-    export class ClearChildElementsAction extends ReducedAction<IAbstractSchemaState<any>> {
+    export class ClearChildrenAction extends ReducedAction<IAbstractSchemaState<any>> {
 
         constructor() { super(); }
 
@@ -59,7 +59,7 @@ export namespace AbstractSchemaActions {
 
     }
 
-    export class PushChildElementAction extends ReducedAction<IAbstractSchemaState<any>> {
+    export class PushChildAction extends ReducedAction<IAbstractSchemaState<any>> {
 
         constructor(public child: AbstractSchema<any>) { super(); }
 
@@ -75,7 +75,7 @@ export namespace AbstractSchemaActions {
 
     }
 
-    export class PopChildElementAction extends ReducedAction<IAbstractSchemaState<any>> {
+    export class PopChildAction extends ReducedAction<IAbstractSchemaState<any>> {
 
         constructor() { super(); }
 
@@ -91,7 +91,7 @@ export namespace AbstractSchemaActions {
 
     }
 
-    export class RemoveChildElementAtIndexAction extends ReducedAction<IAbstractSchemaState<any>> {
+    export class RemoveChildAtIndexAction extends ReducedAction<IAbstractSchemaState<any>> {
 
         constructor(public index: number) { super(); }
 
@@ -107,7 +107,7 @@ export namespace AbstractSchemaActions {
 
     }
 
-    export class SetParentElementAction extends ReducedAction<IAbstractSchemaState<any>> {
+    export class SetParentAction extends ReducedAction<IAbstractSchemaState<any>> {
 
         constructor(public parent: AbstractSchema<any>) { super(); }
 
