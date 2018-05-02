@@ -3,10 +3,12 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { Injector, NgModule, Provider, Type } from '@angular/core';
 
 import { DefaultConverter } from './build-in/converter/default.converter';
+import { FormComponent } from './components/form.component';
 import { ComponentLoaderInjectionToken, IOnInitField } from './core/loaders/component-loader';
 import { ConverterLoaderInjectionToken, IOnConvert } from './core/loaders/converter-loader';
 import { GeneratorLoaderInjectionToken, IOnGenerate } from './core/loaders/generator-loader';
 import { IOnRun, TriggerLoaderInjectionToken } from './core/loaders/trigger-loader';
+import { FieldDirective } from './directives/field-directive';
 import { LoaderService } from './services/loader.service';
 
 /**
@@ -61,6 +63,8 @@ export interface IPerformularCoreConfig {
 }
 
 export const declarations: any[] = [
+    FormComponent,
+    FieldDirective
 ];
 
 export const buildInFields: Type<IOnInitField<any>>[] = [
@@ -100,7 +104,8 @@ export const buildInGenerators: Type<IOnGenerate<any, any, any>>[] = [
         buildInTriggers,
         buildInConverters
     ], exports: [
-        declarations
+        CommonModule,
+        ...declarations
     ]
 })
 export class PerformulerCoreModule {
