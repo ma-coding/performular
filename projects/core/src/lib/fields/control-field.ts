@@ -1,10 +1,12 @@
-import { Store } from '../../core/redux/store';
-import { AbstractSchema } from '../../core/schemas/abstract/abstract-schema';
-import { IAbstractSchemaState } from '../../core/schemas/abstract/abstract-schema.state';
-import { FieldSchema } from '../../core/schemas/field/field-schema';
-import { FieldSchemaActions } from '../../core/schemas/field/field-schema.actions';
-import { FieldType, IFieldSchemaState } from '../../core/schemas/field/field-schema.state';
-import { IControlFieldInitState } from './control-field.state';
+import { RemoveKeys } from '../core/misc/remove-keys';
+import { Store } from '../core/redux/store';
+import { AbstractSchema } from '../core/schemas/abstract/abstract-schema';
+import { IAbstractSchemaState } from '../core/schemas/abstract/abstract-schema.state';
+import { FieldSchema } from '../core/schemas/field/field-schema';
+import { FieldSchemaActions } from '../core/schemas/field/field-schema.actions';
+import { FieldType, IFieldSchemaInitState, IFieldSchemaState } from '../core/schemas/field/field-schema.state';
+
+export type IControlFieldInitState<BindingsType> = RemoveKeys<IFieldSchemaInitState<BindingsType>, 'children' | 'type'>;
 
 export class ControlField<BindingsType> extends FieldSchema<BindingsType> {
 

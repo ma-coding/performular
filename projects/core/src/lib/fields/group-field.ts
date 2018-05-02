@@ -1,9 +1,11 @@
-import { Store } from '../../core/redux/store';
-import { AbstractSchema } from '../../core/schemas/abstract/abstract-schema';
-import { IAbstractSchemaState } from '../../core/schemas/abstract/abstract-schema.state';
-import { FieldSchema } from '../../core/schemas/field/field-schema';
-import { FieldType, IFieldSchemaState } from '../../core/schemas/field/field-schema.state';
-import { IGroupFieldInitState } from './group-field.state';
+import { RemoveKeys } from '../core/misc/remove-keys';
+import { Store } from '../core/redux/store';
+import { AbstractSchema } from '../core/schemas/abstract/abstract-schema';
+import { IAbstractSchemaState } from '../core/schemas/abstract/abstract-schema.state';
+import { FieldSchema } from '../core/schemas/field/field-schema';
+import { FieldType, IFieldSchemaInitState, IFieldSchemaState } from '../core/schemas/field/field-schema.state';
+
+export type IGroupFieldInitState<BindingsType> = RemoveKeys<IFieldSchemaInitState<BindingsType>, 'value' | 'type' | 'focus'>;
 
 export class GroupField<BindingsType> extends FieldSchema<BindingsType> {
 

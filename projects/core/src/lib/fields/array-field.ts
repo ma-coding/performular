@@ -1,11 +1,17 @@
-import { ChildGeneratorLoader } from '../../core/loaders/generator-loader';
-import { Store } from '../../core/redux/store';
-import { AbstractSchema } from '../../core/schemas/abstract/abstract-schema';
-import { AbstractSchemaActions } from '../../core/schemas/abstract/abstract-schema.actions';
-import { IAbstractSchemaState } from '../../core/schemas/abstract/abstract-schema.state';
-import { FieldSchema } from '../../core/schemas/field/field-schema';
-import { FieldType, IFieldSchemaState } from '../../core/schemas/field/field-schema.state';
-import { IArrayFieldInitState } from './array-field.state';
+import { ChildGeneratorLoader, IChildGeneratorDefinition } from '../core/loaders/generator-loader';
+import { RemoveKeys } from '../core/misc/remove-keys';
+import { Store } from '../core/redux/store';
+import { AbstractSchema } from '../core/schemas/abstract/abstract-schema';
+import { AbstractSchemaActions } from '../core/schemas/abstract/abstract-schema.actions';
+import { IAbstractSchemaState } from '../core/schemas/abstract/abstract-schema.state';
+import { FieldSchema } from '../core/schemas/field/field-schema';
+import { FieldType, IFieldSchemaInitState, IFieldSchemaState } from '../core/schemas/field/field-schema.state';
+
+export interface IArrayFieldInitState<BindingsType>
+    extends RemoveKeys<IFieldSchemaInitState<BindingsType>, 'value' | 'type' | 'children' | 'focus'> {
+    children: IChildGeneratorDefinition<any>;
+    value: any[];
+}
 
 export class ArrayField<BindingsType> extends FieldSchema<BindingsType> {
 
