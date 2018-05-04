@@ -6,11 +6,6 @@ import { createObservable, MaybeObservable } from '../misc/maybe-observable';
 import { FieldSchema } from '../schemas/field/field-schema';
 import { AbstractLoader } from './abstract-loader';
 
-export enum RunDetection {
-    Ever = 'Ever',
-    Any = 'Any'
-}
-
 export interface IOnRun<ReturnType, ParamsType> {
     performularOnRun(field: FieldSchema<any>, params?: ParamsType): MaybeObservable<ReturnType>;
     performularWhen?(field: FieldSchema<any>): boolean;
