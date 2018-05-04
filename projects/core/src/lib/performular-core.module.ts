@@ -1,14 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { Injector, NgModule, Provider, Type } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { DefaultConverter } from './build-in/converter/default.converter';
+import { CoreFieldsetComponent } from './build-in/field/core-fieldset';
+import { CoreGroupComponent } from './build-in/field/core-group';
+import { CoreInputComponent } from './build-in/field/core-input';
+import { CoreItemComponent } from './build-in/field/core-item';
+import { CoreLayoutComponent } from './build-in/field/core-layout';
 import { FormComponent } from './components/form.component';
 import { ComponentLoaderInjectionToken, IOnInitField } from './core/loaders/component-loader';
 import { ConverterLoaderInjectionToken, IOnConvert } from './core/loaders/converter-loader';
 import { GeneratorLoaderInjectionToken, IOnGenerate } from './core/loaders/generator-loader';
 import { IOnRun, TriggerLoaderInjectionToken } from './core/loaders/trigger-loader';
+import { AutoFocusDirective } from './directives/auto-focus.directive';
 import { FieldDirective } from './directives/field-directive';
+import { FormBuilder } from './services/form-builder.service';
 import { LoaderService } from './services/loader.service';
 
 /**
@@ -64,10 +72,16 @@ export interface IPerformularCoreConfig {
 
 export const declarations: any[] = [
     FormComponent,
-    FieldDirective
+    FieldDirective,
+    AutoFocusDirective
 ];
 
 export const buildInFields: Type<IOnInitField<any>>[] = [
+    CoreInputComponent,
+    CoreGroupComponent,
+    CoreFieldsetComponent,
+    CoreLayoutComponent,
+    CoreItemComponent
 ];
 
 export const buildInTriggers: Type<IOnRun<any, any>>[] = [
@@ -93,10 +107,12 @@ export const buildInGenerators: Type<IOnGenerate<any, any, any>>[] = [
         ...buildInFields,
     ],
     imports: [
-        CommonModule
+        CommonModule,
+        FlexLayoutModule
     ],
     providers: [
         LoaderService,
+        FormBuilder,
         buildInFields.map(componentExporter),
         buildInTriggers.map(triggerExporter),
         buildInConverters.map(converterExporter),
@@ -105,6 +121,7 @@ export const buildInGenerators: Type<IOnGenerate<any, any, any>>[] = [
         buildInConverters
     ], exports: [
         CommonModule,
+        FlexLayoutModule,
         ...declarations
     ]
 })

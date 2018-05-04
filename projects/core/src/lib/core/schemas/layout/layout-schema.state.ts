@@ -11,6 +11,8 @@ export interface ILayoutSchemaState<BindingsType> extends IAbstractSchemaState<B
     autoHide: boolean;
 }
 
-export interface ILayoutSchemaInitState<BindingsType>
-    extends RemoveKeys<ILayoutSchemaState<BindingsType>, keyof ILayoutSchemaNonInitState>, IAbstractSchemaInitState<BindingsType> {
+export interface ILayoutSchemaInitState<BindingsType> extends
+    RemoveKeys<ILayoutSchemaState<BindingsType>, keyof ILayoutSchemaNonInitState | 'autoHide'>,
+    IAbstractSchemaInitState<BindingsType> {
+    autoHide?: boolean;
 }

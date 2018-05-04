@@ -24,7 +24,8 @@ export abstract class LayoutSchema<BindingsType> extends AbstractSchema<Bindings
     protected _init(initial: ILayoutSchemaInitState<BindingsType>): ILayoutSchemaState<BindingsType> {
         return {
             ...initial,
-            ...super._init(initial)
+            ...super._init(initial),
+            autoHide: initial.autoHide || false
         };
     }
 
