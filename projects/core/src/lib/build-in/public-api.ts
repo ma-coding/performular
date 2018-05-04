@@ -1,6 +1,6 @@
 export { DefaultConverter } from './converter/default.converter';
 
-export { CoreInput, ICoreInput, ICoreInputBindings, CoreInputComponent, InputValueType } from './field/core-input';
+export { CoreInput, ICoreInput, ICoreInputBindings, CoreInputComponent } from './field/core-input';
 export { CoreFieldset, ICoreFieldset, ICoreFieldsetBindings, CoreFieldsetComponent } from './field/core-fieldset';
 export {
     CoreLayout,

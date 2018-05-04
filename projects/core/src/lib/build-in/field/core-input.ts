@@ -8,13 +8,8 @@ import { RemoveKeys } from '../../core/misc/remove-keys';
 import { FormField } from '../../decorators/field.decorator';
 import { ControlField, IControlFieldInitState } from '../../fields/control-field';
 
-export enum InputValueType {
-    text = 'text',
-    number = 'number'
-}
-
-export function convertInputTypeValue(value: any, type: InputValueType): any {
-    if (type === InputValueType.number) {
+export function convertInputTypeValue(value: any, type: string): any {
+    if (type === 'number') {
         const numValue: number = parseFloat(value);
         if (numValue !== NaN) {
             return numValue;
@@ -70,14 +65,14 @@ export class CoreInputComponent implements IOnInitField<CoreInput>, OnDestroy {
 
     private _handleValue(newValue: any): void {
         if (this.field && newValue !== this.field.value) {
-            const type: InputValueType = this.field.bindings ? this.field.bindings.type : InputValueType.text;
+            const type: string = this.field.bindings ? this.field.bindings.type : 'text';
             this._valueChanged$.next(convertInputTypeValue(newValue, type));
         }
     }
 }
 
 export interface ICoreInputBindings {
-    type: InputValueType;
+    type: 'text' | 'number' | string;
 }
 
 export type ICoreInput = RemoveKeys<IControlFieldInitState<ICoreInputBindings>, 'component'>;
