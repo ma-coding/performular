@@ -14,7 +14,7 @@ export const GeneratorLoaderDecorationKey: string =
     '__PERFORMULAR_GENERATOR_LOADER_DECORATION_KEY__';
 
 export interface IGeneratorDefinition<ReturnType, EventType, ParamsType> {
-    converter: string | Type<IOnGenerate<ReturnType, EventType, ParamsType>>;
+    generator: string | Type<IOnGenerate<ReturnType, EventType, ParamsType>>;
     params?: ParamsType;
 }
 
@@ -30,7 +30,7 @@ export class GeneratorLoader<ReturnType, EventType, ParamsType>
         super(
             GeneratorLoaderDecorationKey,
             GeneratorLoaderInjectionToken,
-            definition.converter
+            definition.generator
         );
         this._params = definition.params;
         this._instance = this._getInstanceFromTarget(this._target);

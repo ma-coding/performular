@@ -25,13 +25,13 @@ export const TriggerLoaderDecorationKey: string =
 export interface ITriggerDefinition<ReturnType, ParamsType> {
     trigger: string | Type<IOnRun<ReturnType, ParamsType>>;
     params?: ParamsType;
-    runDetection?: RunDetection;
+    onlySelf?: boolean;
 }
 
 export abstract class TriggerLoader<ReturnType, ParamsType>
     extends AbstractLoader<IOnRun<ReturnType, ParamsType>> {
 
-    protected _runDetection: RunDetection;
+    protected _onlySelf: boolean;
     protected _params: ParamsType | undefined;
     protected _instance: IOnRun<ReturnType, ParamsType>;
 
@@ -43,13 +43,13 @@ export abstract class TriggerLoader<ReturnType, ParamsType>
             TriggerLoaderInjectionToken,
             definition.trigger
         );
-        this._runDetection = definition.runDetection || RunDetection.Ever;
+        this._onlySelf = definition.onlySelf || false;
         this._params = definition.params;
         this._instance = this._getInstanceFromTarget(this._target);
     }
 
     public callTrigger(field: FieldSchema<any>, checked: boolean): Observable<ReturnType | undefined | null> {
-        if (checked || this._runDetection === RunDetection.Ever) {
+        if (checked || !this._onlySelf) {
             const whenResult: boolean = this._instance.performularWhen ? this._instance.performularWhen(field) : true;
             if (whenResult) {
                 return createObservable(this._instance.performularOnRun(field, this._params));
