@@ -10,24 +10,23 @@ import {
     StyleUtils,
 } from '@angular/flex-layout';
 
-import { IOnInitField } from '../../core/loaders/component-loader';
-import { RemoveKeys } from '../../core/misc/remove-keys';
-import { FormField } from '../../decorators/field.decorator';
-import { ILayoutFieldInitState, LayoutField } from '../../fields/layout-field';
-import { CoreLayout } from './core-layout';
+import { Schema, SchemaType } from '../../decorators';
+import { IOnSchemaInit } from '../../loaders';
+import { LayoutSchema } from '../../schemas';
 
-@FormField({
-    key: 'CORE_ITEM'
+@Schema({
+    id: 'FlexItem',
+    type: SchemaType.Control
 })
 @Component({
     selector: 'performular-core-item',
     template: `
-        <ng-container performularField [field]="item?.children[0]"></ng-container>
+        <ng-container [performularSchema]="item?.children[0]"></ng-container>
     `,
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreItemComponent implements IOnInitField<CoreItem>, OnDestroy {
+export class CoreItemComponent implements IOnSchemaInit, OnDestroy {
 
     private _layoutHandler: LayoutDirective | undefined;
     private _flexHandler: FlexDirective | undefined;
@@ -35,7 +34,7 @@ export class CoreItemComponent implements IOnInitField<CoreItem>, OnDestroy {
     private _flexOffsetHandler: FlexOffsetDirective | undefined;
     private _flexAlignHandler: FlexAlignDirective | undefined;
 
-    public item: CoreItem | undefined;
+    public item: LayoutSchema | undefined;
 
     constructor(
         private _monitor: MediaMonitor,
@@ -60,10 +59,10 @@ export class CoreItemComponent implements IOnInitField<CoreItem>, OnDestroy {
         }
     }
 
-    public performularOnInit(field: CoreItem): void {
+    public onSchemaInit(field: LayoutSchema): void {
         this.item = field;
-        const coreLayout: CoreLayout | undefined = this.item.parent as CoreLayout;
-        if (!(coreLayout instanceof CoreLayout)) {
+        const coreLayout: LayoutSchema | undefined = this.item.parent as LayoutSchema;
+        if (!(coreLayout instanceof LayoutSchema)) {
             return;
         }
 
@@ -78,21 +77,21 @@ export class CoreItemComponent implements IOnInitField<CoreItem>, OnDestroy {
 
         this._flexHandler = new FlexDirective(this._monitor, this._elementRef, this._layoutHandler, this._styleUtils, null);
         this._flexHandler = Object.assign(this._flexHandler, this.item.bindings || {});
-        this._flexHandler.ngOnInit();
+        (this._flexHandler as FlexDirective).ngOnInit();
 
         this._flexOrderHandler = new FlexOrderDirective(this._monitor, this._elementRef, this._styleUtils);
         this._flexOrderHandler = Object.assign(this._flexOrderHandler, this.item.bindings || {});
-        this._flexOrderHandler.ngOnInit();
+        (this._flexOrderHandler as FlexOrderDirective).ngOnInit();
 
         this._flexOffsetHandler =
             new FlexOffsetDirective(this._monitor, this._elementRef, this._layoutHandler, this._directionality, this._styleUtils);
         this._flexOffsetHandler = Object.assign(this._flexOffsetHandler, this.item.bindings || {});
-        this._flexOffsetHandler.ngOnInit();
+        (this._flexOffsetHandler as FlexOffsetDirective).ngOnInit();
 
         this._flexAlignHandler =
             new FlexAlignDirective(this._monitor, this._elementRef, this._styleUtils);
         this._flexAlignHandler = Object.assign(this._flexAlignHandler, this.item.bindings || {});
-        this._flexAlignHandler.ngOnInit();
+        (this._flexAlignHandler as FlexAlignDirective).ngOnInit();
     }
 
 }
@@ -163,16 +162,4 @@ export interface ICoreItemBindings {
     alignLtMd?: FxFlexAlignValues;
     alignLtLg?: FxFlexAlignValues;
     alignLtXl?: FxFlexAlignValues;
-}
-
-export interface ICoreItem extends RemoveKeys<ILayoutFieldInitState<ICoreItemBindings>, 'component'> {
-}
-
-export class CoreItem extends LayoutField<ICoreItemBindings> {
-    constructor(initial: ICoreItem) {
-        super({
-            ...initial,
-            component: CoreItemComponent
-        });
-    }
 }

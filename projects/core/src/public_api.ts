@@ -1,27 +1,30 @@
 /*
  * Public API Surface of core
  */
-export * from './lib/core/public-api';
+export { CoreFieldsetComponent } from './lib/build-in/field/core-fieldset';
+export { CoreGroupComponent } from './lib/build-in/field/core-group';
+export { CoreInputComponent } from './lib/build-in/field/core-input';
+export { CoreItemComponent } from './lib/build-in/field/core-item';
+export { CoreLayoutComponent } from './lib/build-in/field/core-layout';
 
-export * from './lib/build-in/public-api';
+export { FormComponent } from './lib/form.component';
 
-export { LoaderService } from './lib/services/loader.service';
+export {
+    Converter, IConverterDecoration, Schema, ISchemaDecoration,
+    SchemaType, Trigger, TriggerStrategy, ITriggerDecoration
+} from './lib/decorators';
 
-export { FormConverter } from './lib/decorators/converter.decorator';
-export { FormField } from './lib/decorators/field.decorator';
-export { FormGenerator } from './lib/decorators/generator.decorator';
-export { FormTrigger } from './lib/decorators/trigger.decorator';
+export { AutoFocusDirective } from './lib/auto-focus.directive';
+export { SchemaDirective } from './lib/schema.directive';
 
-export { ControlField, IControlFieldInitState } from './lib/fields/control-field';
-export { GroupField, IGroupFieldInitState } from './lib/fields/group-field';
-export { ArrayField, IArrayFieldInitState } from './lib/fields/array-field';
-export { LayoutField, ILayoutFieldInitState } from './lib/fields/layout-field';
+export {
+    ConverterLoader, IOnConvert, SchemaLoader, IOnSchemaInit,
+    TriggerLoader, IOnTrigger
+} from './lib/loaders';
 
-export { FormComponent } from './lib/components/form.component';
+export { IPerformularCoreConfig, PerformulerCoreModule } from './lib/module';
 
-export { AutoFocusDirective } from './lib/directives/auto-focus.directive';
-export { FieldDirective } from './lib/directives/field-directive';
-
-export { FormBuilder } from './lib/services/form-builder.service';
-
-export { PerformulerCoreModule } from './lib/performular-core.module';
+export {
+    ArraySchema, GroupSchema, ControlSchema, LayoutSchema,
+    ISchemaBuildOptions, SchemaBuilder
+} from './lib/schemas';

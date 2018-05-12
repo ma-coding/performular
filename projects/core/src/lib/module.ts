@@ -3,28 +3,31 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { Injector, NgModule, Provider, Type } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { DefaultConverter } from './build-in/converter/default.converter';
+import { AutoFocusDirective } from './auto-focus.directive';
 import { CoreFieldsetComponent } from './build-in/field/core-fieldset';
 import { CoreGroupComponent } from './build-in/field/core-group';
 import { CoreInputComponent } from './build-in/field/core-input';
 import { CoreItemComponent } from './build-in/field/core-item';
 import { CoreLayoutComponent } from './build-in/field/core-layout';
-import { FormComponent } from './components/form.component';
-import { ComponentLoaderInjectionToken, IOnInitField } from './core/loaders/component-loader';
-import { ConverterLoaderInjectionToken, IOnConvert } from './core/loaders/converter-loader';
-import { GeneratorLoaderInjectionToken, IOnGenerate } from './core/loaders/generator-loader';
-import { IOnRun, TriggerLoaderInjectionToken } from './core/loaders/trigger-loader';
-import { AutoFocusDirective } from './directives/auto-focus.directive';
-import { FieldDirective } from './directives/field-directive';
-import { FormBuilder } from './services/form-builder.service';
-import { LoaderService } from './services/loader.service';
+import { CoreTextareaComponent } from './build-in/field/core-textarea';
+import { EmailTrigger } from './build-in/trigger/email.trigger';
+import { MaxLengthTrigger } from './build-in/trigger/max-length.trigger';
+import { MaxTrigger } from './build-in/trigger/max.trigger';
+import { MinLengthTrigger } from './build-in/trigger/min-length.trigger';
+import { MinTrigger } from './build-in/trigger/min.trigger';
+import { PatternTrigger } from './build-in/trigger/pattern.trigger';
+import { RequiredTrigger } from './build-in/trigger/required.trigger';
+import { FormComponent } from './form.component';
+import { LoaderService } from './loader.service';
+import { ConverterLoaderInjectionToken, SchemaLoaderInjectionToken, TriggerLoaderInjectionToken } from './loaders';
+import { SchemaDirective } from './schema.directive';
 
 /**
  * Function that creates an Component Provider.
  */
-export function componentExporter(component: Type<IOnInitField<any>>): Provider {
+export function componentExporter(component: Type<any>): Provider {
     return {
-        provide: ComponentLoaderInjectionToken,
+        provide: SchemaLoaderInjectionToken,
         useValue: component,
         multi: true
     };
@@ -33,7 +36,7 @@ export function componentExporter(component: Type<IOnInitField<any>>): Provider 
 /**
  * Function that creates an Trigger Provider.
  */
-export function triggerExporter(trigger: Type<IOnRun<any, any>>): Provider {
+export function triggerExporter(trigger: Type<any>): Provider {
     return {
         provide: TriggerLoaderInjectionToken,
         useValue: trigger,
@@ -44,7 +47,7 @@ export function triggerExporter(trigger: Type<IOnRun<any, any>>): Provider {
 /**
  * Function that creates an Converter Provider.
  */
-export function converterExporter(converter: Type<IOnConvert<any, any, any>>): Provider {
+export function converterExporter(converter: Type<any>): Provider {
     return {
         provide: ConverterLoaderInjectionToken,
         useValue: converter,
@@ -52,46 +55,39 @@ export function converterExporter(converter: Type<IOnConvert<any, any, any>>): P
     };
 }
 
-/**
- * Function that creates an Generator Provider.
- */
-export function generatorExporter(converter: Type<IOnGenerate<any, any, any>>): Provider {
-    return {
-        provide: GeneratorLoaderInjectionToken,
-        useValue: converter,
-        multi: true
-    };
-}
-
 export interface IPerformularCoreConfig {
-    fields?: Type<IOnInitField<any>>[];
-    triggers?: Type<IOnRun<any, any>>[];
-    converters?: Type<IOnConvert<any, any, any>>[];
-    generators?: Type<IOnGenerate<any, any, any>>[];
+    fields?: Type<any>[];
+    triggers?: Type<any>[];
+    converters?: Type<any>[];
 }
 
 export const declarations: any[] = [
     FormComponent,
-    FieldDirective,
+    SchemaDirective,
     AutoFocusDirective
 ];
 
-export const buildInFields: Type<IOnInitField<any>>[] = [
+export const buildInFields: Type<any>[] = [
     CoreInputComponent,
+    CoreTextareaComponent,
     CoreGroupComponent,
     CoreFieldsetComponent,
     CoreLayoutComponent,
     CoreItemComponent
 ];
 
-export const buildInTriggers: Type<IOnRun<any, any>>[] = [
+export const buildInTriggers: Type<any>[] = [
+    RequiredTrigger,
+    MinTrigger,
+    MaxTrigger,
+    MinLengthTrigger,
+    MaxLengthTrigger,
+    EmailTrigger,
+    PatternTrigger
 ];
 
-export const buildInConverters: Type<IOnConvert<any, any, any>>[] = [
-    DefaultConverter
-];
-
-export const buildInGenerators: Type<IOnGenerate<any, any, any>>[] = [
+export const buildInConverters: Type<any>[] = [
+    // DefaultConverter
 ];
 
 /**
@@ -112,11 +108,9 @@ export const buildInGenerators: Type<IOnGenerate<any, any, any>>[] = [
     ],
     providers: [
         LoaderService,
-        FormBuilder,
         buildInFields.map(componentExporter),
         buildInTriggers.map(triggerExporter),
         buildInConverters.map(converterExporter),
-        buildInGenerators.map(generatorExporter),
         buildInTriggers,
         buildInConverters
     ], exports: [
@@ -140,10 +134,8 @@ export class PerformulerCoreModule {
                 (config.fields || []).map(componentExporter),
                 (config.triggers || []).map(triggerExporter),
                 (config.converters || []).map(converterExporter),
-                (config.generators || []).map(generatorExporter),
                 (config.triggers || []),
-                (config.converters || []),
-                (config.generators || [])
+                (config.converters || [])
             ],
             ngModule: PerformulerCoreModule
         };

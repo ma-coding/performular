@@ -7,43 +7,35 @@ import { Schema, SchemaType } from '../../decorators';
 import { IOnSchemaInit } from '../../loaders';
 import { ControlSchema } from '../../schemas';
 
-export function convertInputTypeValue(value: any, type: string): any {
-    if (type === 'number') {
-        const numValue: number = parseFloat(value);
-        if (numValue !== NaN) {
-            return numValue;
-        }
-    }
-    return value;
-}
-
-export interface ICoreInput {
+export interface ICoreTextarea {
     placeholder?: string;
-    type?: string;
+    cols?: number;
+    rows?: number;
     readonly?: boolean;
 }
 
 @Schema({
-    id: 'Input',
+    id: 'Textarea',
     type: SchemaType.Control
 })
 @Component({
-    selector: 'performular-core-input',
+    selector: 'performular-core-textarea',
     template: `
-        <input
+        <textarea
             [id]="control?.id$ | async"
             [performularAutoFocus]="control?.focus$ | async"
-            [placeholder]="(control?.bindings$ | async)?.placeholder"
-            [type]="(control?.bindings$ | async)?.type"
-            [readonly]="(control?.bindings$ | async)?.readonly"
             [value]="control?.value$ | async"
             [disabled]="control?.disabled$ | async"
-            (input)="onInput($event)">
+            [placeholder]="(control?.bindings$ | async)?.placeholder"
+            [cols]="(control?.bindings$ | async)?.cols"
+            [rows]="(control?.bindings$ | async)?.rows"
+            [readonly]="(control?.bindings$ | async)?.readonly"
+            (input)="onInput($event)"></textarea>
     `,
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreInputComponent implements IOnSchemaInit, OnDestroy {
+export class CoreTextareaComponent implements IOnSchemaInit, OnDestroy {
 
     private _valueChanged$: Subject<any> = new Subject();
     private _valueChangedSubscription: Subscription | undefined;
@@ -68,13 +60,6 @@ export class CoreInputComponent implements IOnSchemaInit, OnDestroy {
 
     public onInput(event: KeyboardEvent): void {
         const newValue: any = (<any>event.target).value;
-        this._handleValue(newValue);
-    }
-
-    private _handleValue(newValue: any): void {
-        if (this.control && newValue !== this.control.value) {
-            const type: string = this.control.bindings ? this.control.bindings.type : 'text';
-            this._valueChanged$.next(convertInputTypeValue(newValue, type));
-        }
+        this._valueChanged$.next(newValue);
     }
 }

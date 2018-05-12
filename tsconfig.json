@@ -22,6 +22,9 @@
     "paths": {
       "core": [
         "dist/core"
+      ],
+      "core2": [
+        "dist/core2"
       ]
     }
   }

@@ -2,30 +2,30 @@ import { ChangeDetectionStrategy, Component, Input, NgZone, OnDestroy } from '@a
 
 import { Subscription } from 'rxjs';
 
-import { AbstractSchema } from '../core/schemas/abstract/abstract-schema';
+import { AbstractSchema } from './schemas';
 
 @Component({
     selector: 'performular-form',
-    template: '<ng-container performularField [field]="field"></ng-container>',
+    template: '<ng-container [performularSchema]="field"></ng-container>',
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormComponent implements OnDestroy {
 
-    private _field: AbstractSchema<any> | undefined;
+    private _field: AbstractSchema | undefined;
     private _updateSubscription: Subscription | undefined;
 
     constructor(private _zone: NgZone) { }
 
     @Input()
-    set form(field: AbstractSchema<any>) {
+    set form(field: AbstractSchema) {
         if (!field) {
             return;
         }
         this._onSetField(field);
     }
 
-    get field(): AbstractSchema<any> | undefined {
+    get field(): AbstractSchema | undefined {
         return this._field;
     }
 
@@ -33,12 +33,12 @@ export class FormComponent implements OnDestroy {
         this._destroyField();
     }
 
-    private _onSetField(field: AbstractSchema<any>): void {
+    private _onSetField(field: AbstractSchema): void {
         this._destroyField();
         this._field = field;
         this._updateSubscription = this._field.updates$.subscribe();
-        (this._field as any)._updateSubject.next(
-            this._field.getChildListRecursive().map((f: AbstractSchema<any>) => f.uuid)
+        this._field.update(
+            this._field.getChildListRecursive().map((f: AbstractSchema) => f.uuid)
         );
     }
 

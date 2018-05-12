@@ -1,46 +1,35 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { IOnInitField } from '../../core/loaders/component-loader';
-import { RemoveKeys } from '../../core/misc/remove-keys';
-import { FormField } from '../../decorators/field.decorator';
-import { ILayoutFieldInitState, LayoutField } from '../../fields/layout-field';
+import { Schema, SchemaType } from '../../decorators';
+import { IOnSchemaInit } from '../../loaders';
+import { LayoutSchema } from '../../schemas';
 
-@FormField({
-    key: 'CORE_FIELDSET'
+export interface ICoreFieldset {
+    legend?: string;
+}
+
+@Schema({
+    id: 'Fieldset',
+    type: SchemaType.Layout
 })
 @Component({
     selector: 'performular-core-fieldset',
     template: `
-    <fieldset [id]="layout?.id$ | async">
+    <fieldset>
         <legend>{{(layout?.bindings$ | async)?.legend}}</legend>
         <ng-container *ngFor="let child of layout?.children$ | async">
-            <ng-container performularField [field]="child"></ng-container>
+            <ng-container [performularSchema]="child"></ng-container>
         </ng-container>
     </fieldset>
     `,
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreFieldsetComponent implements IOnInitField<CoreFieldset> {
+export class CoreFieldsetComponent implements IOnSchemaInit {
 
-    public layout: CoreFieldset | undefined;
+    public layout: LayoutSchema | undefined;
 
-    public performularOnInit(field: CoreFieldset): void {
+    public onSchemaInit(field: LayoutSchema): void {
         this.layout = field;
-    }
-}
-
-export interface ICoreFieldsetBindings {
-    legend: string;
-}
-
-export type ICoreFieldset = RemoveKeys<ILayoutFieldInitState<ICoreFieldsetBindings>, 'component'>;
-
-export class CoreFieldset extends LayoutField<ICoreFieldsetBindings> {
-    constructor(initial: ICoreFieldset) {
-        super({
-            ...initial,
-            component: CoreFieldsetComponent
-        });
     }
 }

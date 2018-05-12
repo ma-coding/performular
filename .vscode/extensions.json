@@ -5,7 +5,6 @@
         // Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
         "joelday.docthis",
         "eg2.tslint",
-        "infinity1207.angular2-switcher",
         "k--kato.intellij-idea-keybindings",
         "DavidAnson.vscode-markdownlint",
         "PKief.material-icon-theme",
@@ -13,9 +12,7 @@
         "christian-kohler.path-intellisense",
         "formulahendry.auto-close-tag",
         "formulahendry.auto-rename-tag",
-        "alefragnani.bookmarks",
         "msjsdiag.debugger-for-chrome",
-        "donjayamanne.githistory",
         "christian-kohler.npm-intellisense",
         "rbbit.typescript-hero",
         "EditorConfig.editorconfig"

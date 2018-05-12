@@ -12,32 +12,32 @@ import {
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { IOnInitField } from '../../core/loaders/component-loader';
-import { RemoveKeys } from '../../core/misc/remove-keys';
-import { FormField } from '../../decorators/field.decorator';
-import { ILayoutFieldInitState, LayoutField } from '../../fields/layout-field';
+import { Schema, SchemaType } from '../../decorators';
+import { IOnSchemaInit } from '../../loaders';
+import { LayoutSchema } from '../../schemas';
 
-@FormField({
-    key: 'CORE_LAYOUT'
+@Schema({
+    id: 'FlexLayout',
+    type: SchemaType.Layout
 })
 @Component({
     selector: 'performular-core-layout',
     template: `
     <ng-container *ngFor="let childField of layout?.children$ | async">
-        <ng-container performularField [field]="childField"></ng-container>
+        <ng-container [performularSchema]="childField"></ng-container>
     </ng-container>
     `,
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreLayoutComponent implements IOnInitField<CoreLayout>, OnDestroy {
+export class CoreLayoutComponent implements IOnSchemaInit, OnDestroy {
 
     private _subscription: Subscription | undefined;
     private _layoutHandler: LayoutDirective | undefined;
     private _layoutGapHandler: LayoutGapDirective | undefined;
     private _layoutAlignHandler: LayoutAlignDirective | undefined;
 
-    public layout: CoreLayout | undefined;
+    public layout: LayoutSchema | undefined;
 
     constructor(
         private _renderer: Renderer2,
@@ -64,7 +64,7 @@ export class CoreLayoutComponent implements IOnInitField<CoreLayout>, OnDestroy 
         }
     }
 
-    public performularOnInit(field: CoreLayout): void {
+    public onSchemaInit(field: LayoutSchema): void {
         this.layout = field;
         this._createLayoutHandler();
         this._createLayoutAlignHandler();
@@ -173,15 +173,4 @@ export interface ICoreLayoutBindings {
     gapLtMd?: string;
     gapLtLg?: string;
     gapLtXl?: string;
-}
-
-export type ICoreLayout = RemoveKeys<ILayoutFieldInitState<ICoreLayoutBindings>, 'component'>;
-
-export class CoreLayout extends LayoutField<ICoreLayoutBindings> {
-    constructor(initial: ICoreLayout) {
-        super({
-            ...initial,
-            component: CoreLayoutComponent
-        });
-    }
 }

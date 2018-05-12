@@ -1,40 +1,28 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { IOnInitField } from '../../core/loaders/component-loader';
-import { RemoveKeys } from '../../core/misc/remove-keys';
-import { FormField } from '../../decorators/field.decorator';
-import { GroupField, IGroupFieldInitState } from '../../fields/group-field';
+import { Schema, SchemaType } from '../../decorators';
+import { IOnSchemaInit } from '../../loaders';
+import { GroupSchema } from '../../schemas';
 
-@FormField({
-    key: 'CORE_GROUP'
+@Schema({
+    id: 'Group',
+    type: SchemaType.Group
 })
 @Component({
     selector: 'performular-core-goup',
     template: `
     <ng-container *ngFor="let child of group?.children$ | async">
-        <ng-container performularField [field]="child"></ng-container>
+        <ng-container [performularSchema]="child"></ng-container>
     </ng-container>
     `,
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreGroupComponent implements IOnInitField<CoreGroup> {
+export class CoreGroupComponent implements IOnSchemaInit {
 
-    public group: CoreGroup | undefined;
+    public group: GroupSchema | undefined;
 
-    public performularOnInit(field: CoreGroup): void {
+    public onSchemaInit(field: GroupSchema): void {
         this.group = field;
-    }
-}
-
-export type ICoreGroup = RemoveKeys<IGroupFieldInitState<undefined>, 'component' | 'bindings'>;
-
-export class CoreGroup extends GroupField<undefined> {
-    constructor(initial: ICoreGroup) {
-        super({
-            ...initial,
-            bindings: undefined,
-            component: CoreGroupComponent
-        });
     }
 }

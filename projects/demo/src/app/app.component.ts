@@ -1,6 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 
-import { FormBuilder, GroupField } from '../../../core/src/public_api';
+import { IGroupSchema } from 'dist/core/lib/schemas/group.schema';
+import { ILayoutSchema } from 'dist/core/lib/schemas/layout.schema';
+import { BehaviorSubject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import { IControlSchema, TriggerAction } from '../../../core/src/lib/schemas';
+import { SchemaBuilder } from '../../../core/src/public_api';
 
 @Component({
     selector: 'app-root',
@@ -8,47 +14,49 @@ import { FormBuilder, GroupField } from '../../../core/src/public_api';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    public group: GroupField<any>;
-    // public group: CoreGroup = new CoreGroup({
-    //     id: 'group',
-    //     children: [
-    //         new CoreFieldset({
-    //             bindings: {
-    //                 legend: 'test'
-    //             },
-    //             children: [
-    //                 new CoreInput({
-    //                     id: 'A',
-    //                     bindings: {
-    //                         type: InputValueType.number
-    //                     },
-    //                     value: 5
-    //                 })
-    //             ]
-    //         })
-    //     ]
-    // });
+
+    public schema$: BehaviorSubject<any | undefined>;
+
+    public config: string;
 
     constructor(
-        private _formBuilder: FormBuilder
+        private _cd: ChangeDetectorRef
     ) {
-        this.group = this._formBuilder.create({
-            id: 'group',
-            type: 'GROUP',
-            bindings: undefined,
-            component: 'CORE_GROUP',
+        const config: IGroupSchema = {
+            id: 'main',
+            component: 'Group',
+            bindings: {},
             children: [
-                {
-                    type: 'LAYOUT',
-                    component: 'CORE_FIELDSET',
+                <ILayoutSchema>{
+                    component: 'Fieldset',
                     bindings: {
                         legend: 'test'
                     },
                     children: [
-                        {
-                            type: 'CONTROL',
-                            component: 'CORE_INPUT',
-                            id: 'AB',
+                        <IControlSchema>{
+                            id: 'test',
+                            component: 'Input',
+                            bindings: {
+                                type: 'text'
+                            },
+                            focus: true,
+                            value: 5,
+                            effects: [
+                                {
+                                    type: 'Required',
+                                    action: TriggerAction.Error,
+                                    errorMsg: 'FEHLER'
+                                }, {
+                                    type: 'Min',
+                                    action: TriggerAction.Error,
+                                    errorMsg: 'FEHLER',
+                                    params: 5
+                                }
+                            ]
+                        },
+                        <IControlSchema>{
+                            id: 'test2',
+                            component: 'Input',
                             bindings: {
                                 type: 'number'
                             },
@@ -57,7 +65,26 @@ export class AppComponent {
                     ]
                 }
             ]
-        }) as GroupField<any>;
-        this.group.value$.subscribe(console.log);
+        };
+        this.config = JSON.stringify(config, undefined, 4);
+        this.schema$ = new BehaviorSubject(SchemaBuilder.create(config));
+        this.schema$.pipe(
+            switchMap((schema: any) => schema.errors$)
+        ).subscribe(console.log);
+    }
+
+    public changed(): void {
+        try {
+            const config: any = JSON.parse(this.config);
+            this.schema$.next(SchemaBuilder.create(config));
+            this.config = JSON.stringify(config, undefined, 4);
+            this._cd.markForCheck();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    public log(): void {
+        console.log(this.schema$.getValue());
     }
 }

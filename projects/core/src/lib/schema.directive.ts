@@ -12,25 +12,23 @@ import {
 
 import { Subscription } from 'rxjs';
 
-import { AbstractSchema } from '../core/schemas/abstract/abstract-schema';
+import { AbstractSchema } from './schemas';
 
 @Directive({
-    selector: '[performularField]'
+    selector: '[performularSchema]'
 })
-export class FieldDirective implements OnDestroy {
+export class SchemaDirective implements OnDestroy {
 
-    private _field: AbstractSchema<any> | undefined;
+    private _field: AbstractSchema | undefined;
     private _hiddenSubscription: Subscription | undefined;
     private _componentRef: ComponentRef<any> | undefined;
     private _subscriptions: Subscription[] = [];
 
-    @Input() set field(f: AbstractSchema<any> | undefined) {
+    @Input() set performularSchema(f: AbstractSchema | undefined) {
         if (!f) {
             return;
         }
         this._onSetField(f);
-    } get field(): AbstractSchema<any> | undefined {
-        return this._field;
     }
 
     constructor(
@@ -44,7 +42,7 @@ export class FieldDirective implements OnDestroy {
         this._clearComponent();
     }
 
-    private _onSetField(field: AbstractSchema<any>): void {
+    private _onSetField(field: AbstractSchema): void {
         this._field = field;
 
         this._clearHiddenSubscription();
@@ -74,8 +72,8 @@ export class FieldDirective implements OnDestroy {
         const factory: ComponentFactory<any> =
             this._componentFactoryResolver.resolveComponentFactory(this._field.component.target);
         this._componentRef = this._viewRef.createComponent(factory);
-        if ('performularOnInit' in this._componentRef.instance) {
-            this._componentRef.instance.performularOnInit(this._field);
+        if ('onSchemaInit' in this._componentRef.instance) {
+            this._componentRef.instance.onSchemaInit(this._field);
         }
         this._field.setInstance(this._componentRef.instance, this._componentRef.location);
     }
@@ -86,7 +84,7 @@ export class FieldDirective implements OnDestroy {
         if (this._componentRef) {
             this._componentRef.destroy();
             this._viewRef.clear();
-            (this.field as any).clearInstance();
+            (this._field as any).clearInstance();
         }
     }
 
@@ -99,6 +97,5 @@ export class FieldDirective implements OnDestroy {
         } else {
             this._insertComponent();
         }
-        this._cd.markForCheck();
     }
 }
