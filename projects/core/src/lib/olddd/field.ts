@@ -1,107 +1,12 @@
-import { ElementRef, Type } from '@angular/core';
+import { ElementRef } from '@angular/core';
 
 import { cloneDeep, isEqual } from 'lodash';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { buffer, debounceTime, distinctUntilChanged, map, pluck } from 'rxjs/operators';
 
+import { ComponentHandler, ConverterHandler, EffectHandler } from './handler';
 import { flatten, generateUUID } from './helpers';
-
-export enum TriggerStrategy {
-    Self,
-    Any
-}
-
-export enum VisibilityType {
-    Disable,
-    Hide
-}
-
-export interface ITrigger<ArgType = any> {
-    onTrigger(field: Field, args: ArgType): boolean | Observable<boolean>;
-}
-
-export type TriggerFunction<ArgType = any> = (field: Field, args: ArgType) => boolean | Observable<boolean>;
-
-export interface IEffect<ArgType = any> {
-    id?: string;
-    strategy?: TriggerStrategy;
-    trigger: string | Type<ITrigger<ArgType>> | TriggerFunction<ArgType>;
-    args: ArgType;
-}
-
-export interface IValidationEffect<ArgType = any> extends IEffect<ArgType> {
-    errorMsg: string;
-}
-
-export interface IVisibilityEffect<ArgType = any> extends IEffect<ArgType> {
-    type: VisibilityType;
-}
-
-export enum FieldType {
-    Layout,
-    Control,
-    Group,
-    Array
-}
-
-export type ComponentSchema = Type<any> | string;
-export type ChildSchema = IField[] | IField;
-export type ConverterSchema = Type<any> | string[];
-export type EffectSchema = IValidationEffect | IVisibilityEffect;
-
-export interface IField<BType = any> {
-    type: FieldType;
-    component: ComponentSchema;
-    bindings: BType;
-    id?: string;
-    children?: ChildSchema;
-    converters?: ConverterSchema[];
-    effects?: EffectSchema[];
-    autoHide?: boolean;
-    focus?: boolean;
-}
-
-export interface IFieldOptions {
-    errorState: boolean;
-}
-
-export interface IFieldState<BType = any> {
-    id: string;
-    uuid: string;
-    type: FieldType;
-    component: ComponentHandler;
-    converters: ConverterHandler[];
-    effects: EffectHandler[];
-    options: IFieldOptions | undefined;
-    value: any;
-    initValue: any;
-    bindings: BType;
-    childSchema: IField | undefined;
-    children: Field[];
-    parent: Field | undefined;
-    elementRef: ElementRef | undefined;
-    instance: any | undefined;
-    hidden: boolean;
-    disabled: boolean;
-    invalid: boolean;
-    errorState: boolean;
-    changed: boolean;
-    dirty: boolean;
-    autoHide: boolean;
-    focus: boolean;
-}
-
-export class ComponentHandler {
-    constructor(schema: ComponentSchema) { }
-}
-
-export class ConverterHandler {
-    constructor(schema: ConverterSchema) { }
-}
-
-export class EffectHandler {
-    constructor(schema: EffectSchema) { }
-}
+import { ConverterSchema, EffectSchema, FieldType, IField, IFieldOptions, IFieldState } from './types';
 
 export class Field<BType = any> {
 
@@ -169,7 +74,7 @@ export class Field<BType = any> {
             buffer(this._update.pipe(debounceTime(500))),
             map(flatten),
             map((checkList: string[]) => {
-                //TODO UPDATE
+                // TODO UPDATE
             })
         );
     }
