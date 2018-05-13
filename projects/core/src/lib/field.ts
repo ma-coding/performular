@@ -2,7 +2,7 @@ import { ElementRef, Type } from '@angular/core';
 
 import { cloneDeep, isEqual } from 'lodash';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { buffer, concatMap, debounceTime, distinctUntilChanged, map, pluck } from 'rxjs/operators';
+import { buffer, debounceTime, distinctUntilChanged, map, pluck } from 'rxjs/operators';
 
 import { flatten, generateUUID } from './helpers';
 
@@ -168,7 +168,7 @@ export class Field<BType = any> {
             // tslint:disable-next-line:no-magic-numbers
             buffer(this._update.pipe(debounceTime(500))),
             map(flatten),
-            concatMap((checkList: string[]) => {
+            map((checkList: string[]) => {
                 //TODO UPDATE
             })
         );
@@ -232,6 +232,41 @@ export class Field<BType = any> {
                 value.forEach((val: any, index: number) => {
                     if (childFields[index]) {
                         childFields[index].setValue(val, value.length === index + 1);
+                    }
+                });
+            }
+        }
+    }
+
+    public patchValue(value: any, emitUpdate: boolean = true): void {
+        switch (this.get('type')) {
+            case FieldType.Control: {
+                this._updateStore({
+                    value,
+                    initValue: value,
+                    changed: false,
+                    dirty: true
+                });
+                break;
+            }
+            case FieldType.Group: {
+                const childFields: Field[] = this.getChildFields();
+                const keys: string[] = Object.keys(value);
+                const keysLength: number = keys.length;
+                keys.forEach((key: string, index: number) => {
+                    const foundChildField: Field | undefined = childFields.find((child: Field) => child.get('id') === key);
+                    if (foundChildField) {
+                        foundChildField.patchValue(value[key], keysLength === index + 1);
+                    }
+                });
+                break;
+            }
+            case FieldType.Array: {
+                this._adjustChilds(value);
+                const childFields: Field[] = this.getChildFields();
+                value.forEach((val: any, index: number) => {
+                    if (childFields[index]) {
+                        childFields[index].patchValue(val, value.length === index + 1);
                     }
                 });
             }
