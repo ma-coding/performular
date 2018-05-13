@@ -2,7 +2,7 @@ import { ElementRef, Type } from '@angular/core';
 
 import { cloneDeep, isEqual } from 'lodash';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { buffer, concatMap, debounceTime, distinctUntilChanged, map, pluck } from 'rxjs/operators';
 
 import { flatten, generateUUID } from './helpers';
 
@@ -161,6 +161,17 @@ export class Field<BType = any> {
             x = <Field>x.get('parent');
         }
         return x;
+    }
+
+    public getUpdates$(): Observable<void> {
+        return this._update.pipe(
+            // tslint:disable-next-line:no-magic-numbers
+            buffer(this._update.pipe(debounceTime(500))),
+            map(flatten),
+            concatMap((checkList: string[]) => {
+                //TODO UPDATE
+            })
+        );
     }
 
     public setParent(parent: Field | undefined): void {
