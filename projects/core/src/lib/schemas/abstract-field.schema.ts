@@ -35,4 +35,28 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
         };
     }
 
+    public getParentField(): AbstractFieldSchema | undefined {
+        let schema: AbstractSchema<any> = this;
+        let ret: AbstractFieldSchema = this;
+        while (schema.get('parent')) {
+            if (schema.get('parent') instanceof AbstractFieldSchema) {
+                ret = schema.get('parent');
+                break;
+            }
+            schema = schema.get('parent');
+        }
+        return ret !== this ? ret : undefined;
+    }
+
+    public getChildFields(fields: AbstractSchema[] = this.get('children')): AbstractFieldSchema[] {
+        const erg: AbstractFieldSchema<any>[] = [];
+        fields.forEach((field: AbstractSchema<any>) => {
+            if (field instanceof AbstractFieldSchema) {
+                erg.push(field);
+            } else {
+                erg.push(...this.getChildFields(field.get('children')));
+            }
+        });
+        return erg;
+    }
 }

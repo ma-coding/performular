@@ -3,19 +3,29 @@ import { ElementRef, Type } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { distinctUntilChanged, pluck } from 'rxjs/operators';
 
+import { ConverterHandler, ConverterSchema } from '../handler/converter.handler';
 import { flatten } from '../helpers';
 
+export enum SchemaType {
+    Control,
+    Group,
+    Array,
+    Layout
+}
+
 export interface IAbstractSchema<BType = any> {
+    type: SchemaType;
     component: string | Type<any>;
     bindings: BType;
-    converters?: (string | Type<any>)[];
+    converters?: ConverterSchema[];
 }
 
 export interface IAbstractState<BType = any> {
+    type: SchemaType;
     uuid: string;
     hidden: boolean;
     component: any;
-    converters: any[];
+    converters: ConverterHandler[];
     bindings: BType;
     children: AbstractSchema[];
     parent?: AbstractSchema;
@@ -29,10 +39,12 @@ export abstract class AbstractSchema<State extends IAbstractState<BType> = any, 
 
     constructor(schema: IAbstractSchema<BType>) {
         this._initState = <any>{
+            type: schema.type,
             uuid: '',
             hidden: false,
             component: schema.component,
-            converters: schema.converters || [],
+            converters: (schema.converters || [])
+                .map((cschema: ConverterSchema) => new ConverterHandler(cschema)),
             bindings: schema.bindings,
             children: [],
             parent: undefined,
