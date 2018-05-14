@@ -1,7 +1,7 @@
 import { ElementRef, Type } from '@angular/core';
 
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
+import { buffer, concatMap, debounceTime, distinctUntilChanged, map, pluck } from 'rxjs/operators';
 
 import { ConverterHandler, ConverterSchema } from '../handler/converter.handler';
 import { flatten } from '../helpers';
@@ -36,6 +36,16 @@ export interface IAbstractState<BType = any> {
 export abstract class AbstractSchema<State extends IAbstractState<BType> = any, BType = any> {
     protected abstract _store$: BehaviorSubject<State>;
     protected _initState: State;
+    protected _updateSubject: Subject<string[]> = new Subject();
+
+    get updates$(): Observable<void> {
+        return this._updateSubject.pipe(
+            // tslint:disable-next-line:no-magic-numbers
+            buffer(this._updateSubject.pipe(debounceTime(500))),
+            map(flatten),
+            concatMap((checkList: string[]) => this._topDownUpdate(checkList))
+        );
+    }
 
     constructor(schema: IAbstractSchema<BType>) {
         this._initState = <any>{
@@ -80,11 +90,23 @@ export abstract class AbstractSchema<State extends IAbstractState<BType> = any, 
         );
     }
 
+    public getRoot(): AbstractSchema<any> {
+        let x: AbstractSchema<any> = this;
+        while (x.get('parent')) {
+            x = x.get('parent');
+        }
+        return x;
+    }
+
     public getChildListRecursive(): AbstractSchema[] {
         return [
             this,
             ...flatten(this.get('children').map((c: AbstractSchema) => c.getChildListRecursive()))
         ];
+    }
+
+    public update(checkList: string[] = []): void {
+        this._updateSubject.next(checkList);
     }
 
     protected abstract _topDownUpdate(checklist: string[]): Observable<void>;

@@ -1,4 +1,8 @@
-import { AbstractSchema, IAbstractSchema, IAbstractState } from './abstract.schema';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+
+import { ITriggerResult, TriggerAction, TriggerHandler } from '../handler/trigger.handler';
+import { AbstractSchema, IAbstractSchema, IAbstractState, SchemaType } from './abstract.schema';
 
 export interface IAbstractFieldSchema<BType = any> extends IAbstractSchema<BType> {
     id: string;
@@ -58,5 +62,86 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
             }
         });
         return erg;
+    }
+
+    protected _updateValue(): void {
+        const newValue: any = this._buildValue(this.getChildFields());
+        this._updateStore(<State>{ value: newValue });
+    }
+
+    protected _updateParentValue(checklist: string[] = [(this.get('uuid') || '')]): void {
+        const parent: AbstractFieldSchema | undefined = this.getParentField();
+        if (parent) {
+            parent._updateValue();
+            parent._updateParentValue([...checklist, (parent.get('uuid') || '')]);
+        } else {
+            this.getRoot().update(checklist);
+        }
+    }
+
+    protected _topDownUpdate(checklist: string[]): Observable<void> {
+        const checked: boolean = checklist.indexOf(this.get('uuid')) >= 0;
+        return this._updateEffects(checked).pipe(
+            switchMap(() => this._updateChildren(checklist)),
+            map(() => {
+                if (this.get('type') === SchemaType.Control) {
+                    this._bottomUpUpdate();
+                }
+            })
+        );
+    }
+
+    protected _bottomUpUpdate(): void {
+        const childFields: AbstractFieldSchema[] = this.getChildFields();
+        const isAnyChildInvalid: boolean = childFields.some((child: AbstractFieldSchema) => child.get('invalid'));
+        if (isAnyChildInvalid) {
+            this._updateStore(<State>{
+                invalid: true
+            });
+        }
+        this._updateParent();
+    }
+
+    protected _updateEffects(checked: boolean): Observable<void> {
+        return forkJoin(
+            ...this.get('effects').map((effect: TriggerHandler) => {
+                return effect.call(this, checked);
+            }),
+            of(false)
+        ).pipe(
+            map((results: ITriggerResult[]) => {
+                results.pop();
+                const newResults: ITriggerResult[] = results.map((res: ITriggerResult, index: number) => {
+                    if (res.result === undefined) {
+                        const lastResult: ITriggerResult | undefined = this.get('effectResults')[index];
+                        return lastResult && lastResult.result !== undefined ? lastResult : { trigger: res.trigger, result: undefined };
+                    }
+                    return res;
+                });
+                const parent: AbstractSchema | undefined = this.get('parent');
+                this._updateStore(<State>{
+                    effectResults: newResults,
+                    invalid: !!results
+                        .filter(this._filterByAction(TriggerAction.Error))
+                        .find(this._findTriggerFlag),
+                    disabled: !!results
+                        .filter(this._filterByAction(TriggerAction.Disable))
+                        .find(this._findTriggerFlag) || (parent ? parent.get('disabled') : false),
+                    hidden: !!results
+                        .filter(this._filterByAction(TriggerAction.Hide))
+                        .find(this._findTriggerFlag) || (parent ? parent.get('hidden') : false)
+                });
+            })
+        );
+    }
+
+    protected abstract _buildValue(childFields: AbstractSchema[]): any;
+
+    private _filterByAction(action: TriggerAction): (res: ITriggerResult) => boolean {
+        return (res: ITriggerResult): boolean => res.trigger.action === action;
+    }
+
+    private _findTriggerFlag(res: ITriggerResult): boolean {
+        return res.result === true;
     }
 }

@@ -6,6 +6,7 @@ import { ReducedAction } from './helpers';
 import { ITriggerResult } from './loaders';
 import { AbstractSchema, FieldSchema, IAbstractState, IFieldState, ILayoutState, TriggerAction } from './schemas';
 
+
 export namespace AbstractActions {
 
     export class SetHiddenAction extends ReducedAction<IAbstractState> {

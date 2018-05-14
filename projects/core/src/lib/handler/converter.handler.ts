@@ -6,7 +6,7 @@ export interface IConverterDecoration {
     id: string;
 }
 
-export const ConverterMetadataKey: string = '__PERFORMULAR_CONVERTER__';
+export const ConverterMetadataKey: string = '__PERFORMULAR_CONVERTER_META__';
 
 export function Converter(decoration: IConverterDecoration): ClassDecorator {
     return (target: Function): void => {
@@ -21,7 +21,7 @@ export interface IOnConvert<B1 = any, B2 = any> {
 export type ConverterType = Type<IOnConvert>;
 
 export const ConverterToken: InjectionToken<ConverterType> =
-    new InjectionToken('__PERFORMULAR_TOKEN__');
+    new InjectionToken('__PERFORMULAR_CONVERTER_TOKEN__');
 
 export type ConverterSchema = ConverterType | string;
 
