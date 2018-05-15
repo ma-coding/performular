@@ -106,7 +106,7 @@ export abstract class AbstractSchema<State extends IAbstractState<BType> = any, 
     }
 
     public update(checkList: string[] = []): void {
-        this._updateSubject.next(checkList);
+        this.getRoot()._updateSubject.next(checkList);
     }
 
     protected abstract _topDownUpdate(checklist: string[]): Observable<void>;

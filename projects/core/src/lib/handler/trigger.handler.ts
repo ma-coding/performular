@@ -59,11 +59,11 @@ export interface ITriggerResult {
 
 export class TriggerHandler {
     private _instance: IOnTrigger;
-    private _metadata: IMetadataTarget | undefined;
-    private _schema: TriggerSchema;
+    public metadata: IMetadataTarget | undefined;
+    public schema: TriggerSchema;
 
     constructor(schema: TriggerSchema) {
-        this._schema = schema;
+        this.schema = schema;
         if (typeof schema.trigger === 'string') {
             const metadataTarget: IMetadataTarget | undefined =
                 LoaderService.getFromString(schema.trigger, TriggerMetadataKey, TriggerToken);
@@ -74,7 +74,7 @@ export class TriggerHandler {
             if (!instance) {
                 throw new Error('Not Provided');
             }
-            this._metadata = metadataTarget.metadata;
+            this.metadata = metadataTarget.metadata;
             this._instance = instance;
         } else {
             let instance: IOnTrigger | undefined =
@@ -90,20 +90,20 @@ export class TriggerHandler {
 
     public call(field: any, checked: boolean): Observable<ITriggerResult> {
         const strategy: TriggerStrategy =
-            this._metadata ? this._metadata.metadata.strategy :
-                this._schema.strategy ? this._schema.strategy : TriggerStrategy.Self;
+            this.metadata ? this.metadata.metadata.strategy :
+                this.schema.strategy ? this.schema.strategy : TriggerStrategy.Self;
         if (checked || strategy === TriggerStrategy.Any) {
-            return createObservable(this._instance.onTrigger(field, this._schema.params)).pipe(
+            return createObservable(this._instance.onTrigger(field, this.schema.params)).pipe(
                 map((result: boolean) => {
                     return {
-                        trigger: this._schema,
+                        trigger: this.schema,
                         result: result
                     };
                 })
             );
         }
         return of({
-            trigger: this._schema,
+            trigger: this.schema,
             result: undefined
         });
     }

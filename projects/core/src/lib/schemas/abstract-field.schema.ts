@@ -1,18 +1,18 @@
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { ITriggerResult, TriggerAction, TriggerHandler } from '../handler/trigger.handler';
+import { ITriggerResult, TriggerAction, TriggerHandler, TriggerSchema } from '../handler/trigger.handler';
 import { AbstractSchema, IAbstractSchema, IAbstractState, SchemaType } from './abstract.schema';
 
 export interface IAbstractFieldSchema<BType = any> extends IAbstractSchema<BType> {
     id: string;
-    effects?: any[];
+    effects?: TriggerSchema[];
 }
 
 export interface IAbstractFieldState<BType = any> extends IAbstractState<BType> {
     id: string;
-    effects: any[];
-    effectResults: any[];
+    effects: TriggerHandler[];
+    effectResults: ITriggerResult[];
     initValue: any;
     value: any;
     disabled: boolean;
@@ -64,6 +64,37 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
         return erg;
     }
 
+    public addEffect(effect: TriggerSchema): void {
+        this._updateStore(<State>{
+            effects: [
+                ...this.get('effects'),
+                new TriggerHandler(effect)
+            ]
+        });
+        this.update([this.get('uuid')]);
+    }
+
+    public removeEffectWithId(id: string): void {
+        const effects: TriggerHandler[] = this.get('effects');
+        const effectResults: ITriggerResult[] = this.get('effectResults');
+        this._updateStore(<State>{
+            effects: effects.filter((effect: TriggerHandler) => effect.id !== id),
+            effectResults: effectResults.filter((res: ITriggerResult) => res.trigger.id !== id)
+        })
+        this.update([this.get('uuid')]);
+    }
+
+    public clearEffects(): void {
+        this._updateStore(<any>{
+            effects: [],
+            effectResults: []
+        })
+        this.update([this.get('uuid')]);
+    }
+
+    public abstract setValue(value: any, emitUpdate: boolean): void;
+    public abstract patchValue(value: any, emitUpdate: boolean): void;
+
     protected _updateValue(): void {
         const newValue: any = this._buildValue(this.getChildFields());
         this._updateStore(<State>{ value: newValue });
@@ -113,7 +144,10 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
                 results.pop();
                 const newResults: ITriggerResult[] = results.map((res: ITriggerResult, index: number) => {
                     if (res.result === undefined) {
-                        const lastResult: ITriggerResult | undefined = this.get('effectResults')[index];
+                        const lastResult: ITriggerResult | undefined = this.get('effectResults')
+                            .find((reso: ITriggerResult) => {
+                                return reso.trigger.id === res.trigger.id
+                            })
                         return lastResult && lastResult.result !== undefined ? lastResult : { trigger: res.trigger, result: undefined };
                     }
                     return res;
