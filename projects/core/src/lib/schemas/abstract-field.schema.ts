@@ -78,9 +78,9 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
         const effects: TriggerHandler[] = this.get('effects');
         const effectResults: ITriggerResult[] = this.get('effectResults');
         this._updateStore(<State>{
-            effects: effects.filter((effect: TriggerHandler) => effect.id !== id),
+            effects: effects.filter((effect: TriggerHandler) => effect.schema.id !== id),
             effectResults: effectResults.filter((res: ITriggerResult) => res.trigger.id !== id)
-        })
+        });
         this.update([this.get('uuid')]);
     }
 
@@ -88,7 +88,7 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
         this._updateStore(<any>{
             effects: [],
             effectResults: []
-        })
+        });
         this.update([this.get('uuid')]);
     }
 
@@ -146,8 +146,8 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
                     if (res.result === undefined) {
                         const lastResult: ITriggerResult | undefined = this.get('effectResults')
                             .find((reso: ITriggerResult) => {
-                                return reso.trigger.id === res.trigger.id
-                            })
+                                return reso.trigger.id === res.trigger.id;
+                            });
                         return lastResult && lastResult.result !== undefined ? lastResult : { trigger: res.trigger, result: undefined };
                     }
                     return res;

@@ -1,8 +1,8 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { AbstractFieldSchema, IAbstractFieldSchema, IAbstractFieldState } from './abstract-field.schema';
-import { AbstractSchema, IAbstractSchema, IAbstractState } from './abstract.schema';
+import { AbstractSchema, IAbstractSchema, IAbstractState, SchemaType } from './abstract.schema';
 
 export interface ILayoutSchema<BType = any> extends IAbstractSchema<BType> {
     autoHide?: boolean;
@@ -22,7 +22,7 @@ export class LayoutSchema<BType = any> extends AbstractSchema<ILayoutState, BTyp
         this._initState = {
             ...this._initState,
             autoHide: schema.autoHide || false,
-            children: [] // Todo load Children
+            children: schema.children.map(creator)
         };
         this._store$ = new BehaviorSubject(this._initState);
     }
@@ -81,7 +81,9 @@ export class ControlSchema<BType = any> extends AbstractFieldSchema<IControlStat
 
     public setValue(value: any, emitUpdate: boolean = true): void {
         this._updateStore({
-            value: value
+            value: value,
+            changed: isEqual(this.get('initValue'), value),
+            dirty: true
         });
         if (emitUpdate) {
             this._updateParentValue();
@@ -107,17 +109,19 @@ export interface IGroupSchema<BType = any> extends IAbstractFieldSchema<BType> {
 
 export type IGroupState<BType = any> = IAbstractFieldState<BType>;
 
-export class GroupSchema<BType = any> extends AbstractFieldSchema<IControlState, BType> {
+export class GroupSchema<BType = any> extends AbstractFieldSchema<IGroupState, BType> {
 
-    protected _store$: BehaviorSubject<IControlState<any>>;
+    protected _store$: BehaviorSubject<IGroupState<any>>;
 
-    constructor(schema: IControlSchema<BType>) {
+    constructor(schema: IGroupSchema<BType>) {
         super(schema);
+        const children: AbstractSchema[] = schema.children.map(creator);
+        const value: any = this._buildValue(children);
         this._initState = {
             ...this._initState,
-            value: schema.value || null,
-            initValue: cloneDeep(schema.value),
-            children: [] // Todo Handle Children
+            value: value,
+            initValue: cloneDeep(value),
+            children: children
         };
         this._store$ = new BehaviorSubject(this._initState);
     }
@@ -157,26 +161,27 @@ export class GroupSchema<BType = any> extends AbstractFieldSchema<IControlState,
     }
 }
 export interface IArraySchema<BType = any> extends IAbstractFieldSchema<BType> {
-    values?: any[];
-    schema: IFieldSchema;
+    values: any[];
+    childSchema: IFieldSchema;
 }
 
 export interface IArrayState<BType = any> extends IAbstractFieldState<BType> {
-    schema: IFieldSchema;
+    childSchema: IFieldSchema;
 }
 
-export class ArraySchema<BType = any> extends AbstractFieldSchema<IControlState, BType> {
+export class ArraySchema<BType = any> extends AbstractFieldSchema<IArrayState<BType>, BType> {
 
-    protected _store$: BehaviorSubject<IControlState<any>>;
+    protected _store$: BehaviorSubject<IArrayState<any>>;
 
-    constructor(schema: IControlSchema<BType>) {
+    constructor(schema: IArraySchema<BType>) {
         super(schema);
+        const children: AbstractSchema[] = schema.values.map((val: any) => creator(schema.childSchema));
+        const value: any = this._buildValue(children);
         this._initState = {
             ...this._initState,
-            value: schema.value || null,
-            initValue: cloneDeep(schema.value),
-            focus: schema.focus || false,
-            children: []
+            children: children,
+            value: value,
+            initValue: cloneDeep(value)
         };
         this._store$ = new BehaviorSubject(this._initState);
     }
@@ -201,21 +206,36 @@ export class ArraySchema<BType = any> extends AbstractFieldSchema<IControlState,
         });
     }
 
-    public pushField(): void {
+    public pushField(emitUpdate: boolean = true): void {
         this._updateStore({
             children: [
                 ...this.get('children'),
                 this._createChild()
             ]
         });
-        this._resetChildParents();
-        this._updateValue();
-        this._updateParentValue();
+        if (emitUpdate) {
+            this._resetChildParents();
+            this._updateValue();
+            this._updateParentValue();
+        }
     }
 
-    public popField(): void {
+    public popField(emitUpdate: boolean = true): void {
         const children: AbstractSchema[] = this.get('children');
         children.pop();
+        this._updateStore({
+            children: children
+        });
+        if (emitUpdate) {
+            this._resetChildParents();
+            this._updateValue();
+            this._updateParentValue();
+        }
+    }
+
+    public removeFieldAtIndex(index: number): void {
+        const children: AbstractSchema[] = this.get('children');
+        children.splice(index, 1);
         this._updateStore({
             children: children
         });
@@ -224,58 +244,41 @@ export class ArraySchema<BType = any> extends AbstractFieldSchema<IControlState,
         this._updateParentValue();
     }
 
-    public removeFieldAtIndex(index: number): void {
-        const children: AbstractSchema[] = this.get('children');
-        children.
-            this._store$.dispatch(
-                new AbstractActions.RemoveChildAtIndexAction(index)
-            );
-        this._resetChildParents();
-        this._updateValue();
-        this._updateParentValue();
-    }
-
     protected _buildValue(children: AbstractSchema<any>[]): any {
-        const childFields: FieldSchema<any>[] = this.getChildFields(children);
-        return childFields.map((child: FieldSchema<any>) => {
-            return child.value;
+        const childFields: AbstractFieldSchema[] = this.getChildFields(children);
+        return childFields.map((child: AbstractFieldSchema) => {
+            return child.get('value');
         });
     }
 
     protected _createChild(): AbstractSchema {
-        return SchemaBuilder.create(this.childSchema);
+        return creator(this.get('childSchema'));
     }
 
     protected _handleChildFields(values: any[]): void {
         if (!values || !Array.isArray(values)) {
-            this._store$.dispatch(
-                new AbstractActions.ClearChildrenAction()
-            );
+            this._updateStore({
+                children: []
+            });
             return;
         }
-        let childFields: FieldSchema<any>[] = this.getChildFields();
+        let childFields: AbstractFieldSchema[] = this.getChildFields();
         if (values.length === childFields.length) {
             return;
         }
         while (values.length !== childFields.length) {
             if (values.length > childFields.length) {
-                this._store$.dispatch(
-                    new AbstractActions.PushChildAction(
-                        this._createChild()
-                    )
-                );
+                this.pushField();
             }
             if (values.length < childFields.length) {
-                this._store$.dispatch(
-                    new AbstractActions.PopChildAction()
-                );
+                this.popField();
             }
             childFields = this.getChildFields();
         }
         this._resetChildParents();
     }
 
-    protected _resetChildParents(children: AbstractSchema<any>[] = this.children): void {
+    protected _resetChildParents(children: AbstractSchema<any>[] = this.get('children')): void {
         children.forEach((child: AbstractSchema<any>) => {
             child.setParent(this);
         });
@@ -283,3 +286,20 @@ export class ArraySchema<BType = any> extends AbstractFieldSchema<IControlState,
 }
 
 export type IFieldSchema = ILayoutSchema | IControlSchema | IGroupSchema | IArraySchema;
+
+export function creator(schema: IFieldSchema): AbstractSchema {
+    switch (schema.type) {
+        case SchemaType.Layout: {
+            return new LayoutSchema(<ILayoutSchema>schema);
+        }
+        case SchemaType.Control: {
+            return new ControlSchema(<IControlSchema>schema);
+        }
+        case SchemaType.Group: {
+            return new GroupSchema(<IGroupSchema>schema);
+        }
+        case SchemaType.Array: {
+            return new ArraySchema(<IArraySchema>schema);
+        }
+    }
+}
