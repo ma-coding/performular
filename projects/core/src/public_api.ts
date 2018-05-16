@@ -7,24 +7,27 @@ export { CoreInputComponent } from './lib/build-in/field/core-input';
 export { CoreItemComponent } from './lib/build-in/field/core-item';
 export { CoreLayoutComponent } from './lib/build-in/field/core-layout';
 
-export { FormComponent } from './lib/form.component';
+export { FormComponent } from './lib/ng/form.component';
 
 export {
-    Converter, IConverterDecoration, Schema, ISchemaDecoration,
-    SchemaType, Trigger, TriggerStrategy, ITriggerDecoration
-} from './lib/decorators';
+    ConverterToken, IOnConvert, IConverterDecoration, Converter, ConverterHandler,
+    ConverterMetadataKey, ConverterSchema, ConverterType
+} from './lib/handler/converter.handler';
+export {
+    Trigger, TriggerStrategy, ITriggerDecoration, IOnTrigger, ITriggerResult,
+    TriggerToken, TriggerAction, TriggerFunction, TriggerHandler, TriggerMetadataKey,
+    TriggerSchema, TriggerType
+} from './lib/handler/trigger.handler';
+export {
+    IFieldDecoration, IOnInitField, Field, FieldHandler,
+    FieldType, FieldToken, FieldSchema, FieldMetadataKey
+} from './lib/handler/field.handler';
 
-export { AutoFocusDirective } from './lib/auto-focus.directive';
-export { SchemaDirective } from './lib/schema.directive';
+export { AutoFocusDirective } from './lib/ng/auto-focus.directive';
+export { SchemaDirective } from './lib/ng/schema.directive';
+
+export { IPerformularCoreConfig, PerformulerCoreModule } from './lib/ng/module';
 
 export {
-    ConverterLoader, IOnConvert, SchemaLoader, IOnSchemaInit,
-    TriggerLoader, IOnTrigger
-} from './lib/loaders';
-
-export { IPerformularCoreConfig, PerformulerCoreModule } from './lib/module';
-
-export {
-    ArraySchema, GroupSchema, ControlSchema, LayoutSchema,
-    ISchemaBuildOptions, SchemaBuilder
-} from './lib/schemas';
+    ArraySchema, GroupSchema, ControlSchema, LayoutSchema
+} from './lib/schemas/schemas';

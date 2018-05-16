@@ -13,7 +13,7 @@ export interface ILayoutState<BType = any> extends IAbstractState<BType> {
     autoHide: boolean;
 }
 
-export class LayoutSchema<BType = any> extends AbstractSchema<ILayoutState, BType> {
+export class LayoutSchema<BType = any> extends AbstractSchema<ILayoutState<BType>, BType> {
 
     protected _store$: BehaviorSubject<ILayoutState<any>>;
 
@@ -57,7 +57,7 @@ export interface IControlState<BType = any> extends IAbstractFieldState<BType> {
     focus: boolean;
 }
 
-export class ControlSchema<BType = any> extends AbstractFieldSchema<IControlState, BType> {
+export class ControlSchema<BType = any> extends AbstractFieldSchema<IControlState<BType>, BType> {
 
     protected _store$: BehaviorSubject<IControlState<any>>;
 
@@ -109,7 +109,7 @@ export interface IGroupSchema<BType = any> extends IAbstractFieldSchema<BType> {
 
 export type IGroupState<BType = any> = IAbstractFieldState<BType>;
 
-export class GroupSchema<BType = any> extends AbstractFieldSchema<IGroupState, BType> {
+export class GroupSchema<BType = any> extends AbstractFieldSchema<IGroupState<BType>, BType> {
 
     protected _store$: BehaviorSubject<IGroupState<any>>;
 

@@ -2,7 +2,7 @@ import { Injectable, InjectionToken, Injector, Type } from '@angular/core';
 
 import 'reflect-metadata';
 
-import { flatten } from './helpers';
+import { flatten } from '../helpers';
 
 export interface IMetadataTarget {
     metadata: any;

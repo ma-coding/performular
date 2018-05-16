@@ -1,6 +1,6 @@
 import { InjectionToken, Type } from '@angular/core';
 
-import { IMetadataTarget, LoaderService } from '../loader.service';
+import { IMetadataTarget, LoaderService } from '../ng/loader.service';
 import { AbstractSchema } from '../schemas/abstract.schema';
 
 export interface IFieldDecoration {

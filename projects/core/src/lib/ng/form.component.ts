@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, NgZone, OnDestroy } from '@a
 
 import { Subscription } from 'rxjs';
 
-import { AbstractSchema } from './schemas';
+import { AbstractSchema } from '../schemas/abstract.schema';
 
 @Component({
     selector: 'performular-form',
@@ -38,7 +38,7 @@ export class FormComponent implements OnDestroy {
         this._field = field;
         this._updateSubscription = this._field.updates$.subscribe();
         this._field.update(
-            this._field.getChildListRecursive().map((f: AbstractSchema) => f.uuid)
+            this._field.getChildListRecursive().map((f: AbstractSchema) => f.get('uuid'))
         );
     }
 

@@ -3,23 +3,25 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { Injector, NgModule, Provider, Type } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { CoreFieldsetComponent } from '../build-in/field/core-fieldset';
+import { CoreGroupComponent } from '../build-in/field/core-group';
+import { CoreInputComponent } from '../build-in/field/core-input';
+import { CoreItemComponent } from '../build-in/field/core-item';
+import { CoreLayoutComponent } from '../build-in/field/core-layout';
+import { CoreTextareaComponent } from '../build-in/field/core-textarea';
+import { EmailTrigger } from '../build-in/trigger/email.trigger';
+import { MaxLengthTrigger } from '../build-in/trigger/max-length.trigger';
+import { MaxTrigger } from '../build-in/trigger/max.trigger';
+import { MinLengthTrigger } from '../build-in/trigger/min-length.trigger';
+import { MinTrigger } from '../build-in/trigger/min.trigger';
+import { PatternTrigger } from '../build-in/trigger/pattern.trigger';
+import { RequiredTrigger } from '../build-in/trigger/required.trigger';
+import { ConverterToken } from '../handler/converter.handler';
+import { FieldToken } from '../handler/field.handler';
+import { TriggerToken } from '../handler/trigger.handler';
 import { AutoFocusDirective } from './auto-focus.directive';
-import { CoreFieldsetComponent } from './build-in/field/core-fieldset';
-import { CoreGroupComponent } from './build-in/field/core-group';
-import { CoreInputComponent } from './build-in/field/core-input';
-import { CoreItemComponent } from './build-in/field/core-item';
-import { CoreLayoutComponent } from './build-in/field/core-layout';
-import { CoreTextareaComponent } from './build-in/field/core-textarea';
-import { EmailTrigger } from './build-in/trigger/email.trigger';
-import { MaxLengthTrigger } from './build-in/trigger/max-length.trigger';
-import { MaxTrigger } from './build-in/trigger/max.trigger';
-import { MinLengthTrigger } from './build-in/trigger/min-length.trigger';
-import { MinTrigger } from './build-in/trigger/min.trigger';
-import { PatternTrigger } from './build-in/trigger/pattern.trigger';
-import { RequiredTrigger } from './build-in/trigger/required.trigger';
 import { FormComponent } from './form.component';
 import { LoaderService } from './loader.service';
-import { ConverterLoaderInjectionToken, SchemaLoaderInjectionToken, TriggerLoaderInjectionToken } from './loaders';
 import { SchemaDirective } from './schema.directive';
 
 /**
@@ -27,7 +29,7 @@ import { SchemaDirective } from './schema.directive';
  */
 export function componentExporter(component: Type<any>): Provider {
     return {
-        provide: SchemaLoaderInjectionToken,
+        provide: FieldToken,
         useValue: component,
         multi: true
     };
@@ -38,7 +40,7 @@ export function componentExporter(component: Type<any>): Provider {
  */
 export function triggerExporter(trigger: Type<any>): Provider {
     return {
-        provide: TriggerLoaderInjectionToken,
+        provide: TriggerToken,
         useValue: trigger,
         multi: true
     };
@@ -49,7 +51,7 @@ export function triggerExporter(trigger: Type<any>): Provider {
  */
 export function converterExporter(converter: Type<any>): Provider {
     return {
-        provide: ConverterLoaderInjectionToken,
+        provide: ConverterToken,
         useValue: converter,
         multi: true
     };

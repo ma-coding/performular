@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { createObservable } from '../helpers';
-import { IMetadataTarget, LoaderService } from '../loader.service';
+import { IMetadataTarget, LoaderService } from '../ng/loader.service';
 import { AbstractSchema } from '../schemas/abstract.schema';
 
 export enum TriggerStrategy {

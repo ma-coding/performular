@@ -1,6 +1,6 @@
 import { InjectionToken, Type } from '@angular/core';
 
-import { IMetadataTarget, LoaderService } from '../loader.service';
+import { IMetadataTarget, LoaderService } from '../ng/loader.service';
 
 export interface IConverterDecoration {
     id: string;

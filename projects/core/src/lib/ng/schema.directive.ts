@@ -12,7 +12,7 @@ import {
 
 import { Subscription } from 'rxjs';
 
-import { AbstractSchema } from './schemas';
+import { AbstractSchema } from '../schemas/abstract.schema';
 
 @Directive({
     selector: '[performularSchema]'
@@ -51,7 +51,7 @@ export class SchemaDirective implements OnDestroy {
 
     private _startHiddenSubscription(): void {
         if (this._field) {
-            this._hiddenSubscription = this._field.hidden$
+            this._hiddenSubscription = this._field.get$('hidden')
                 .subscribe(() => {
                     this._calculateComponent();
                 });
@@ -70,10 +70,10 @@ export class SchemaDirective implements OnDestroy {
             return;
         }
         const factory: ComponentFactory<any> =
-            this._componentFactoryResolver.resolveComponentFactory(this._field.component.target);
+            this._componentFactoryResolver.resolveComponentFactory(this._field.get('component').target);
         this._componentRef = this._viewRef.createComponent(factory);
-        if ('onSchemaInit' in this._componentRef.instance) {
-            this._componentRef.instance.onSchemaInit(this._field);
+        if ('onInitField' in this._componentRef.instance) {
+            this._componentRef.instance.onInitField(this._field);
         }
         this._field.setInstance(this._componentRef.instance, this._componentRef.location);
     }
@@ -92,7 +92,7 @@ export class SchemaDirective implements OnDestroy {
         if (!this._field) {
             return;
         }
-        if (this._field.hidden) {
+        if (this._field.get('hidden')) {
             this._clearComponent();
         } else {
             this._insertComponent();
