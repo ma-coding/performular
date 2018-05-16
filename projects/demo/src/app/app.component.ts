@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Field } from '../../../core/src/lib/field';
-import { FieldType } from '../../../core/src/lib/types';
+import { CoreGroupComponent, CoreInputComponent, GroupSchema, IControlSchema, SchemaType } from '@performular/core';
 
 @Component({
     selector: 'app-root',
@@ -10,15 +9,28 @@ import { FieldType } from '../../../core/src/lib/types';
 })
 export class AppComponent {
 
+    public group: GroupSchema;
+
     constructor(
     ) {
-        const loader: Field = new Field({
-            component: '',
-            bindings: {},
-            type: FieldType.Control
-        }, 1);
-        loader.setValue(50);
-        console.log(loader);
+        this.group = new GroupSchema({
+            bindings: undefined,
+            component: CoreGroupComponent,
+            id: 'group',
+            type: SchemaType.Group,
+            children: [
+                <IControlSchema>{
+                    id: 'control',
+                    type: SchemaType.Control,
+                    component: CoreInputComponent,
+                    bindings: {
+
+                    },
+                    value: '10'
+                }
+            ]
+        });
+        console.log(this.group);
     }
 
 }

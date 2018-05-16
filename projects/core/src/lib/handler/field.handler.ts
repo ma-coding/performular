@@ -27,7 +27,7 @@ export const FieldToken: InjectionToken<FieldType> =
 export type FieldSchema = FieldType | string;
 
 export class FieldHandler {
-    private _instance: IOnInitField;
+    private target: FieldType;
 
     constructor(schema: FieldSchema) {
         if (typeof schema === 'string') {
@@ -36,22 +36,10 @@ export class FieldHandler {
             if (!metadataTarget) {
                 throw new Error('Not Provided');
             }
-            const instance: IOnInitField | undefined = LoaderService.get<IOnInitField>(metadataTarget.target);
-            if (!instance) {
-                throw new Error('Not Provided');
-            }
-            this._instance = instance;
+            this.target = metadataTarget.target;
         } else {
-            const instance: IOnInitField | undefined =
-                LoaderService.get<IOnInitField>(schema);
-            if (!instance) {
-                throw new Error('Not Provided');
-            }
-            this._instance = instance;
+            this.target = schema;
         }
     }
 
-    public call(field: any): any {
-        return this._instance.onInitField(field);
-    }
 }

@@ -4,6 +4,7 @@ import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 import { buffer, concatMap, debounceTime, distinctUntilChanged, map, pluck } from 'rxjs/operators';
 
 import { ConverterHandler, ConverterSchema } from '../handler/converter.handler';
+import { FieldHandler } from '../handler/field.handler';
 import { flatten } from '../helpers';
 
 export enum SchemaType {
@@ -52,7 +53,7 @@ export abstract class AbstractSchema<State extends IAbstractState<BType> = any, 
             type: schema.type,
             uuid: '',
             hidden: false,
-            component: schema.component,
+            component: new FieldHandler(schema.component),
             converters: (schema.converters || [])
                 .map((cschema: ConverterSchema) => new ConverterHandler(cschema)),
             bindings: schema.bindings,

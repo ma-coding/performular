@@ -106,7 +106,7 @@ export abstract class AbstractFieldSchema<State extends IAbstractFieldState = an
             parent._updateValue();
             parent._updateParentValue([...checklist, (parent.get('uuid') || '')]);
         } else {
-            this.getRoot().update(checklist);
+            this.update(checklist);
         }
     }
 

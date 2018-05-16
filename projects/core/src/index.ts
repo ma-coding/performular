@@ -13,11 +13,13 @@ export {
     ConverterToken, IOnConvert, IConverterDecoration, Converter, ConverterHandler,
     ConverterMetadataKey, ConverterSchema, ConverterType
 } from './lib/handler/converter.handler';
+
 export {
     Trigger, TriggerStrategy, ITriggerDecoration, IOnTrigger, ITriggerResult,
     TriggerToken, TriggerAction, TriggerFunction, TriggerHandler, TriggerMetadataKey,
     TriggerSchema, TriggerType
 } from './lib/handler/trigger.handler';
+
 export {
     IFieldDecoration, IOnInitField, Field, FieldHandler,
     FieldType, FieldToken, FieldSchema, FieldMetadataKey
@@ -29,5 +31,9 @@ export { SchemaDirective } from './lib/ng/schema.directive';
 export { IPerformularCoreConfig, PerformulerCoreModule } from './lib/ng/module';
 
 export {
-    ArraySchema, GroupSchema, ControlSchema, LayoutSchema
+    ArraySchema, GroupSchema, ControlSchema, LayoutSchema, IControlSchema, IArraySchema, IGroupSchema, ILayoutSchema
 } from './lib/schemas/schemas';
+
+export {
+    SchemaType
+} from './lib/schemas/abstract.schema';
