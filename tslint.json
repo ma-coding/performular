@@ -104,7 +104,7 @@
         "no-empty-interface": true,
         "no-eval": true,
         "no-input-rename": true,
-        "no-magic-numbers": true,
+        "no-magic-numbers": false,
         "no-misused-new": true,
         "no-non-null-assertion": true,
         "no-output-on-prefix": true,

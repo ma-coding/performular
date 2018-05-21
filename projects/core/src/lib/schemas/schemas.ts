@@ -116,6 +116,7 @@ export class GroupSchema<BType = any> extends AbstractFieldSchema<IGroupState<BT
     constructor(schema: IGroupSchema<BType>) {
         super(schema);
         const children: AbstractSchema[] = schema.children.map(creator);
+        children.forEach((child: AbstractSchema) => child.setParent(this));
         const value: any = this._buildValue(children);
         this._initState = {
             ...this._initState,
@@ -176,6 +177,7 @@ export class ArraySchema<BType = any> extends AbstractFieldSchema<IArrayState<BT
     constructor(schema: IArraySchema<BType>) {
         super(schema);
         const children: AbstractSchema[] = schema.values.map((val: any) => creator(schema.childSchema));
+        children.forEach((child: AbstractSchema) => child.setParent(this));
         const value: any = this._buildValue(children);
         this._initState = {
             ...this._initState,
