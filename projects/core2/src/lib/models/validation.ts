@@ -18,7 +18,7 @@ export interface IValidationSchema {
 }
 
 export interface IValidator<P = any> {
-    validate(context: IRunContext, params?: P): any | Observable<any>;
+    validate(context: IRunContext, params?: P): any | Observable<any>; // TODO: Set return type
 }
 
 export type ValidatorType<P = any> = Type<IValidator<P>>;

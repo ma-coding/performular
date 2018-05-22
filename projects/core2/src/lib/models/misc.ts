@@ -19,3 +19,5 @@ export interface IViewScales<T> {
 export interface MapType<T> {
     [key: string]: T;
 }
+
+export type Constructable<T = {}> = new (...args: any[]) => T;
