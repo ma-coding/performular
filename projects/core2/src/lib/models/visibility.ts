@@ -4,17 +4,21 @@ import { Observable } from 'rxjs';
 
 import { IRunContext } from './run';
 
-export interface IVisibleSchema<P = any> {
+export interface IVisible<P = any> {
     id?: string;
     visible: string;
     params?: P;
 }
 
-export interface IVisibilitySchema {
-    hides?: IVisibleSchema[];
-    disables?: IVisibleSchema[];
+export interface IVisibility {
+    hides?: IVisible[];
+    disables?: IVisible[];
     forcedHidden?: boolean;
     forcedDisabled?: boolean;
+}
+
+export interface IVisibilitySchema {
+    visibility?: IVisibility;
 }
 
 export interface IVisible<P = any> {

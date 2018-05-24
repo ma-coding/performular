@@ -2,19 +2,30 @@ import { Observable } from 'rxjs';
 
 import { State } from '../misc';
 import { IItem } from '../models/item';
+import { Constructable } from '../models/misc';
+import { IAbstractSchema } from '../models/schema';
 
-export class ItemSchema {
-    private _item$: State<IItem>;
+export interface IItemable {
+    item$: Observable<IItem>;
+    item: IItem;
+}
 
-    get item$(): Observable<IItem> {
-        return this._item$.asObservable();
-    }
+export function Itemable<T = any>(base: Constructable): Constructable<T> {
+    return class extends base implements IItemable {
+        private _item$: State<IItem>;
 
-    get item(): IItem {
-        return this._item$.getValue();
-    }
+        get item$(): Observable<IItem> {
+            return this._item$.asObservable();
+        }
 
-    constructor(item: IItem | undefined) {
-        this._item$ = new State(item || <IItem>{});
-    }
+        get item(): IItem {
+            return this._item$.getValue();
+        }
+
+        constructor(arg: IAbstractSchema<any, any, any, any>) {
+            super(arg as any);
+            this._item$ = new State<IItem>(arg.item || <IItem>{});
+        }
+
+    } as any;
 }

@@ -4,17 +4,21 @@ import { Observable } from 'rxjs';
 
 import { IRunContext } from './run';
 
-export interface IValidatorSchema {
+export interface IValidator {
     id?: string;
     validator: string;
     params: any;
     errorMsg: string;
 }
 
-export interface IValidationSchema {
-    validators?: IValidatorSchema[];
+export interface IValidation {
+    validators?: IValidator[];
     forcedError?: string;
     errorStateWhen?: string;
+}
+
+export interface IValidationSchema {
+    validation?: IValidation;
 }
 
 export interface IValidator<P = any> {

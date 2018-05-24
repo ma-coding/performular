@@ -1,20 +1,30 @@
 import { Observable } from 'rxjs';
 
 import { State } from '../misc';
-import { ILayout } from '../models/layout';
+import { ILayout, ILayoutSchema } from '../models/layout';
+import { Constructable } from '../models/misc';
 
-export class LayoutSchema {
-    private _layout$: State<ILayout>;
+export interface ILayoutable {
+    layout$: Observable<ILayout>;
+    layout: ILayout;
+}
 
-    get layout$(): Observable<ILayout> {
-        return this._layout$.asObservable();
-    }
+export function Layoutable<T = any>(base: Constructable): Constructable<T> {
+    return class extends base implements ILayoutable {
+        private _layout$: State<ILayout>;
 
-    get layout(): ILayout {
-        return this._layout$.getValue();
-    }
+        get layout$(): Observable<ILayout> {
+            return this._layout$.asObservable();
+        }
 
-    constructor(item: ILayout | undefined) {
-        this._layout$ = new State(item || <ILayout>{});
-    }
+        get layout(): ILayout {
+            return this._layout$.getValue();
+        }
+
+        constructor(arg: ILayoutSchema) {
+            super(arg as any);
+            this._layout$ = new State<ILayout>(arg.layout || <ILayout>{});
+        }
+
+    } as any;
 }

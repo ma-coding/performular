@@ -11,13 +11,10 @@ export interface IAbstractSchema<T, F, A, S extends string> extends IItemSchema,
 
 export interface IContainerSchema<F, A, S extends string, P>
     extends IAbstractSchema<'container', F, A, S>, ILayoutSchema {
-    autoHide?: boolean;
     children: P[];
 }
 
-export interface IFieldSchema<T, F, A, S extends string> extends IAbstractSchema<T, F, A, S> {
-    validation?: IValidationSchema;
-    visibility?: IVisibilitySchema;
+export interface IFieldSchema<T, F, A, S extends string> extends IAbstractSchema<T, F, A, S>, IValidationSchema, IVisibilitySchema {
 }
 
 export interface IControlSchema<F, A, S extends string> extends IFieldSchema<'control', F, A, S> {
