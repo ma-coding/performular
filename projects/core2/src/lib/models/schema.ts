@@ -2,10 +2,11 @@ import { IFrameworkSchema } from './framework';
 import { IItemSchema } from './item';
 import { ILayoutSchema } from './layout';
 import { MapType } from './misc';
+import { IStyleSchema } from './styles';
 import { IValidationSchema } from './validation';
 import { IVisibilitySchema } from './visibility';
 
-export interface IAbstractSchema<T, F, A, S extends string> extends IItemSchema, IFrameworkSchema<F, A, S> {
+export interface IAbstractSchema<T, F, A, S extends string> extends IItemSchema, IFrameworkSchema<F, A>, IStyleSchema<S> {
     type: T;
 }
 

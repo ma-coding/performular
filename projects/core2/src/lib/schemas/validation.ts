@@ -1,8 +1,30 @@
-import { IValidationSchema } from '../models/validation';
-import { FieldSchema } from './field';
+import { Observable } from 'rxjs';
 
-export class ValidationSchema<T = any, F = any, A = any, S extends string = any> {
+import { State } from '../misc';
+import { Constructable } from '../models/misc';
+import { IValidation, IValidationSchema } from '../models/validation';
 
-    constructor(field: FieldSchema<T, F, A, S>, validation: IValidationSchema | undefined) {
-    }
+export interface IValidationable {
+    validation$: Observable<IValidation>;
+    validation: IValidation;
+}
+
+export function Validationable<T = any>(base: Constructable): Constructable<T> {
+    return class extends base implements IValidationable {
+        private _validation$: State<IValidation>;
+
+        get validation$(): Observable<IValidation> {
+            return this._validation$.asObservable();
+        }
+
+        get validation(): IValidation {
+            return this._validation$.getValue();
+        }
+
+        constructor(arg: IValidationSchema) {
+            super(arg as any);
+            this._validation$ = new State<IValidation>(arg.validation || <IValidation>{});
+        }
+
+    } as any;
 }

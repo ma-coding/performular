@@ -20,4 +20,7 @@ export interface MapType<T> {
     [key: string]: T;
 }
 
-export type Constructable<T = any, A = any> = new (args: A) => T;
+export interface Constructable<T = any, A = any[]> {
+    new(args: A): T;
+}
+

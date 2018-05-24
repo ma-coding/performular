@@ -1,7 +1,4 @@
-import { IStyleSchema } from './styles';
-
-export interface IFrameworkSchema<F, A, S extends string> {
+export interface IFrameworkSchema<F, A> {
     field: F;
     attrs: A;
-    styles?: IStyleSchema<S>;
 }

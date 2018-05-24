@@ -1,8 +1,30 @@
-import { IVisibilitySchema } from '../models/visibility';
-import { FieldSchema } from './field';
+import { Observable } from 'rxjs';
 
-export class VisibilitySchema<T = any, F = any, A = any, S extends string = any> {
+import { State } from '../misc';
+import { Constructable } from '../models/misc';
+import { IVisibility, IVisibilitySchema } from '../models/visibility';
 
-    constructor(field: FieldSchema<T, F, A, S>, validation: IVisibilitySchema | undefined) {
-    }
+export interface IVisibilityable {
+    visibility$: Observable<IVisibility>;
+    visibility: IVisibility;
+}
+
+export function Visibilityable<T = any>(base: Constructable): Constructable<T> {
+    return class extends base implements IVisibilityable {
+        private _visibility$: State<IVisibility>;
+
+        get visibility$(): Observable<IVisibility> {
+            return this._visibility$.asObservable();
+        }
+
+        get visibility(): IVisibility {
+            return this._visibility$.getValue();
+        }
+
+        constructor(arg: IVisibilitySchema) {
+            super(arg as any);
+            this._visibility$ = new State<IVisibility>(arg.visibility || <IVisibility>{});
+        }
+
+    } as any;
 }
