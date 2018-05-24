@@ -48,34 +48,3 @@ export function use(...options: Mixin<any>[]): PropertyDecorator {
         mix(target.constructor, options);
     };
 }
-
-export class Transportable<T> {
-    public distance: T | undefined;
-    public transport(): void {
-        console.log(`moved ${this.distance}km.`);
-    }
-}
-
-export class Transportable2 {
-    public distance2: number | undefined;
-    public transport2(): void {
-        console.log(`moved ${this.distance2}km.`);
-    }
-}
-
-export interface Shopperholic<T> extends Transportable2, Transportable<T> { }
-
-// @dynamic
-export class Shopperholic<T> {
-    @use(Transportable, Transportable2) public this: Shopperholic<T> | undefined;
-
-    public price: number = 2000;
-    public distance: T | undefined;
-
-    constructor() {
-        this.transport();
-    }
-}
-export const shop: Shopperholic<string> = new Shopperholic<string>();
-shop.distance = ' ABC ';
-shop.transport();

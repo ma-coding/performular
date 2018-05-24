@@ -2,7 +2,21 @@ import { Type } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { IRunContext } from './run';
+import { Metadata } from '../metadata';
+import { IRunContext, IRunDecoration } from '../misc';
+import { Field } from './field';
+
+export interface IOnVisible<P = any> {
+    calculate(context: IRunContext, params?: P): boolean | Observable<boolean>;
+}
+
+export type VisibleType<P = any> = Type<IOnVisible<P>>;
+
+export function Visible(options: IRunDecoration): ClassDecorator {
+    return (target: Function): void => {
+        Metadata.addVisible(options, <VisibleType>target);
+    };
+}
 
 export interface IVisible<P = any> {
     id?: string;
@@ -17,12 +31,11 @@ export interface IVisibility {
     forcedDisabled?: boolean;
 }
 
-export interface IVisibilitySchema {
-    visibility?: IVisibility;
-}
+export class Visibility {
 
-export interface IVisible<P = any> {
-    calculate(context: IRunContext, params?: P): boolean | Observable<boolean>;
-}
+    private _visField: Field = <any>undefined;
 
-export type VisibleType<P = any> = Type<IVisible<P>>;
+    protected _initVisibility(validation: IVisibility | undefined, field: Field): void {
+        this._visField = field;
+    }
+}

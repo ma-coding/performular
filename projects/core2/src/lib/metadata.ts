@@ -1,8 +1,12 @@
-import { IMetadata } from './models/metadata';
 import { MapType } from './models/misc';
 import { IRunDecoration } from './models/run';
 import { ValidatorType } from './models/validation';
 import { VisibleType } from './models/visibility';
+
+export interface IMetadata<M, T> {
+    target: T;
+    metadata: M;
+}
 
 export class Metadata {
 

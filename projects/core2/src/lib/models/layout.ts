@@ -1,4 +1,7 @@
-import { IViewScales } from './misc';
+import { Observable } from 'rxjs';
+
+import { State } from '../state';
+import { IViewScales } from '../misc';
 
 export type DirectionValues = 'row' | 'row wrap' | 'column' | 'column wrap' |
     'row-reverse' | 'row-reverse wrap' | 'column-reverse' | 'column-reverse wrap';
@@ -17,6 +20,19 @@ export interface ILayout {
     gap?: string;
 }
 
-export interface ILayoutSchema {
-    layout?: ILayout;
+export class Layout {
+    private _layout$: State<ILayout> = <any>undefined;
+
+    get layout$(): Observable<ILayout> {
+        return this._layout$.asObservable();
+    }
+
+    get layout(): ILayout {
+        return this._layout$.getValue();
+    }
+
+    protected _initLayout(layout: ILayout | undefined): void {
+        this._layout$ = new State<ILayout>(layout || <ILayout>{});
+    }
+
 }

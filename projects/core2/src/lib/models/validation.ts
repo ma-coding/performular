@@ -2,7 +2,21 @@ import { Type } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { IRunContext } from './run';
+import { Metadata } from '../metadata';
+import { IRunContext, IRunDecoration } from '../misc';
+import { Field } from './field';
+
+export interface IOnValidate<P = any> {
+    validate(context: IRunContext, params?: P): any | Observable<any>; // TODO: Set return type
+}
+
+export type ValidatorType<P = any> = Type<IOnValidate<P>>;
+
+export function Validator(options: IRunDecoration): ClassDecorator {
+    return (target: Function): void => {
+        Metadata.addValidator(options, <ValidatorType>target);
+    };
+}
 
 export interface IValidator {
     id?: string;
@@ -17,12 +31,11 @@ export interface IValidation {
     errorStateWhen?: string;
 }
 
-export interface IValidationSchema {
-    validation?: IValidation;
-}
+export class Validation {
 
-export interface IValidator<P = any> {
-    validate(context: IRunContext, params?: P): any | Observable<any>; // TODO: Set return type
-}
+    private _valField: Field = <any>undefined;
 
-export type ValidatorType<P = any> = Type<IValidator<P>>;
+    protected _initValidation(validation: IValidation | undefined, field: Field): void {
+        this._valField = field;
+    }
+}

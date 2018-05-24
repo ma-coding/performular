@@ -1,25 +1,42 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
 
-export class State<T extends {}> extends BehaviorSubject<T> {
-    constructor(state: T) {
-        super(state);
-    }
+export interface IViewScales<T> {
+    main: T;
+    xs?: T;
+    sm?: T;
+    md?: T;
+    lg?: T;
+    xl?: T;
+    gtXs?: T;
+    gtSm?: T;
+    gtMd?: T;
+    gtLg?: T;
+    ltSm?: T;
+    ltMd?: T;
+    ltLg?: T;
+    ltXl?: T;
+}
 
-    public select<K extends keyof T>(key: K): Observable<T[K]> {
-        return this.pipe(
-            pluck<T, T[K]>(key),
-            distinctUntilChanged()
-        );
-    }
+export interface MapType<T> {
+    [key: string]: T;
+}
 
-    public update(s: Partial<T>): void {
-        this.next(Object.assign(this.getValue(), s));
-    }
+export enum RunDetection {
+    SelfChanged,
+    AnyChanged,
+    Custom
+}
 
-    public updateKey<K extends keyof T>(key: K, value: T[K]): void {
-        const tmpT: Partial<T> = {};
-        tmpT[key] = value;
-        this.update(tmpT);
-    }
+export interface IRunContext {
+    checked: boolean;
+    checklist: MapType<any>; // TODO SET REAL FIELD TYPE
+    field: any; // TODO SET REAL FIELD TYPE
+}
+
+export interface ICustomRunDetectionStrategy {
+    strategy(context: IRunContext): boolean;
+}
+
+export interface IRunDecoration {
+    name: string;
+    runDetection?: RunDetection;
 }
