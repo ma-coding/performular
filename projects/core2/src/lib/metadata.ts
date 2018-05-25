@@ -1,7 +1,6 @@
-import { MapType } from './models/misc';
-import { IRunDecoration } from './models/run';
-import { ValidatorType } from './models/validation';
-import { VisibleType } from './models/visibility';
+import { MapType } from './misc';
+import { EffectType, IEffectDecoration } from './models/effect';
+import { RunDetectorType } from './models/run-detector';
 
 export interface IMetadata<M, T> {
     target: T;
@@ -10,35 +9,35 @@ export interface IMetadata<M, T> {
 
 export class Metadata {
 
-    private static _visibles: MapType<IMetadata<IRunDecoration, VisibleType>> = {};
-    private static _validators: MapType<IMetadata<IRunDecoration, ValidatorType>> = {};
+    private static _runDetectors: MapType<IMetadata<string, RunDetectorType>> = {};
+    private static _effects: MapType<IMetadata<IEffectDecoration, EffectType>> = {};
 
-    public static addVisible(options: IRunDecoration, target: VisibleType): void {
-        this._visibles[options.name] = {
+    public static addEffect(options: IEffectDecoration, target: EffectType): void {
+        this._effects[options.name] = {
             metadata: options,
             target: target
         };
     }
 
-    public static addValidator(options: IRunDecoration, target: ValidatorType): void {
-        this._validators[options.name] = {
-            metadata: options,
+    public static addRunDetector(name: string, target: RunDetectorType): void {
+        this._runDetectors[name] = {
+            metadata: name,
             target: target
         };
     }
 
-    public static getVisible(name: string): IMetadata<IRunDecoration, VisibleType> {
-        if (!this._visibles[name]) {
-            this._throwNotFound('visible', name);
+    public static getEffect(name: string): IMetadata<IEffectDecoration, EffectType> {
+        if (!this._effects[name]) {
+            this._throwNotFound('effect', name);
         }
-        return this._visibles[name];
+        return this._effects[name];
     }
 
-    public static getValidator(name: string): IMetadata<IRunDecoration, ValidatorType> {
-        if (!this._validators[name]) {
-            this._throwNotFound('validator', name);
+    public static getRunDetector(name: string): IMetadata<string, RunDetectorType> {
+        if (!this._runDetectors[name]) {
+            this._throwNotFound('runDetector', name);
         }
-        return this._validators[name];
+        return this._runDetectors[name];
     }
 
     private static _throwNotFound(type: string, name: string): void {

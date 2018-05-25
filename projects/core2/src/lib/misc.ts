@@ -1,3 +1,4 @@
+import { Observable, of } from 'rxjs';
 
 export interface IViewScales<T> {
     main: T;
@@ -20,23 +21,26 @@ export interface MapType<T> {
     [key: string]: T;
 }
 
-export enum RunDetection {
-    SelfChanged,
-    AnyChanged,
-    Custom
+/**
+ * Function that returns an unique string.
+ * @export
+ * @returns an unique string
+ */
+export function generateUUID(): string {
+    const s4: () => string = (): string => {
+        // tslint:disable-next-line:no-magic-numbers
+        return Math.floor((1 + Math.random()) * 0x10000)
+            // tslint:disable-next-line:no-magic-numbers
+            .toString(16)
+            .substring(1);
+    };
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
-export interface IRunContext {
-    checked: boolean;
-    checklist: MapType<any>; // TODO SET REAL FIELD TYPE
-    field: any; // TODO SET REAL FIELD TYPE
-}
-
-export interface ICustomRunDetectionStrategy {
-    strategy(context: IRunContext): boolean;
-}
-
-export interface IRunDecoration {
-    name: string;
-    runDetection?: RunDetection;
+export function createObservable<T>(maybe: T | Observable<T>): Observable<T> {
+    if (maybe instanceof Observable) {
+        return maybe;
+    } else {
+        return of(maybe);
+    }
 }
