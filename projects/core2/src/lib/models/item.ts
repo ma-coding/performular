@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
-import { State } from '../state';
 import { IViewScales } from '../misc';
+import { State } from '../state';
 
 export type FlexValues = string | number;
 
@@ -15,13 +15,13 @@ export interface IItem {
 }
 
 export class Item {
-    private _item$: State<IItem> = <any>undefined;
+    private _item$: State<IItem> = new State(<IItem>{});
 
-    get item$(): Observable<IItem> {
+    public item$(): Observable<IItem> {
         return this._item$.asObservable();
     }
 
-    get item(): IItem {
+    public item(): IItem {
         return this._item$.getValue();
     }
 

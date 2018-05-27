@@ -1,14 +1,18 @@
 import { Type } from '@angular/core';
 
+import { Observable } from 'rxjs';
+
 import { Loader } from '../loader';
 import { IMetadata, Metadata } from '../metadata';
-import { generateUUID, MapType } from '../misc';
+import { generateUUID } from '../misc';
 import { Field } from './field';
 import { RunDetectorHandler } from './run-detector';
 
+export type CheckList = Field[];
+
 export interface IEffectContext {
     checked: boolean;
-    checklist: MapType<any>; // TODO SET REAL FIELD TYPE
+    checklist: CheckList; // TODO SET REAL FIELD TYPE
     field: Field; // TODO SET REAL FIELD TYPE
 }
 
@@ -55,6 +59,6 @@ export abstract class EffectHandler<T extends IEffect, R = any> {
         this.instance = Loader.get(this.meta.target);
     }
 
-    public abstract run(context: IEffectContext): void;
+    public abstract run(context: IEffectContext): Observable<void>;
 
 }

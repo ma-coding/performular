@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
-import { State } from '../state';
 import { IViewScales } from '../misc';
+import { State } from '../state';
 
 export type DirectionValues = 'row' | 'row wrap' | 'column' | 'column wrap' |
     'row-reverse' | 'row-reverse wrap' | 'column-reverse' | 'column-reverse wrap';
@@ -23,11 +23,11 @@ export interface ILayout {
 export class Layout {
     private _layout$: State<ILayout> = <any>undefined;
 
-    get layout$(): Observable<ILayout> {
+    public layout$(): Observable<ILayout> {
         return this._layout$.asObservable();
     }
 
-    get layout(): ILayout {
+    public layout(): ILayout {
         return this._layout$.getValue();
     }
 
