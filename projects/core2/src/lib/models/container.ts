@@ -1,12 +1,10 @@
 import { Observable, of } from 'rxjs';
 
-import { builder } from '../builder';
 import { use } from '../mixin';
 import { State } from '../state';
 import { Abstract, IAbstract } from './abstract';
 import { CheckList } from './effect';
 import { ILayout, Layout } from './layout';
-import { IOptions } from './options';
 
 export interface IContainer<A, S extends string, P> extends IAbstract<'container', A, S> {
     children: P[];
@@ -27,15 +25,11 @@ export class Container<A = any, S extends string = any, P = any> extends Abstrac
 
     @use(Layout) public this: Container<A, S, P> | undefined;
 
-    constructor(container: IContainer<any, any, any>, options?: IOptions, value?: any) {
-        super(container, options);
+    constructor(container: IContainer<A, S, any>) {
+        super(container);
         this._initLayout(container.layout);
         this._container$ = new State<IContainerState>({
-            children: container.children.map((def: IAbstract<any, any, any>) => {
-                const child: Abstract = builder(def, options, value);
-                child.setParent(this);
-                return child;
-            })
+            children: container.children
         });
     }
 

@@ -1,16 +1,15 @@
-import { builder } from '../builder';
 import { use } from '../mixin';
 import { State } from '../state';
 import { Abstract } from './abstract';
 import { Field, IField } from './field';
 import { Layout } from './layout';
-import { IOptions } from './options';
 
 export interface IList<A, S extends string, P> extends IField<'list', A, S> {
     childStructure: P;
+    value: any[];
 }
 
-export interface IListState {
+export interface IListState extends IList<any, any, any> {
     children: Abstract[];
 }
 
@@ -23,15 +22,9 @@ export class List<A = any, S extends string = any, P = any> extends Field<A, S> 
     private _list$: State<IListState>;
     @use(Layout) public this: List<A, S, P> | undefined;
 
-    constructor(list: IList<A, S, any>, options?: IOptions, value?: any) {
-        super(list, options);
-        this._list$ = new State<IListState>({
-            children: (value || []).map((val: any) => {
-                const child: Abstract = builder(list.childStructure, options, val);
-                child.setParent(this);
-                return child;
-            })
-        });
+    constructor(list: IListState) {
+        super(list);
+        this._list$ = new State<IListState>(list);
         this._initValue(this._buildValue());
     }
 

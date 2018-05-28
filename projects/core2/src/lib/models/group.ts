@@ -1,10 +1,8 @@
-import { builder } from '../builder';
 import { use } from '../mixin';
 import { State } from '../state';
-import { Abstract, IAbstract } from './abstract';
+import { Abstract } from './abstract';
 import { Field, IField } from './field';
 import { Layout } from './layout';
-import { IOptions } from './options';
 
 export interface IGroup<A, S extends string, P> extends IField<'group', A, S> {
     children: P[];
@@ -23,14 +21,10 @@ export class Group<A = any, S extends string = any, P = any> extends Field<A, S>
     private _group$: State<IGroupState>;
     @use(Layout) public this: Group<A, S, P> | undefined;
 
-    constructor(group: IGroup<A, S, any>, options?: IOptions, value?: any) {
-        super(group, options);
+    constructor(group: IGroup<A, S, any>) {
+        super(group);
         this._group$ = new State<IGroupState>({
-            children: group.children.map((def: IAbstract<any, any, any>) => {
-                const child: Abstract = builder(def, options, value);
-                child.setParent(this);
-                return child;
-            })
+            children: group.children
         });
         this._initValue(this._buildValue());
     }

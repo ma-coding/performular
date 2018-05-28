@@ -6,7 +6,6 @@ import { use } from '../mixin';
 import { CheckList } from './effect';
 import { Framework, IFramework } from './framework';
 import { IItem, Item } from './item';
-import { IOptions } from './options';
 
 export interface IAbstract<T extends string, A, S extends string> {
     type: T;
@@ -53,7 +52,7 @@ export abstract class Abstract<A = any, S extends string = any> {
         return !this.isContainer;
     }
 
-    constructor(abstract: IAbstract<string, A, S>, options?: IOptions, value?: any) {
+    constructor(abstract: IAbstract<string, A, S>) {
         this._type = abstract.type;
         this._id = abstract.id;
         this._uuid = generateUUID();

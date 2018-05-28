@@ -3,23 +3,54 @@ import { Container, IContainer } from './models/container';
 import { Control, IControl } from './models/control';
 import { Group, IGroup } from './models/group';
 import { IList, List } from './models/list';
-import { IOptions } from './models/options';
 
-export function builder(
-    abstract: IAbstract<'container' | 'control' | 'group' | 'list', any, any>, options?: IOptions, value?: any
-): Abstract {
-    switch (abstract.type) {
-        case 'container': {
-            return new Container(<IContainer<any, any, any>>abstract, options, value);
-        }
-        case 'control': {
-            return new Control(<IControl<any, any>>abstract, options, value);
-        }
-        case 'group': {
-            return new Group(<IGroup<any, any, any>>abstract, options, value);
-        }
-        case 'list': {
-            return new List(<IList<any, any, any>>abstract, options, value);
+export interface IPerformularOptions {
+    errorWhen: boolean;
+}
+
+export interface IPerformular<P = any> {
+    options?: IPerformularOptions;
+    value?: any;
+    property: P;
+}
+
+export class Performular {
+
+    private _config: IPerformular;
+    private _form: Abstract;
+
+    constructor(config: IPerformular) {
+        this._config = config;
+        this._form = this._build(config.property, []);
+    }
+
+    private _build(abstract: IAbstract<'container' | 'control' | 'group' | 'list', any, any>, path: string[]): Abstract {
+        switch (abstract.type) {
+            case 'container': {
+                const container: IContainer<any, any, any> = <IContainer<any, any, any>>abstract;
+                container.children = container.children.map((c: IAbstract<any, any, any>) => {
+                    return this._build(c, path);
+                });
+                return new Container(container);
+            }
+            case 'control': {
+                const control: IControl<any, any> = <IControl<any, any>>abstract;
+                return new Control(control);
+            }
+            case 'group': {
+                const group: IGroup<any, any, any> = <IGroup<any, any, any>>abstract;
+                group.children = group.children.map((c: IAbstract<any, any, any>) => {
+                    return this._build(c, path);
+                });
+                return new Group(group);
+            }
+            case 'list': {
+                const list: IList<any, any, any> = <IList<any, any, any>>abstract;
+                list.children = list.value.map((val: any) => {
+                    return this._build(list.childStructure, path);
+                })
+                return new List(list);
+            }
         }
     }
 }

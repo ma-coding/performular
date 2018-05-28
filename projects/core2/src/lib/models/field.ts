@@ -4,7 +4,6 @@ import { concatMap } from 'rxjs/operators';
 import { use } from '../mixin';
 import { Abstract, IAbstract } from './abstract';
 import { CheckList, IEffectContext } from './effect';
-import { IOptions } from './options';
 import { IValidation, Validation } from './validation';
 import { Value } from './value';
 import { IVisibility, Visibility } from './visibility';
@@ -22,8 +21,8 @@ export abstract class Field<A = any, S extends string = any, P = any> extends Ab
 
     @use(Validation, Visibility, Value) public this: Field<A, S> | undefined;
 
-    constructor(field: IField<string, A, S>, options?: IOptions, value?: any) {
-        super(field, options);
+    constructor(field: IField<string, A, S>) {
+        super(field);
         this._initValidation(field.validation, this);
         this._initVisibility(field.visibility, this);
     }

@@ -1,7 +1,12 @@
+import { IAbstractProperty } from './models/abstract-property.interface';
 import { IControlProperty } from './models/control-property.interface';
 import { ILayoutProperty } from './models/layout-property.interface';
-import { FormTypes, PropertyType } from './models/types';
-import { PropertiesBuilder } from './properties-builder';
+
+// tslint:disable-next-line
+type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K; }[keyof T];
+type S<T> = Exclude<NonFunctionPropertyNames<T>, 'length'>;
+export type Property<T> = T[S<T>];
+export type FormTypes = Array<IAbstractProperty<any, any, any>>;
 
 type Input = IControlProperty<'Input', { type: string }>;
 type Select = IControlProperty<'Select', { count: number }>;
@@ -16,22 +21,18 @@ export interface Props extends Prop2 {
     1: Fieldset<Props>;
 }
 
-const form: any = PropertiesBuilder.build({
-    type: PropertyType.group,
-    id: 'gg',
-    field: 'Group',
+const M: Property<Props> = {
+    type: 'layout',
+    field: 'Fieldset',
     bindings: {
-
+        legend: '10'
     },
-    children: [
-        {
-            type: PropertyType.control,
-            field: 'input',
-            id: 'c',
+    children: [{
+        type: 'control',
+        field: 'Select',
+        id: 'c',
+        bindings: {
+            count: 5
         }
-    ]
-}, {
-        errorStateWhen: ''
-    }, {
-        c: 5
-    });
+    }]
+};
