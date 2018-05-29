@@ -1,37 +1,45 @@
 import { use } from '../mixin';
 import { State } from '../state';
-import { Abstract } from './abstract';
-import { Field, IField } from './field';
+import { Abstract, IAbstract } from './abstract';
+import { Field, IField, IFieldParams } from './field';
 import { Layout } from './layout';
 
-export interface IList<A, S extends string, P> extends IField<'list', A, S> {
-    childStructure: P;
-    value: any[];
+export interface IList<F extends string = any, A = any, S extends string = any, P = any> extends IField<'list', F, A, S> {
+    childDef: P;
 }
 
-export interface IListState extends IList<any, any, any> {
+export interface IListParams<F extends string = any, A = any, S extends string = any, P = any> extends IFieldParams<'list', F, A, S> {
+    childDef: IAbstract;
+    children: Abstract[];
+}
+
+export interface IListState {
+    childDef: IAbstract;
     children: Abstract[];
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface List<A = any, S extends string = any, P = any> extends Layout { }
+export interface List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S> { }
 
 // @dynamic
-export class List<A = any, S extends string = any, P = any> extends Field<A, S> {
+export class List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S> {
 
     private _list$: State<IListState>;
-    @use(Layout) public this: List<A, S, P> | undefined;
+    @use(Layout) public this: List<F, A, S, P> | undefined;
 
-    constructor(list: IListState) {
+    constructor(list: IListParams<F, A, S>) {
         super(list);
-        this._list$ = new State<IListState>(list);
+        this._list$ = new State<IListState>({
+            childDef: list.childDef,
+            children: list.children
+        });
         this._initValue(this._buildValue());
     }
 
     protected _buildValue(): any {
         const childFields: Field[] = this.getChildFields();
         return childFields.map((child: Field) => {
-            return child.value;
+            return child.value();
         });
     }
 

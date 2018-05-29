@@ -12,20 +12,17 @@ type Input = IControlProperty<'Input', { type: string }>;
 type Select = IControlProperty<'Select', { count: number }>;
 type Fieldset<P extends FormTypes> = ILayoutProperty<'Fieldset', { legend: string }, P>;
 
-export interface Prop2 extends FormTypes {
-    10: Select;
-}
-
-export interface Props extends Prop2 {
+export interface Props extends FormTypes {
     0: Input;
     1: Fieldset<Props>;
+    2: Select;
 }
 
 const M: Property<Props> = {
     type: 'layout',
     field: 'Fieldset',
     bindings: {
-        legend: '10'
+        legend: ''
     },
     children: [{
         type: 'control',

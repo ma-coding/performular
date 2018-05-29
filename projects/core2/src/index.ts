@@ -4,6 +4,7 @@
 export { Loader } from './lib/loader';
 export { IMetadata, Metadata } from './lib/metadata';
 export { State } from './lib/state';
+export { Performular, FormTypes, IPerformular, IPerformularOptions } from './lib/performular';
 
 export { Abstract, IAbstract } from './lib/models/abstract';
 export { Field, IField } from './lib/models/field';

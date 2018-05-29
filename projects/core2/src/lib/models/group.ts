@@ -1,11 +1,17 @@
 import { use } from '../mixin';
+import { FormTypes, Property } from '../performular';
 import { State } from '../state';
 import { Abstract } from './abstract';
-import { Field, IField } from './field';
+import { Field, IField, IFieldParams } from './field';
 import { Layout } from './layout';
 
-export interface IGroup<A, S extends string, P> extends IField<'group', A, S> {
-    children: P[];
+export interface IGroup<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
+    extends IField<'group', F, A, S> {
+    children: Property<P>[];
+}
+
+export interface IGroupParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<'group', F, A, S> {
+    children: Abstract[];
 }
 
 export interface IGroupState {
@@ -13,15 +19,15 @@ export interface IGroupState {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface Group<A = any, S extends string = any, P = any> extends Layout { }
+export interface Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S> { }
 
 // @dynamic
-export class Group<A = any, S extends string = any, P = any> extends Field<A, S> {
+export class Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S> {
 
     private _group$: State<IGroupState>;
-    @use(Layout) public this: Group<A, S, P> | undefined;
+    @use(Layout) public this: Group<F, A, S, P> | undefined;
 
-    constructor(group: IGroup<A, S, any>) {
+    constructor(group: IGroupParams<F, A, S>) {
         super(group);
         this._group$ = new State<IGroupState>({
             children: group.children
@@ -32,7 +38,7 @@ export class Group<A = any, S extends string = any, P = any> extends Field<A, S>
     protected _buildValue(): any {
         const childFields: Field[] = this.getChildFields();
         return childFields.reduce((prev: any, child: Field) => {
-            prev[child.id] = child.value;
+            prev[child.id] = child.value();
             return prev;
         }, {});
     }

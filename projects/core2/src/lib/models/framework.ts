@@ -6,20 +6,20 @@ import { State } from '../state';
 
 export type IStyle<S extends string> = Record<S | 'host', CSSStyleDeclaration>;
 
-export interface IFramework<A, S extends string> {
-    field: any;
+export interface IFramework<F extends string, A, S extends string> {
+    field: F;
     attrs: A;
     styles?: IStyle<S>;
 }
 
-export interface IFrameworkState<A, S extends string> extends IFramework<A, S> {
+export interface IFrameworkState<F extends string, A, S extends string> extends IFramework<F, A, S> {
     parent?: any;
     elementRef?: ElementRef;
     instance?: any;
 }
 
-export class Framework<A, S extends string> {
-    private _framework$: State<IFrameworkState<A, S>> = <any>undefined;
+export class Framework<F extends string, A, S extends string> {
+    private _framework$: State<IFrameworkState<F, A, S>> = <any>undefined;
 
     public parent(): any | undefined {
         return this._framework$.getValue().parent;
@@ -45,8 +45,8 @@ export class Framework<A, S extends string> {
         this._framework$.updateKey('parent', parent);
     }
 
-    protected _initFramework(framework: IFramework<A, S>): void {
-        this._framework$ = new State<IFrameworkState<A, S>>({
+    protected _initFramework(framework: IFramework<F, A, S>): void {
+        this._framework$ = new State<IFrameworkState<F, A, S>>({
             field: <any>framework.field, // TODO DEFINE FIELD
             attrs: framework.attrs,
             styles: framework.styles

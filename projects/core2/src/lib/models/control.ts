@@ -1,16 +1,21 @@
 import { Abstract } from './abstract';
-import { Field, IField } from './field';
+import { Field, IField, IFieldParams } from './field';
 
-export interface IControl<A, S extends string> extends IField<'control', A, S> {
+export interface IControl<F extends string = any, A = any, S extends string = any> extends IField<'control', F, A, S> {
     focus?: boolean;
 }
 
-// @dynamic
-export class Control<A = any, S extends string = any> extends Field<A, S> {
+export interface IControlParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<'control', F, A, S> {
+    focus?: boolean;
+    value: any;
+}
 
-    constructor(control: IControl<A, S>) {
+// @dynamic
+export class Control<F extends string = any, A = any, S extends string = any> extends Field<'control', F, A, S> {
+
+    constructor(control: IControlParams<F, A, S>) {
         super(control);
-        this._initValue(null);
+        this._initValue(control.value);
     }
 
     protected _forEachChild(cb: (child: Abstract) => void): void { }

@@ -8,20 +8,35 @@ import { IValidation, Validation } from './validation';
 import { Value } from './value';
 import { IVisibility, Visibility } from './visibility';
 
-export interface IField<T extends string, A, S extends string> extends IAbstract<T, A, S> {
+export interface IField<T extends string, F extends string = any, A = any, S extends string = any> extends IAbstract<T, F, A, S> {
+    validation?: IValidation;
+    visibility?: IVisibility;
+}
+
+export interface IFieldParams<T extends string, F extends string = any, A = any, S extends string = any> extends IAbstract<T, F, A, S> {
     validation?: IValidation;
     visibility?: IVisibility;
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface Field<A = any, S extends string = any, P = any> extends Validation, Visibility, Value { }
+export interface Field<
+    T extends string = any,
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends Validation, Visibility, Value { }
 
 // @dynamic
-export abstract class Field<A = any, S extends string = any, P = any> extends Abstract<A, S> {
+export abstract class Field<
+    T extends string = any,
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends Abstract<T, F, A, S> {
 
-    @use(Validation, Visibility, Value) public this: Field<A, S> | undefined;
+    @use(Validation, Visibility, Value) public this: Field<T, F, A, S> | undefined;
 
-    constructor(field: IField<string, A, S>) {
+    constructor(field: IFieldParams<T, F, A, S>) {
         super(field);
         this._initValidation(field.validation, this);
         this._initVisibility(field.visibility, this);

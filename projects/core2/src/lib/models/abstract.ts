@@ -7,22 +7,36 @@ import { CheckList } from './effect';
 import { Framework, IFramework } from './framework';
 import { IItem, Item } from './item';
 
-export interface IAbstract<T extends string, A, S extends string> {
+export interface IAbstract<T extends string = any, F extends string = any, A = any, S extends string = any> {
     type: T;
     id: string;
-    framework: IFramework<A, S>;
+    framework: IFramework<F, A, S>;
     item?: IItem;
 }
 
-export interface Abstract<A = any, S extends string = any> extends Item, Framework<A, S> { }
+export interface IAbstractParams<T extends string = any, F extends string = any, A = any, S extends string = any> {
+    type: T;
+    id: string;
+    framework: IFramework<F, A, S>;
+    item?: IItem;
+}
+
+export interface Abstract<
+    T extends string = any, F extends string = any, A = any, S extends string = any
+    > extends Item, Framework<F, A, S> { }
 
 // @dynamic
-export abstract class Abstract<A = any, S extends string = any> {
+export abstract class Abstract<
+    T extends string = any,
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > {
     private _type: string;
     private _id: string;
     private _uuid: string;
 
-    @use(Item, Framework) public this: Abstract<A, S> | undefined;
+    @use(Item, Framework) public this: Abstract<T, F, A, S> | undefined;
 
     get id(): string {
         return this._id;
@@ -52,7 +66,7 @@ export abstract class Abstract<A = any, S extends string = any> {
         return !this.isContainer;
     }
 
-    constructor(abstract: IAbstract<string, A, S>) {
+    constructor(abstract: IAbstractParams<T, F, A, S>) {
         this._type = abstract.type;
         this._id = abstract.id;
         this._uuid = generateUUID();
