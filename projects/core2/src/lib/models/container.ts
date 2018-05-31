@@ -5,6 +5,7 @@ import { FormTypes, Property } from '../performular';
 import { State } from '../state';
 import { Abstract, IAbstract, IAbstractParams } from './abstract';
 import { CheckList } from './effect';
+import { Field } from './field';
 import { ILayout, Layout } from './layout';
 
 export interface IContainer<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
@@ -20,6 +21,7 @@ export interface IContainerParams<F extends string = any, A = any, S extends str
 
 export interface IContainerState {
     children: Abstract[];
+    hidden: boolean;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -30,13 +32,23 @@ export class Container<F extends string = any, A = any, S extends string = any, 
 
     private _container$: State<IContainerState>;
 
+    get hidden$(): Observable<boolean> {
+        return this._container$.select('hidden');
+    }
+
+    get hidden(): boolean {
+        return this._container$.getValue().hidden;
+    }
+
     @use(Layout) public this: Container<F, A, S, P> | undefined;
 
     constructor(container: IContainerParams<F, A, S>) {
         super(container);
         this._initLayout(container.layout);
+        this._setParents(container.children);
         this._container$ = new State<IContainerState>({
-            children: container.children
+            children: container.children,
+            hidden: this._analyzeHidden(container.children)
         });
     }
 
@@ -49,5 +61,19 @@ export class Container<F extends string = any, A = any, S extends string = any, 
     }
 
     protected _update(): void {
+        const hiddenCalc: boolean = this._analyzeHidden(this.getChildren());
+        if (this._container$.getValue().hidden !== hiddenCalc) {
+            this._container$.updateKey('hidden', hiddenCalc);
+        }
+    }
+
+    private _analyzeHidden(children: Abstract[]): boolean {
+        return children.every((child: Abstract) => {
+            if (child.isContainer) {
+                return (<Container>child).hidden;
+            } else {
+                return (<Field>child).hidden;
+            }
+        });
     }
 }

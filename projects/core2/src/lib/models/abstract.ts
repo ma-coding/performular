@@ -1,7 +1,7 @@
-import { forkJoin, Observable } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
-import { generateUUID } from '../misc';
+import { flatten, generateUUID } from '../misc';
 import { use } from '../mixin';
 import { CheckList } from './effect';
 import { Framework, IFramework } from './framework';
@@ -35,6 +35,7 @@ export abstract class Abstract<
     private _type: string;
     private _id: string;
     private _uuid: string;
+    private _updateSubject: Subject<CheckList>;
 
     @use(Item, Framework) public this: Abstract<T, F, A, S> | undefined;
 
@@ -66,12 +67,22 @@ export abstract class Abstract<
         return !this.isContainer;
     }
 
+    get updates$(): Observable<void> {
+        return this._updateSubject.pipe(
+            // tslint:disable-next-line:no-magic-numbers
+            buffer(this._updateSubject.pipe(debounceTime(500))),
+            map(flatten),
+            concatMap((checkList: CheckList) => this._run(checkList))
+        );
+    }
+
     constructor(abstract: IAbstractParams<T, F, A, S>) {
         this._type = abstract.type;
         this._id = abstract.id;
         this._uuid = generateUUID();
         this._initItem(abstract.item);
         this._initFramework(abstract.framework);
+        this._updateSubject = new Subject();
     }
 
     public getChildren(): Abstract[] {
@@ -82,6 +93,23 @@ export abstract class Abstract<
         return children;
     }
 
+    public getRoot(): Abstract {
+        let r: Abstract = this;
+        while (r.parent) {
+            const p: Abstract | undefined = r.parent;
+            if (p) {
+                r = p;
+            } else {
+                return r;
+            }
+        }
+        return r;
+    }
+
+    public update(checklist: CheckList): void {
+        this.getRoot()._updateSubject.next(checklist);
+    }
+
     protected abstract _forEachChild(cb: (child: Abstract) => void): void;
 
     protected abstract _run(checklist: CheckList): Observable<void>;
@@ -89,8 +117,9 @@ export abstract class Abstract<
 
     protected _treeUp(): void {
         this._update();
-        if (this.parent()) {
-            this.parent()._treeUp();
+        const p: Abstract | undefined = this.parent;
+        if (p) {
+            p._treeUp();
         }
     }
 
@@ -108,6 +137,12 @@ export abstract class Abstract<
                 )
             )
         );
+    }
+
+    protected _setParents(children: Abstract[]): void {
+        children.forEach((c: Abstract) => {
+            c.setParent(this);
+        });
     }
 
 }

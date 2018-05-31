@@ -58,35 +58,35 @@ export class Visibility {
     private _visField: Field = <any>undefined;
     private _visibility$: State<IVisibilityState> = <any>undefined;
 
-    public forcedHidden(): boolean {
+    get forcedHidden(): boolean {
         return this._visibility$.getValue().forcedHidden;
     }
 
-    public forcedHidden$(): Observable<boolean> {
+    get forcedHidden$(): Observable<boolean> {
         return this._visibility$.select('forcedHidden');
     }
 
-    public forcedDisabled(): boolean {
+    get forcedDisabled(): boolean {
         return this._visibility$.getValue().forcedDisabled;
     }
 
-    public forcedDisabled$(): Observable<boolean> {
+    get forcedDisabled$(): Observable<boolean> {
         return this._visibility$.select('forcedDisabled');
     }
 
-    public hidden(): boolean {
+    get hidden(): boolean {
         return this._visibility$.getValue().hidden;
     }
 
-    public hidden$(): Observable<boolean> {
+    get hidden$(): Observable<boolean> {
         return this._visibility$.select('hidden');
     }
 
-    public disabled(): boolean {
+    get disabled(): boolean {
         return this._visibility$.getValue().disabled;
     }
 
-    public disabled$(): Observable<boolean> {
+    get disabled$(): Observable<boolean> {
         return this._visibility$.select('disabled');
     }
 
@@ -156,21 +156,21 @@ export class Visibility {
 
     private _isParentDisabled(): boolean {
         const parent: Field | undefined = this._visField.getParentField();
-        return parent ? parent.disabled() : false;
+        return parent ? parent.disabled : false;
     }
 
     private _isParentHidden(): boolean {
         const parent: Field | undefined = this._visField.getParentField();
-        return parent ? parent.hidden() : false;
+        return parent ? parent.hidden : false;
     }
 
     private _shouldNotRunDisables(): boolean {
-        return this._isParentDisabled() || this.forcedDisabled() ||
+        return this._isParentDisabled() || this.forcedDisabled ||
             this._visibility$.getValue().disables.length === 0;
     }
 
     private _shouldNotRunHides(): boolean {
-        return this._isParentHidden() || this.forcedHidden() ||
+        return this._isParentHidden() || this.forcedHidden ||
             this._visibility$.getValue().hides.length === 0;
     }
 

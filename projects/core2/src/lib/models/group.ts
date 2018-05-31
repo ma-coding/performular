@@ -1,17 +1,21 @@
+import { Observable } from 'rxjs';
+
 import { use } from '../mixin';
 import { FormTypes, Property } from '../performular';
 import { State } from '../state';
 import { Abstract } from './abstract';
 import { Field, IField, IFieldParams } from './field';
-import { Layout } from './layout';
+import { ILayout, Layout } from './layout';
 
 export interface IGroup<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
     extends IField<'group', F, A, S> {
     children: Property<P>[];
+    layout?: ILayout;
 }
 
 export interface IGroupParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<'group', F, A, S> {
     children: Abstract[];
+    layout?: ILayout;
 }
 
 export interface IGroupState {
@@ -19,7 +23,7 @@ export interface IGroupState {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S> { }
+export interface Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S>, Layout { }
 
 // @dynamic
 export class Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S> {
@@ -27,8 +31,14 @@ export class Group<F extends string = any, A = any, S extends string = any, P = 
     private _group$: State<IGroupState>;
     @use(Layout) public this: Group<F, A, S, P> | undefined;
 
+    get children$(): Observable<Abstract[]> {
+        return this._group$.select('children');
+    }
+
     constructor(group: IGroupParams<F, A, S>) {
         super(group);
+        this._initLayout(group.layout);
+        this._setParents(group.children);
         this._group$ = new State<IGroupState>({
             children: group.children
         });
@@ -38,7 +48,7 @@ export class Group<F extends string = any, A = any, S extends string = any, P = 
     protected _buildValue(): any {
         const childFields: Field[] = this.getChildFields();
         return childFields.reduce((prev: any, child: Field) => {
-            prev[child.id] = child.value();
+            prev[child.id] = child.value;
             return prev;
         }, {});
     }

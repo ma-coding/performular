@@ -4,11 +4,11 @@ import { Control, IControl, IControlParams } from './models/control';
 import { Group, IGroup, IGroupParams } from './models/group';
 import { IList, IListParams, List } from './models/list';
 
-export type FormTypes = Array<IAbstract<any, any, any>>;
-// tslint:disable-next-line
+export type FormTypes = Array<IAbstract>;
 type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
-type S<T> = Exclude<NonFunctionPropertyNames<T>, 'length'>;
-export type Property<T extends FormTypes> = T[S<T>];
+type NoLength<T> = Exclude<NonFunctionPropertyNames<T>, 'length'>;
+export type Property<T extends FormTypes> = T[NoLength<T>];
+export type RemoveKey<T, S> = { [K in Exclude<keyof T, S>]: T[K] };
 
 export interface IPerformularOptions {
     errorWhen: boolean;
@@ -53,6 +53,7 @@ export class Performular<P extends FormTypes> {
                 const control: IControl = <any>abstract;
                 const controlParams: IControlParams = {
                     ...control,
+                    focus: control.focus || false,
                     value: this._getValueFromPath(path)
                 };
                 return new Control(controlParams);
@@ -61,11 +62,11 @@ export class Performular<P extends FormTypes> {
                 const group: IGroup = <any>abstract;
                 const groupParams: IGroupParams<any, any> = {
                     ...group,
-                    children: group.children.map((c: any) => {
-                        if (c.type === 'container') {
-                            return this._build(c, path);
+                    children: group.children.map((child: any) => {
+                        if (child.type === 'container') {
+                            return this._build(child, path);
                         } else {
-                            return this._build(c, this._addToPath(path, c.id));
+                            return this._build(child, this._addToPath(path, child.id));
                         }
                     })
                 };

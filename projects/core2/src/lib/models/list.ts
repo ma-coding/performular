@@ -2,7 +2,7 @@ import { use } from '../mixin';
 import { State } from '../state';
 import { Abstract, IAbstract } from './abstract';
 import { Field, IField, IFieldParams } from './field';
-import { Layout } from './layout';
+import { ILayout, Layout } from './layout';
 
 export interface IList<F extends string = any, A = any, S extends string = any, P = any> extends IField<'list', F, A, S> {
     childDef: P;
@@ -11,15 +11,17 @@ export interface IList<F extends string = any, A = any, S extends string = any, 
 export interface IListParams<F extends string = any, A = any, S extends string = any, P = any> extends IFieldParams<'list', F, A, S> {
     childDef: IAbstract;
     children: Abstract[];
+    layout?: ILayout;
 }
 
 export interface IListState {
     childDef: IAbstract;
     children: Abstract[];
+    layout?: ILayout;
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S> { }
+export interface List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S>, Layout { }
 
 // @dynamic
 export class List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S> {
@@ -29,6 +31,8 @@ export class List<F extends string = any, A = any, S extends string = any, P = a
 
     constructor(list: IListParams<F, A, S>) {
         super(list);
+        this._initLayout(list.layout);
+        this._setParents(list.children);
         this._list$ = new State<IListState>({
             childDef: list.childDef,
             children: list.children
@@ -39,7 +43,7 @@ export class List<F extends string = any, A = any, S extends string = any, P = a
     protected _buildValue(): any {
         const childFields: Field[] = this.getChildFields();
         return childFields.map((child: Field) => {
-            return child.value();
+            return child.value;
         });
     }
 

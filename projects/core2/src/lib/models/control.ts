@@ -6,7 +6,7 @@ export interface IControl<F extends string = any, A = any, S extends string = an
 }
 
 export interface IControlParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<'control', F, A, S> {
-    focus?: boolean;
+    focus: boolean;
     value: any;
 }
 

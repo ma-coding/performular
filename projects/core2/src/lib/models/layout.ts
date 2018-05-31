@@ -23,11 +23,11 @@ export interface ILayout {
 export class Layout {
     private _layout$: State<ILayout> = <any>undefined;
 
-    public layout$(): Observable<ILayout> {
+    get layout$(): Observable<ILayout> {
         return this._layout$.asObservable();
     }
 
-    public layout(): ILayout {
+    get layout(): ILayout {
         return this._layout$.getValue();
     }
 

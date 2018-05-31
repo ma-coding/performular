@@ -1,6 +1,6 @@
 
 export type Constructor<T> = new (...args: any[]) => T;
-export type Mixin<T> = Constructor<T> | object;
+export type Mixin<T> = Constructor<T>;
 
 export function mix(baseClass: Constructor<any>, mixins: Mixin<any>[]): void {
     const baseClassNames: string[] = getClassMethodsWithoutConstructor(baseClass);
@@ -10,9 +10,11 @@ export function mix(baseClass: Constructor<any>, mixins: Mixin<any>[]): void {
             if (baseClassNames.indexOf(methodName) > -1) {
                 return;
             }
-            if (typeof mixin === 'object') {
-                baseClass.prototype[methodName] = mixin[methodName];
+            const descriptor: PropertyDescriptor | undefined = Object.getOwnPropertyDescriptor(mixin.prototype, methodName);
+            if (descriptor) {
+                Object.defineProperty(baseClass.prototype, methodName, descriptor);
             } else {
+                console.log(methodName);
                 baseClass.prototype[methodName] = mixin.prototype[methodName];
             }
         });
@@ -20,16 +22,7 @@ export function mix(baseClass: Constructor<any>, mixins: Mixin<any>[]): void {
 }
 
 export function getMethodNames(mixin: Mixin<any>): string[] {
-    let methodNames: string[] = [];
-    switch (typeof mixin) {
-        case 'object':
-            methodNames = getObjectMethods(mixin);
-            break;
-        case 'function':
-            methodNames = getClassMethodsWithoutConstructor(mixin as Constructor<any>);
-            break;
-    }
-    return methodNames;
+    return getClassMethodsWithoutConstructor(mixin as Constructor<any>);
 }
 
 export function getObjectMethods(obj: object): string[] {

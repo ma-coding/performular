@@ -92,27 +92,27 @@ export class Validation {
     private _valField: Field = <any>undefined;
     private _validation$: State<IValidationState> = <any>undefined;
 
-    public invalid(): boolean {
+    get invalid(): boolean {
         return this._validation$.getValue().invalid;
     }
 
-    public invalid$(): Observable<boolean> {
+    get invalid$(): Observable<boolean> {
         return this._validation$.select('invalid');
     }
 
-    public errors(): string[] {
+    get errors(): string[] {
         return this._validation$.getValue().errors;
     }
 
-    public errors$(): Observable<string[]> {
+    get errors$(): Observable<string[]> {
         return this._validation$.select('errors');
     }
 
-    public forcedError(): string | undefined {
+    get forcedError(): string | undefined {
         return this._validation$.getValue().forcedError;
     }
 
-    public forcedError$(): Observable<string | undefined> {
+    get forcedError$(): Observable<string | undefined> {
         return this._validation$.select('forcedError');
     }
 
@@ -142,7 +142,7 @@ export class Validation {
         // Todo: Call Update
     }
 
-    public setValidationInstance(): void {
+    protected _setValidationInstance(): void {
         const state: IValidationState = this._validation$.getValue();
         state.validators.forEach((v: ValidatorHandler) => v.instanceRendered(this._valField));
     }
@@ -189,7 +189,7 @@ export class Validation {
         const state: IValidationState = this._validation$.getValue();
         return !!state.forcedError ||
             state.validators.some((v: ValidatorHandler) => !!v.error) ||
-            this._valField.getChildFields().some((f: Field) => f.invalid());
+            this._valField.getChildFields().some((f: Field) => f.invalid);
     }
 
     private _shouldNotRunValidation(): boolean {

@@ -1,3 +1,5 @@
+import { ElementRef } from '@angular/core';
+
 import { Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
@@ -42,13 +44,23 @@ export abstract class Field<
         this._initVisibility(field.visibility, this);
     }
 
+    public registerFramework(elementRef: ElementRef, instance: any): void {
+        super.registerFramework(elementRef, instance);
+        this._setValidationInstance();
+    }
+
     public getParentField(): Field | undefined {
-        let schema: Field = this;
-        while (schema.parent()) {
-            if (schema.parent().isField) {
-                return <Field>schema.parent();
+        let schema: Abstract = this;
+        while (schema.parent) {
+            const p: Abstract | undefined = schema.parent;
+            if (!p) {
+                return;
             }
-            schema = schema.parent();
+            if (p.isField) {
+                return <Field>p;
+            } else {
+                schema = p;
+            }
         }
     }
 
@@ -62,6 +74,16 @@ export abstract class Field<
             }
         });
         return erg;
+    }
+
+    protected _updateParentValue(checklist: CheckList = [this]): void {
+        const parent: Field | undefined = this.getParentField();
+        if (parent) {
+            parent._setValue(this._buildValue());
+            parent._updateParentValue([...checklist, parent]);
+        } else {
+            this.update(checklist);
+        }
     }
 
     protected abstract _buildValue(): any;
