@@ -3,6 +3,7 @@ import { ElementRef, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Metadata } from '../metadata';
+import { RendererDirective } from '../renderer';
 import { State } from '../state';
 import { Abstract } from './abstract';
 
@@ -22,21 +23,22 @@ export function FormComponent(options: IFrameworkDecoration): ClassDecorator {
     };
 }
 
-export type IStyle<S extends string> = Record<S | 'host', CSSStyleDeclaration>;
+export type IStyle<S extends string> = Record<S | 'host', Partial<CSSStyleDeclaration>>;
 
 export interface IFramework<F extends string, A, S extends string> {
     field: F;
     attrs: A;
-    styles?: IStyle<S>;
+    styles?: Partial<IStyle<S>>;
 }
 
 export interface IFrameworkState<A, S extends string> {
     field: FrameworkType;
     attrs: A;
-    styles?: IStyle<S>;
+    styles?: Partial<IStyle<S>>;
     parent?: Abstract;
     elementRef?: ElementRef;
     instance?: any;
+    renderer?: RendererDirective;
 }
 
 export class Framework<F extends string, A, S extends string> {
@@ -58,12 +60,36 @@ export class Framework<F extends string, A, S extends string> {
         return this._framework$.getValue().attrs;
     }
 
+    get styles$(): Observable<Partial<IStyle<S>> | undefined> {
+        return this._framework$.select('styles');
+    }
+
+    get styles(): Partial<IStyle<S>> | undefined {
+        return this._framework$.getValue().styles;
+    }
+
     get field(): FrameworkType {
         return this._framework$.getValue().field;
     }
 
     get instance(): any | undefined {
         return this._framework$.getValue().instance;
+    }
+
+    get elementRef(): ElementRef | undefined {
+        return this._framework$.getValue().elementRef;
+    }
+
+    get elementRef$(): Observable<ElementRef | undefined> {
+        return this._framework$.select('elementRef');
+    }
+
+    get renderer(): RendererDirective | undefined {
+        return this._framework$.getValue().renderer;
+    }
+
+    get renderer$(): Observable<RendererDirective | undefined> {
+        return this._framework$.select('renderer');
     }
 
     public updateAttrs<K extends keyof any>(key: K, value: any): void {
@@ -79,6 +105,14 @@ export class Framework<F extends string, A, S extends string> {
             elementRef: elementRef,
             instance: instance
         });
+    }
+
+    public setRenderer(renderer: RendererDirective): void {
+        this._framework$.updateKey('renderer', renderer);
+    }
+
+    public clearRenderer(): void {
+        this._framework$.updateKey('renderer', undefined);
     }
 
     public clearFramework(): void {

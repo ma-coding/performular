@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { Control, FormComponent, IControl, IOnInitFramework } from '@performular/core';
 
@@ -16,8 +16,9 @@ export type Input = Control<'input', InputBindings, InputStyles>;
 })
 @Component({
     selector: 'app-input',
-    template: `<input [type]="(field.attrs$ | async).type">`,
-    styles: []
+    template: `<input [value]="field?.value" [ngStyle]="(field?.styles$ | async)?.input" [type]="(field.attrs$ | async).type">`,
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent implements IOnInitFramework<Input> {
 

@@ -36,6 +36,36 @@ export class Item {
         return this._convertKeys<FlexValues>('flex')(this._item$.getValue().flex);
     }
 
+    get flexOrder(): MapType<number> {
+        return this._convertKeys<number>('order')(this._item$.getValue().order || <any>{});
+    }
+
+    get flexOrder$(): Observable<MapType<number>> {
+        return this._item$.select('order').pipe(
+            map(this._convertKeys<number>('order').bind(this))
+        );
+    }
+
+    get flexAlign(): MapType<FlexAlignValues> {
+        return this._convertKeys<FlexAlignValues>('align')(this._item$.getValue().align || <any>{});
+    }
+
+    get flexAlign$(): Observable<MapType<FlexAlignValues>> {
+        return this._item$.select('align').pipe(
+            map(this._convertKeys<FlexAlignValues>('align').bind(this))
+        );
+    }
+
+    get flexOffset(): MapType<string> {
+        return this._convertKeys<string>('offset')(this._item$.getValue().offset || <any>{});
+    }
+
+    get flexOffset$(): Observable<MapType<string>> {
+        return this._item$.select('offset').pipe(
+            map(this._convertKeys<string>('offset').bind(this))
+        );
+    }
+
     protected _initItem(item: IItem | undefined): void {
         this._item$ = new State<IItem>(item || <IItem>{});
     }

@@ -25,9 +25,13 @@ export class AppComponent {
                 field: 'coregroup',
                 attrs: undefined
             },
-            item: {
-                flex: {
-                    main: 100
+            layout: {
+                direction: {
+                    main: 'row',
+                    ltSm: 'column'
+                },
+                gap: {
+                    main: '18px'
                 }
             },
             children: [
@@ -38,6 +42,51 @@ export class AppComponent {
                         field: 'input',
                         attrs: {
                             type: 'text'
+                        },
+                        styles: {
+                            host: {
+                                width: '100%'
+                            },
+                            input: {
+                                width: '100%'
+                            }
+                        }
+                    },
+                    item: {
+                        flex: {
+                            main: 50,
+                            ltSm: 100
+                        },
+                        align: {
+                            main: 'end'
+                        }
+                    },
+                    focus: true,
+                },
+                {
+                    id: 'test5',
+                    type: 'control',
+                    framework: {
+                        field: 'input',
+                        attrs: {
+                            type: 'text'
+                        },
+                        styles: {
+                            host: {
+                                width: '100%'
+                            },
+                            input: {
+                                width: '100%'
+                            }
+                        }
+                    },
+                    item: {
+                        flex: {
+                            main: 50,
+                            ltSm: 100
+                        },
+                        align: {
+                            main: 'end'
                         }
                     },
                     focus: true,
