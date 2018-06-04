@@ -6,8 +6,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { PerformulerCoreModule } from '@performular/core';
 
 import { AppComponent } from './app.component';
+import { DefaultRunDetector } from './default.run-detector';
 import { CoreGroupComponent } from './group.component';
 import { InputComponent } from './input.component';
+import { RequiredValidator } from './required.validation';
 
 @NgModule({
     declarations: [
@@ -23,6 +25,12 @@ import { InputComponent } from './input.component';
             formComponents: [
                 InputComponent,
                 CoreGroupComponent
+            ],
+            runDetectors: [
+                DefaultRunDetector
+            ],
+            effects: [
+                RequiredValidator
             ]
         })
     ],
@@ -30,7 +38,10 @@ import { InputComponent } from './input.component';
         InputComponent,
         CoreGroupComponent
     ],
-    providers: [],
+    providers: [
+        DefaultRunDetector,
+        RequiredValidator
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

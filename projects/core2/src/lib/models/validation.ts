@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
 
 import { forkJoin, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 import { createObservable, MapType } from '../misc';
 import { State } from '../state';
@@ -30,6 +30,10 @@ export class ValidatorHandler extends EffectHandler<IValidator, IValidatorError 
 
     private _validator$: State<IValidatorState>;
 
+    get error(): string | undefined {
+        return this._validator$.getValue().error;
+    }
+
     constructor(validator: IValidator) {
         super(validator);
         this._validator$ = new State<IValidatorState>({
@@ -39,13 +43,9 @@ export class ValidatorHandler extends EffectHandler<IValidator, IValidatorError 
         });
     }
 
-    public error(): string | undefined {
-        return this._validator$.getValue().error;
-    }
-
     public run(context: IEffectContext): Observable<void> {
         if (!this.runDetector.eval(context)) {
-            return of();
+            return of().pipe(startWith(<any>undefined));
         }
         return createObservable(
             this.instance.calculate(context, this.params)
@@ -160,7 +160,7 @@ export class Validation {
 
     protected _runValidation(context: IEffectContext): Observable<void> {
         if (this._shouldNotRunValidation()) {
-            return of();
+            return of().pipe(startWith(<any>undefined));
         }
         return forkJoin(
             ...this._validation$.getValue().validators
@@ -180,7 +180,7 @@ export class Validation {
         return [
             ...(state.forcedError ? [state.forcedError] : []),
             ...<string[]>state.validators
-                .map((d: ValidatorHandler) => d.error())
+                .map((d: ValidatorHandler) => d.error)
                 .filter((err: string | undefined) => !!err)
         ];
     }

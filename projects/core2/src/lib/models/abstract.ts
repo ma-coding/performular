@@ -72,7 +72,7 @@ export abstract class Abstract<
             // tslint:disable-next-line:no-magic-numbers
             buffer(this._updateSubject.pipe(debounceTime(500))),
             map(flatten),
-            concatMap((checkList: CheckList) => this._run(checkList))
+            concatMap((checkList: CheckList) => this._treeDown(checkList))
         );
     }
 

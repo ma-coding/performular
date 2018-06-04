@@ -45,6 +45,24 @@ export class Group<F extends string = any, A = any, S extends string = any, P = 
         this._initValue(this._buildValue());
     }
 
+    public setValue(value: any, emitUpdate: boolean = false): void {
+        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
+            child.setValue(value[child.id], index === arr.length - 1);
+        });
+    }
+
+    public patchValue(value: any, emitUpdate: boolean = false): void {
+        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
+            child.patchValue(value[child.id], index === arr.length - 1);
+        });
+    }
+
+    public resetValue(emitUpdate: boolean = false): void {
+        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
+            child.resetValue(index === arr.length - 1);
+        });
+    }
+
     protected _buildValue(): any {
         const childFields: Field[] = this.getChildFields();
         return childFields.reduce((prev: any, child: Field) => {

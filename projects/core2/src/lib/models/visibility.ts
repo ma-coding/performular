@@ -1,5 +1,5 @@
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 
 import { createObservable } from '../misc';
 import { State } from '../state';
@@ -27,7 +27,7 @@ export class VisibleHandler extends EffectHandler<IEffect, boolean | Observable<
 
     public run(context: IEffectContext): Observable<void> {
         if (!this.runDetector.eval(context)) {
-            return of();
+            return of().pipe(startWith(<any>undefined));
         }
         return createObservable(
             this.instance.calculate(context, this.params)
@@ -184,7 +184,7 @@ export class Visibility {
 
     private _runVis(context: IEffectContext, shouldNotRun: boolean, key: 'hides' | 'disables'): Observable<void> {
         if (shouldNotRun) {
-            return of();
+            return of().pipe(startWith(<any>undefined));
         } else {
             return forkJoin(
                 ...this._visibility$.getValue()[key]

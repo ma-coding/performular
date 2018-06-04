@@ -7,7 +7,7 @@ import { use } from '../mixin';
 import { Abstract, IAbstract } from './abstract';
 import { CheckList, IEffectContext } from './effect';
 import { IValidation, Validation } from './validation';
-import { Value } from './value';
+import { Value, ValueMode } from './value';
 import { IVisibility, Visibility } from './visibility';
 
 export interface IField<T extends string, F extends string = any, A = any, S extends string = any> extends IAbstract<T, F, A, S> {
@@ -76,17 +76,21 @@ export abstract class Field<
         return erg;
     }
 
-    protected _updateParentValue(checklist: CheckList = [this]): void {
+    public abstract setValue(value: any, emitUpdate: boolean): void;
+    public abstract patchValue(value: any, emitUpdate: boolean): void;
+    public abstract resetValue(emitUpdate: boolean): void;
+
+    protected abstract _buildValue(): any;
+
+    protected _updateParentValue(checklist: CheckList = [this], mode: ValueMode): void {
         const parent: Field | undefined = this.getParentField();
         if (parent) {
-            parent._setValue(this._buildValue());
-            parent._updateParentValue([...checklist, parent]);
+            parent._createValue(mode, parent._buildValue());
+            parent._updateParentValue([...checklist, parent], mode);
         } else {
             this.update(checklist);
         }
     }
-
-    protected abstract _buildValue(): any;
 
     protected _run(checklist: CheckList): Observable<void> {
         const context: IEffectContext = {

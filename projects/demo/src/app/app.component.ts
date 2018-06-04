@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Abstract, FormTypes, Performular } from '@performular/core';
+import { Abstract, FormTypes, Group, Performular } from '@performular/core';
 
 import { CoreGroupProperty } from './group.component';
 import { InputProperty } from './input.component';
@@ -27,8 +27,7 @@ export class AppComponent {
             },
             layout: {
                 direction: {
-                    main: 'column',
-                    ltSm: 'row'
+                    main: 'row'
                 },
                 gap: {
                     main: '18px'
@@ -42,20 +41,11 @@ export class AppComponent {
                         field: 'input',
                         attrs: {
                             type: 'text'
-                        },
-                        styles: {
-                            host: {
-                                width: '100%'
-                            },
-                            input: {
-                                width: '100%'
-                            }
                         }
                     },
                     item: {
                         flex: {
-                            main: 100,
-                            ltSm: 100
+                            main: 20
                         }
                     },
                     focus: true,
@@ -66,21 +56,21 @@ export class AppComponent {
                     framework: {
                         field: 'input',
                         attrs: {
-                            type: 'text'
-                        },
-                        styles: {
-                            host: {
-                                width: '100%'
-                            },
-                            input: {
-                                width: '100%'
-                            }
+                            type: 'texg'
                         }
+                    },
+                    validation: {
+                        validators: [
+                            {
+                                id: 'req',
+                                name: 'required',
+                                errorMsg: 'Fehler',
+                            }
+                        ]
                     },
                     item: {
                         flex: {
-                            main: 50,
-                            ltSm: 100
+                            main: 100
                         }
                     },
                     focus: true,
@@ -88,13 +78,27 @@ export class AppComponent {
             ]
         },
         value: {
-            test3: 5,
-            test5: 10
+            test3: 'asd',
+            test5: 'das'
         }
     }).form;
 
     constructor(
     ) {
+        this.c.updates$.subscribe();
         console.log(this.c);
+        (<Group>this.c).value$.subscribe(console.log);
+        (<Group>this.c).invalid$.subscribe(console.log);
+    }
+
+    public reset(): void {
+        (<Group>this.c).resetValue();
+    }
+
+    public patch(): void {
+        (<Group>this.c).patchValue({
+            test3: 'ddd',
+            test5: 'eee'
+        });
     }
 }

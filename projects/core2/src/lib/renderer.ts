@@ -26,7 +26,7 @@ import {
 } from '@angular/flex-layout';
 
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 import { Abstract } from './models/abstract';
 import { Container } from './models/container';
@@ -88,7 +88,7 @@ export class RendererDirective implements OnDestroy {
                 field.item$.pipe(
                     switchMap(() => this._createItem(field))
                 ),
-                field.isControl ? of() :
+                field.isControl ? of().pipe(startWith(<any>undefined)) :
                     (<Container>field).layout$.pipe(
                         switchMap(() => this._createLayout(<Container>field))
                     )
@@ -132,7 +132,7 @@ export class RendererDirective implements OnDestroy {
     private _createItem(field: Abstract): Observable<void> {
         const p: Abstract | undefined = field.parent;
         if (!p) {
-            return of();
+            return of().pipe(startWith(<any>undefined));
         }
         return p.renderer$.pipe(
             map((renderer: RendererDirective | undefined) => {
@@ -200,7 +200,7 @@ export class RendererDirective implements OnDestroy {
         this._destroyLayout();
         const elementRef: ElementRef | undefined = field.elementRef;
         if (!elementRef) {
-            return of();
+            return of().pipe(startWith(<any>undefined));
         }
         this._layoutHandler = new LayoutDirective(this._monitor, elementRef, this._styleUtils);
         this._layoutHandler = Object.assign(this._layoutHandler, field.layoutDirection);

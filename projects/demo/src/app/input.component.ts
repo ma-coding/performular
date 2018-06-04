@@ -16,7 +16,12 @@ export type Input = Control<'input', InputBindings, InputStyles>;
 })
 @Component({
     selector: 'app-input',
-    template: `<input [value]="field?.value" [ngStyle]="(field?.styles$ | async)?.input" [type]="(field.attrs$ | async).type">`,
+    template: `<input
+    [value]="field?.value$ | async"
+    (input)="onInput($event)"
+     [ngStyle]="(field?.styles$ | async)?.input"
+      [type]="(field.attrs$ | async).type"
+       style="width: 100%">`,
     styles: [`
             :host {
                 width: 100%;
@@ -30,5 +35,9 @@ export class InputComponent implements IOnInitFramework<Input> {
 
     public onInitFramework(field: Input): void {
         this.field = field;
+    }
+
+    public onInput(event: any): void {
+        this.field.setValue(event.target.value, true);
     }
 }

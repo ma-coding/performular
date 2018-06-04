@@ -1,4 +1,5 @@
 import { Observable, of } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 import { use } from '../mixin';
 import { FormTypes, Property } from '../performular';
@@ -57,7 +58,7 @@ export class Container<F extends string = any, A = any, S extends string = any, 
     }
 
     protected _run(checklist: CheckList): Observable<void> {
-        return of();
+        return of().pipe(startWith(<any>undefined));
     }
 
     protected _update(): void {
