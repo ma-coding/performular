@@ -17,7 +17,11 @@ export type Input = Control<'input', InputBindings, InputStyles>;
 @Component({
     selector: 'app-input',
     template: `<input [value]="field?.value" [ngStyle]="(field?.styles$ | async)?.input" [type]="(field.attrs$ | async).type">`,
-    styles: [],
+    styles: [`
+            :host {
+                width: 100%;
+            }
+        `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent implements IOnInitFramework<Input> {

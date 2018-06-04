@@ -93,10 +93,7 @@ export class RendererDirective implements OnDestroy {
                         switchMap(() => this._createLayout(<Container>field))
                     )
             ))
-        ).subscribe(() => {
-
-
-        });
+        ).subscribe();
     }
 
     private _destroyField(): void {
@@ -175,6 +172,8 @@ export class RendererDirective implements OnDestroy {
                 if (this._flexHandler) {
                     this._flexHandler.ngOnInit();
                 }
+
+                renderer._initParent();
             })
         );
     }
@@ -215,16 +214,6 @@ export class RendererDirective implements OnDestroy {
         );
         this._layoutGapHandler = Object.assign(this._layoutGapHandler, field.layoutGap);
 
-        if (this._layoutAlignHandler) {
-            this._layoutAlignHandler.ngOnInit();
-        }
-        if (this._layoutGapHandler) {
-            this._layoutGapHandler.ngOnInit();
-        }
-        if (this._layoutHandler) {
-            this._layoutHandler.ngOnInit();
-        }
-
         return this._layoutHandler.layout$.pipe(
             map((layout: Layout) => {
                 if (layout.direction.indexOf('row') >= 0) {
@@ -236,6 +225,19 @@ export class RendererDirective implements OnDestroy {
                 }
             })
         );
+    }
+
+    private _initParent(): void {
+        if (this._layoutAlignHandler) {
+            this._layoutAlignHandler.ngOnInit();
+        }
+        if (this._layoutGapHandler) {
+            this._layoutGapHandler.ngOnInit();
+        }
+
+        if (this._layoutHandler) {
+            this._layoutHandler.ngOnInit();
+        }
     }
 
     private _destroyLayout(): void {

@@ -27,8 +27,8 @@ export class AppComponent {
             },
             layout: {
                 direction: {
-                    main: 'row',
-                    ltSm: 'column'
+                    main: 'column',
+                    ltSm: 'row'
                 },
                 gap: {
                     main: '18px'
@@ -54,11 +54,8 @@ export class AppComponent {
                     },
                     item: {
                         flex: {
-                            main: 50,
+                            main: 100,
                             ltSm: 100
-                        },
-                        align: {
-                            main: 'end'
                         }
                     },
                     focus: true,
@@ -84,9 +81,6 @@ export class AppComponent {
                         flex: {
                             main: 50,
                             ltSm: 100
-                        },
-                        align: {
-                            main: 'end'
                         }
                     },
                     focus: true,
@@ -94,7 +88,8 @@ export class AppComponent {
             ]
         },
         value: {
-            test3: 5
+            test3: 5,
+            test5: 10
         }
     }).form;
 
