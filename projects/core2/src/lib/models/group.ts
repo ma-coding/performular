@@ -46,13 +46,17 @@ export class Group<F extends string = any, A = any, S extends string = any, P = 
     }
 
     public setValue(value: any, emitUpdate: boolean = false): void {
-        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
-            child.setValue(value[child.id], index === arr.length - 1);
+        this.getChildFields()
+            .filter((child: Field) => child.id in value)
+            .forEach((child: Field, index: number, arr: Field[]) => {
+                child.setValue(value[child.id], index === arr.length - 1);
         });
-    }
+}
 
     public patchValue(value: any, emitUpdate: boolean = false): void {
-        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
+        this.getChildFields()
+        .filter((child: Field) => child.id in value)
+        .forEach((child: Field, index: number, arr: Field[]) => {
             child.patchValue(value[child.id], index === arr.length - 1);
         });
     }

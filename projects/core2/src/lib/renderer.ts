@@ -114,6 +114,7 @@ export class RendererDirective implements OnDestroy {
         if ('onInitFramework' in this._componentRef.instance) {
             this._componentRef.instance.onInitFramework(this._field);
         }
+        this._componentRef.changeDetectorRef.markForCheck();
         field.registerFramework(this._componentRef.location, this._componentRef.instance);
     }
 

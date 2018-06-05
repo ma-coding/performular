@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Abstract, FormTypes, Group, Performular } from '@performular/core';
+import { Abstract, Control, FormTypes, Group, Performular } from '@performular/core';
 
 import { CoreGroupProperty } from './group.component';
 import { InputProperty } from './input.component';
@@ -27,7 +27,7 @@ export class AppComponent {
             },
             layout: {
                 direction: {
-                    main: 'row'
+                    main: 'row wrap'
                 },
                 gap: {
                     main: '18px'
@@ -75,6 +75,46 @@ export class AppComponent {
                     },
                     focus: true,
                 },
+                {
+                    id: 'test6',
+                    type: 'control',
+                    framework: {
+                        field: 'input',
+                        attrs: {
+                            type: 'texg'
+                        }
+                    }
+                },
+                {
+                    id: 'test68',
+                    type: 'control',
+                    framework: {
+                        field: 'input',
+                        attrs: {
+                            type: 'texg'
+                        }
+                    }
+                },
+                {
+                    id: 'test6er',
+                    type: 'control',
+                    framework: {
+                        field: 'input',
+                        attrs: {
+                            type: 'texg'
+                        }
+                    }
+                },
+                {
+                    id: 'test6ghj',
+                    type: 'control',
+                    framework: {
+                        field: 'input',
+                        attrs: {
+                            type: 'texg'
+                        }
+                    }
+                },
             ]
         },
         value: {
@@ -86,9 +126,6 @@ export class AppComponent {
     constructor(
     ) {
         this.c.updates$.subscribe();
-        console.log(this.c);
-        (<Group>this.c).value$.subscribe(console.log);
-        (<Group>this.c).invalid$.subscribe(console.log);
     }
 
     public reset(): void {
@@ -100,5 +137,10 @@ export class AppComponent {
             test3: 'ddd',
             test5: 'eee'
         });
+    }
+
+    public hide(): void {
+        const c: Control = (<Control>(<Group>this.c).getChildFields()[0]);
+        c.setForcedHidden(!c.hidden);
     }
 }

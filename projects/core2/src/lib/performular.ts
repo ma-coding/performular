@@ -5,9 +5,9 @@ import { Group, IGroup, IGroupParams } from './models/group';
 import { IList, IListParams, List } from './models/list';
 
 export type FormTypes = Array<IAbstract>;
-type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
-type NoLength<T> = Exclude<NonFunctionPropertyNames<T>, 'length'>;
-export type Property<T extends FormTypes> = T[NoLength<T>];
+// tslint:disable-next-line
+export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
+export type Property<T extends FormTypes> = T[Exclude<NonFunctionPropertyNames<T>, 'length'>];
 export type RemoveKey<T, S> = { [K in Exclude<keyof T, S>]: T[K] };
 
 export interface IPerformularOptions {

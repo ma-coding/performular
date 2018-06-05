@@ -92,32 +92,32 @@ export class Visibility {
 
     public addHide(effect: IEffect): void {
         this._addVis('hides', effect);
-        // Todo: Call Update
+        this._visField.update([this._visField]);
     }
 
     public removeHide(id: string): void {
         this._removeVis('hides', id);
-        // Todo: Call Update
+        this._visField.update([this._visField]);
     }
 
     public addDisable(effect: IEffect): void {
         this._addVis('disables', effect);
-        // Todo: Call Update
+        this._visField.update([this._visField]);
     }
 
     public removeDisable(id: string): void {
         this._removeVis('disables', id);
-        // Todo: Call Update
+        this._visField.update([this._visField]);
     }
 
     public setForcedDisable(value: boolean): void {
         this._visibility$.updateKey('forcedDisabled', value);
-        // Todo: Call Update
+        this._visField.update([this._visField]);
     }
 
     public setForcedHidden(value: boolean): void {
         this._visibility$.updateKey('forcedHidden', value);
-        // Todo: Call Update
+        this._visField.update([this._visField]);
     }
 
     protected _initVisibility(visibility: IVisibility | undefined, field: Field): void {
