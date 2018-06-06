@@ -35,28 +35,12 @@ export class AppComponent {
             },
             children: [
                 {
-                    id: 'test3',
-                    type: 'control',
-                    framework: {
-                        field: 'input',
-                        attrs: {
-                            type: 'text'
-                        }
-                    },
-                    item: {
-                        flex: {
-                            main: 20
-                        }
-                    },
-                    focus: true,
-                },
-                {
                     id: 'test5',
                     type: 'control',
                     framework: {
                         field: 'input',
                         attrs: {
-                            type: 'texg'
+                            type: 'text'
                         }
                     },
                     validation: {
@@ -74,51 +58,10 @@ export class AppComponent {
                         }
                     },
                     focus: true,
-                },
-                {
-                    id: 'test6',
-                    type: 'control',
-                    framework: {
-                        field: 'input',
-                        attrs: {
-                            type: 'texg'
-                        }
-                    }
-                },
-                {
-                    id: 'test68',
-                    type: 'control',
-                    framework: {
-                        field: 'input',
-                        attrs: {
-                            type: 'texg'
-                        }
-                    }
-                },
-                {
-                    id: 'test6er',
-                    type: 'control',
-                    framework: {
-                        field: 'input',
-                        attrs: {
-                            type: 'texg'
-                        }
-                    }
-                },
-                {
-                    id: 'test6ghj',
-                    type: 'control',
-                    framework: {
-                        field: 'input',
-                        attrs: {
-                            type: 'texg'
-                        }
-                    }
-                },
+                }
             ]
         },
         value: {
-            test3: 'asd',
             test5: 'das'
         }
     }).form;

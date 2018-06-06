@@ -118,12 +118,12 @@ export class Validation {
 
     public setForcedError(error: string): void {
         this._validation$.updateKey('forcedError', error);
-        // Todo: Call Update
+        this._valField.update([this._valField]);
     }
 
     public clearForcedError(): void {
         this._validation$.updateKey('forcedError', undefined);
-        // Todo: Call Update
+        this._valField.update([this._valField]);
     }
 
     public addValidator(validator: IValidator): void {
@@ -131,7 +131,7 @@ export class Validation {
             ...this._validation$.getValue().validators,
             new ValidatorHandler(validator)
         ]);
-        // Todo: Call Update
+        this._valField.update([this._valField]);
     }
 
     public removeValidator(id: string): void {
@@ -139,7 +139,7 @@ export class Validation {
             ...this._validation$.getValue().validators
                 .filter((v: ValidatorHandler) => v.id !== id)
         ]);
-        // Todo: Call Update
+        this._valField.update([this._valField]);
     }
 
     protected _setValidationInstance(): void {

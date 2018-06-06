@@ -1,4 +1,4 @@
-import { ElementRef, Type } from '@angular/core';
+import { ElementRef, Renderer2, Type } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -39,6 +39,7 @@ export interface IFrameworkState<A, S extends string> {
     elementRef?: ElementRef;
     instance?: any;
     renderer?: RendererDirective;
+    ngRenderer?: Renderer2;
 }
 
 export class Framework<F extends string, A, S extends string> {
@@ -92,12 +93,24 @@ export class Framework<F extends string, A, S extends string> {
         return this._framework$.select('renderer');
     }
 
+    get ngRenderer(): Renderer2 | undefined {
+        return this._framework$.getValue().ngRenderer;
+    }
+
+    get ngRenderer$(): Observable<Renderer2 | undefined> {
+        return this._framework$.select('ngRenderer');
+    }
+
     public updateAttrs<K extends keyof any>(key: K, value: any): void {
         this._framework$.updateKey('attrs', value);
     }
 
     public setParent(parent: any): void {
         this._framework$.updateKey('parent', parent);
+    }
+
+    public setNgRenderer(renderer: Renderer2): void {
+        this._framework$.updateKey('ngRenderer', renderer);
     }
 
     public registerFramework(elementRef: ElementRef, instance: any): void {

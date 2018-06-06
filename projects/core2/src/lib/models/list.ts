@@ -1,8 +1,11 @@
+import { Performular } from 'dist/core2';
+
 import { use } from '../mixin';
 import { State } from '../state';
 import { Abstract, IAbstract } from './abstract';
 import { Field, IField, IFieldParams } from './field';
 import { ILayout, Layout } from './layout';
+import { ValueMode } from './value';
 
 export interface IList<F extends string = any, A = any, S extends string = any, P = any> extends IField<'list', F, A, S> {
     childDef: P;
@@ -56,6 +59,27 @@ export class List<F extends string = any, A = any, S extends string = any, P = a
             });
     }
 
+    public pushField(emitUpdate: boolean = true): void {
+        this._updateChildren([
+            ...this._list$.getValue().children,
+            new Performular({
+                property: this._list$.getValue().childDef
+            }).form
+        ], emitUpdate);
+    }
+
+    public popField(emitUpdate: boolean = true): void {
+        const children: Abstract[] = this.getChildren();
+        children.pop();
+        this._updateChildren(children, emitUpdate);
+    }
+
+    public removeFieldAtIndex(index: number): void {
+        const children: Abstract[] = this.getChildren();
+        children.splice(index, 1);
+        this._updateChildren(children, true);
+    }
+
     public resetValue(emitUpdate: boolean = false): void {
         this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
             child.resetValue(index === arr.length - 1);
@@ -71,5 +95,26 @@ export class List<F extends string = any, A = any, S extends string = any, P = a
 
     protected _forEachChild(cb: (child: Abstract) => void): void {
         this._list$.getValue().children.forEach(cb);
+    }
+
+    private _updateChildren(children: Abstract[], emitUpdate: boolean): void {
+        this._list$.updateKey('children', [
+            ...children
+        ]);
+        if (emitUpdate) {
+            this._emitChildrenUpdate();
+        }
+    }
+
+    private _emitChildrenUpdate(): void {
+        this._resetChildParents();
+        this._createValue(ValueMode.SET, this._buildValue);
+        this._updateParentValue([this], ValueMode.SET);
+    }
+
+    private _resetChildParents(children: Abstract[] = this.getChildren()): void {
+        children.forEach((child: Abstract) => {
+            child.setParent(this);
+        });
     }
 }

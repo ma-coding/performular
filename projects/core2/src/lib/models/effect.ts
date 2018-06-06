@@ -12,8 +12,8 @@ export type CheckList = Field[];
 
 export interface IEffectContext {
     checked: boolean;
-    checklist: CheckList; // TODO SET REAL FIELD TYPE
-    field: Field; // TODO SET REAL FIELD TYPE
+    checklist: CheckList;
+    field: Field;
 }
 
 export type EffectTypes = 'validator' | 'visible' | 'custom';

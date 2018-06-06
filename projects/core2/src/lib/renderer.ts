@@ -79,6 +79,7 @@ export class RendererDirective implements OnDestroy {
         this._destroyField();
         this._field = field;
         this._field.setRenderer(this);
+        this._field.setNgRenderer(this._renderer);
         const hiddenObs: Observable<boolean> = field.isContainer ? (<Container>field).hidden$ : (<Field>field).hidden$;
         this._subscription = hiddenObs.pipe(
             tap((hidden: boolean) => {
