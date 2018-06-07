@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { MapType } from 'projects/core2/src/lib/misc';
-
 import { Effect, Field, IEffectContext, IOnValidate } from '@performular/core';
 
 @Effect({
@@ -14,7 +12,7 @@ export class RequiredValidator implements IOnValidate<Field> {
 
     constructor() { }
 
-    public calculate(context: IEffectContext, params?: any): MapType<any> | undefined {
+    public calculate(context: IEffectContext, params?: any): any {
         if (
             context.field.value === undefined ||
             context.field.value === null ||
@@ -28,7 +26,15 @@ export class RequiredValidator implements IOnValidate<Field> {
 
     public instanceRendered(field: Field, params: any): void {
         if (field.elementRef && field.ngRenderer) {
-            field.ngRenderer.setAttribute(field.elementRef.nativeElement.firstChild, 'required', 'true');
+            const element: HTMLElement = document.getElementById(field.uuid) || field.elementRef.nativeElement.firstChild;
+            field.ngRenderer.setAttribute(element, 'required', 'true');
+        }
+    }
+
+    public validatorRemoved(field: Field, params: any): void {
+        if (field.elementRef && field.ngRenderer) {
+            const element: HTMLElement = document.getElementById(field.uuid) || field.elementRef.nativeElement.firstChild;
+            field.ngRenderer.removeAttribute(element, 'required');
         }
     }
 }

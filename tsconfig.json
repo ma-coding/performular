@@ -21,7 +21,7 @@
         ],
         "paths": {
             "@performular/core": [
-                "projects/core2/src/index.ts"
+                "projects/core/src/index.ts"
             ]
         }
     }

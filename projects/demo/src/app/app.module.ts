@@ -8,14 +8,14 @@ import { PerformulerCoreModule } from '@performular/core';
 import { AppComponent } from './app.component';
 import { DefaultRunDetector } from './default.run-detector';
 import { CoreGroupComponent } from './group.component';
-import { InputComponent } from './input.component';
+import { CoreListComponent } from './list.component';
 import { RequiredValidator } from './required.validation';
 
 @NgModule({
     declarations: [
         AppComponent,
-        InputComponent,
-        CoreGroupComponent
+        CoreGroupComponent,
+        CoreListComponent
     ],
     imports: [
         FormsModule,
@@ -23,8 +23,8 @@ import { RequiredValidator } from './required.validation';
         BrowserModule,
         PerformulerCoreModule.withConfig({
             formComponents: [
-                InputComponent,
-                CoreGroupComponent
+                CoreGroupComponent,
+                CoreListComponent
             ],
             runDetectors: [
                 DefaultRunDetector
@@ -35,8 +35,8 @@ import { RequiredValidator } from './required.validation';
         })
     ],
     entryComponents: [
-        InputComponent,
-        CoreGroupComponent
+        CoreGroupComponent,
+        CoreListComponent
     ],
     providers: [
         DefaultRunDetector,

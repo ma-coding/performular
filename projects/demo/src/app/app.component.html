@@ -1,4 +1,21 @@
-<ng-container [performularRenderer]="c"></ng-container>
+<performular [form]="c">
+    <ng-template performularTemplate field="input" let-field>
+        <h1>HALLO</h1>
+        <div>{{field?.invalid$ | async}}</div>
+    </ng-template>
+    <ng-template performularTemplate field="corelist" let-field>
+        <button (click)="field.pushField(true)">ADD</button>
+    </ng-template>
+    <ng-template performularTemplate id="test0" let-field>
+        <h1>trifft</h1>
+        <div>{{field?.value$ | async}}</div>
+    </ng-template>
+    <ng-template performularTemplate id="listitem" position="after" let-field>
+        <button (click)="field.parent.removeFieldAtIndex(field.parent.getIndex(field))">REMOVE</button>
+    </ng-template>
+</performular>
 <button (click)="reset()">RESET</button>
 <button (click)="patch()">PATCH</button>
 <button (click)="hide()">HIDE</button>
+<button (click)="rem()">REM</button>
+<button (click)="add()">ADD</button>
