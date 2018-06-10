@@ -3,17 +3,17 @@ import { Observable } from 'rxjs';
 import { use } from '../mixin';
 import { FormTypes, Performular, Property } from '../performular';
 import { State } from '../state';
-import { Abstract, IAbstract } from './abstract';
+import { Abstract, IAbstract, TList } from './abstract';
 import { Field, IField, IFieldParams } from './field';
 import { ILayout, Layout } from './layout';
 import { ValueMode } from './value';
 
-export interface IList<F extends string = any, A = any, S extends string = any, P extends FormTypes = any> extends IField<'list', F, A, S> {
+export interface IList<F extends string = any, A = any, S extends string = any, P extends FormTypes = any> extends IField<TList, F, A, S> {
     childDef: Property<P>;
     layout?: ILayout;
 }
 
-export interface IListParams<F extends string = any, A = any, S extends string = any, P = any> extends IFieldParams<'list', F, A, S> {
+export interface IListParams<F extends string = any, A = any, S extends string = any, P = any> extends IFieldParams<TList, F, A, S> {
     childDef: IAbstract;
     children: Abstract[];
     layout?: ILayout;
@@ -26,10 +26,10 @@ export interface IListState {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S>, Layout { }
+export interface List<F extends string = any, A = any, S extends string = any, P = any> extends Field<TList, F, A, S>, Layout { }
 
 // @dynamic
-export class List<F extends string = any, A = any, S extends string = any, P = any> extends Field<'list', F, A, S> {
+export class List<F extends string = any, A = any, S extends string = any, P = any> extends Field<TList, F, A, S> {
 
     private _list$: State<IListState>;
     @use(Layout) public this: List<F, A, S, P> | undefined;
@@ -69,7 +69,7 @@ export class List<F extends string = any, A = any, S extends string = any, P = a
         this._updateChildren([
             ...this._list$.getValue().children,
             new Performular({
-                property: this._list$.getValue().childDef
+                form: this._list$.getValue().childDef
             }).form
         ], emitUpdate);
     }

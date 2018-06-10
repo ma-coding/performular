@@ -1,18 +1,18 @@
-import { Abstract } from './abstract';
+import { Abstract, TControl } from './abstract';
 import { Field, IField, IFieldParams } from './field';
 import { ValueMode } from './value';
 
-export interface IControl<F extends string = any, A = any, S extends string = any> extends IField<'control', F, A, S> {
+export interface IControl<F extends string = any, A = any, S extends string = any> extends IField<TControl, F, A, S> {
     focus?: boolean;
 }
 
-export interface IControlParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<'control', F, A, S> {
+export interface IControlParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<TControl, F, A, S> {
     focus: boolean;
     value: any;
 }
 
 // @dynamic
-export class Control<F extends string = any, A = any, S extends string = any> extends Field<'control', F, A, S> {
+export class Control<F extends string = any, A = any, S extends string = any> extends Field<TControl, F, A, S> {
 
     constructor(control: IControlParams<F, A, S>) {
         super(control);

@@ -1,4 +1,5 @@
 import { MapType } from './misc';
+import { FieldTypes } from './models/abstract';
 import { EffectType, IEffectDecoration } from './models/effect';
 import { FrameworkType, IFrameworkDecoration } from './models/framework';
 import { RunDetectorType } from './models/run-detector';
@@ -12,7 +13,7 @@ export class Metadata {
 
     private static _runDetectors: MapType<IMetadata<string, RunDetectorType>> = {};
     private static _effects: MapType<IMetadata<IEffectDecoration, EffectType>> = {};
-    private static _formComponents: MapType<IMetadata<IFrameworkDecoration, FrameworkType>> = {};
+    private static _formComponents: MapType<IMetadata<IFrameworkDecoration<FieldTypes>, FrameworkType>> = {};
 
     public static addEffect(options: IEffectDecoration, target: EffectType): void {
         this._effects[options.name] = {
@@ -21,7 +22,7 @@ export class Metadata {
         };
     }
 
-    public static addFormComponent(options: IFrameworkDecoration, target: FrameworkType): void {
+    public static addFormComponent(options: IFrameworkDecoration<FieldTypes>, target: FrameworkType): void {
         this._formComponents[options.name] = {
             metadata: options,
             target: target
@@ -42,7 +43,7 @@ export class Metadata {
         return this._effects[name];
     }
 
-    public static getFormComponent(name: string): IMetadata<IFrameworkDecoration, FrameworkType> {
+    public static getFormComponent(name: string): IMetadata<IFrameworkDecoration<FieldTypes>, FrameworkType> {
         if (!this._formComponents[name]) {
             this._throwNotFound('formComponent', name);
         }

@@ -6,7 +6,11 @@ import { FormComponent as PerformularComponent } from '../form';
 import { Metadata } from '../metadata';
 import { RendererDirective } from '../renderer';
 import { State } from '../state';
-import { Abstract } from './abstract';
+import { Abstract, FieldTypes, TContainer, TControl, TGroup, TList } from './abstract';
+import { IContainerParams } from './container';
+import { IControlParams } from './control';
+import { IGroupParams } from './group';
+import { IListParams } from './list';
 
 export interface IOnInitFramework<F extends Abstract = any> {
     onInitFramework(field: F): void;
@@ -14,11 +18,19 @@ export interface IOnInitFramework<F extends Abstract = any> {
 
 export type FrameworkType = Type<IOnInitFramework>;
 
-export interface IFrameworkDecoration {
-    name: string;
+export interface IBuildContext<T> {
+    params: T extends TContainer ? IContainerParams :
+    T extends TControl ? IControlParams :
+    T extends TGroup ? IGroupParams :
+    T extends TList ? IListParams : any;
 }
 
-export function FormComponent(options: IFrameworkDecoration): ClassDecorator {
+export interface IFrameworkDecoration<T> {
+    name: string;
+    builder: (context: IBuildContext<T>) => Abstract;
+}
+
+export function FormComponent<T extends FieldTypes>(options: IFrameworkDecoration<T>): ClassDecorator {
     return (target: Function): void => {
         Metadata.addFormComponent(options, <FrameworkType>target);
     };

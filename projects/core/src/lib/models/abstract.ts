@@ -3,9 +3,17 @@ import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
 import { flatten, generateUUID } from '../misc';
 import { use } from '../mixin';
+import { IPerformularOptions } from '../performular';
 import { CheckList } from './effect';
 import { Framework, IFramework } from './framework';
 import { IItem, Item } from './item';
+
+export type TControl = 'control';
+export type TContainer = 'container';
+export type TGroup = 'group';
+export type TList = 'list';
+
+export type FieldTypes = TControl | TContainer | TGroup | TList;
 
 export interface IAbstract<T extends string = any, F extends string = any, A = any, S extends string = any> {
     type: T;
@@ -19,6 +27,7 @@ export interface IAbstractParams<T extends string = any, F extends string = any,
     id: string;
     framework: IFramework<F, A, S>;
     item?: IItem;
+    options?: IPerformularOptions;
 }
 
 export interface Abstract<
@@ -33,6 +42,7 @@ export abstract class Abstract<
     S extends string = any
     > {
     private _type: string;
+    private _options: IPerformularOptions;
     private _id: string;
     private _uuid: string;
     private _updateSubject: Subject<CheckList>;
@@ -70,7 +80,7 @@ export abstract class Abstract<
     get updates$(): Observable<void> {
         return this._updateSubject.pipe(
             // tslint:disable-next-line:no-magic-numbers
-            buffer(this._updateSubject.pipe(debounceTime(500))),
+            buffer(this._updateSubject.pipe(debounceTime(this._options.updateDebounce || 0))),
             map(flatten),
             concatMap((checkList: CheckList) => this._treeDown(checkList))
         );
@@ -79,6 +89,7 @@ export abstract class Abstract<
     constructor(abstract: IAbstractParams<T, F, A, S>) {
         this._type = abstract.type;
         this._id = abstract.id;
+        this._options = abstract.options || <IPerformularOptions>{};
         this._uuid = generateUUID();
         this._initItem(abstract.item);
         this._initFramework(abstract.framework);

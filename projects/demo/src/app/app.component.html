@@ -1,17 +1,23 @@
 <performular [form]="c">
-    <ng-template performularTemplate field="input" let-field>
-        <h1>HALLO</h1>
-        <div>{{field?.invalid$ | async}}</div>
+    <ng-template performularTemplate field="input" let-field position="after">
+        <div *ngIf="field?.invalid$ | async">
+            <div *ngFor="let err of field?.errors$ | async">
+                {{err}}
+            </div>
+        </div>
     </ng-template>
-    <ng-template performularTemplate field="corelist" let-field>
+    <ng-template performularTemplate field="list" let-field>
         <button (click)="field.pushField(true)">ADD</button>
-    </ng-template>
-    <ng-template performularTemplate id="test0" let-field>
-        <h1>trifft</h1>
-        <div>{{field?.value$ | async}}</div>
     </ng-template>
     <ng-template performularTemplate id="listitem" position="after" let-field>
         <button (click)="field.parent.removeFieldAtIndex(field.parent.getIndex(field))">REMOVE</button>
+    </ng-template>
+    <ng-template performularTemplate id="listitemcontrol" position="after" let-field>
+        <div *ngIf="field?.invalid$ | async">
+            <div *ngFor="let err of field?.errors$ | async">
+                {{err}}
+            </div>
+        </div>
     </ng-template>
 </performular>
 <button (click)="reset()">RESET</button>

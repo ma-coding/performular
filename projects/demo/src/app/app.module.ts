@@ -6,41 +6,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { PerformulerCoreModule } from '@performular/core';
 
 import { AppComponent } from './app.component';
-import { DefaultRunDetector } from './default.run-detector';
-import { CoreGroupComponent } from './group.component';
-import { CoreListComponent } from './list.component';
-import { RequiredValidator } from './required.validation';
 
 @NgModule({
     declarations: [
-        AppComponent,
-        CoreGroupComponent,
-        CoreListComponent
+        AppComponent
     ],
     imports: [
         FormsModule,
         FlexLayoutModule,
         BrowserModule,
-        PerformulerCoreModule.withConfig({
-            formComponents: [
-                CoreGroupComponent,
-                CoreListComponent
-            ],
-            runDetectors: [
-                DefaultRunDetector
-            ],
-            effects: [
-                RequiredValidator
-            ]
-        })
-    ],
-    entryComponents: [
-        CoreGroupComponent,
-        CoreListComponent
-    ],
-    providers: [
-        DefaultRunDetector,
-        RequiredValidator
+        PerformulerCoreModule.withConfig({})
     ],
     bootstrap: [AppComponent]
 })

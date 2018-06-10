@@ -5,7 +5,7 @@ export { Loader } from './lib/loader';
 export { IMetadata, Metadata } from './lib/metadata';
 export { State } from './lib/state';
 export { Performular, FormTypes, IPerformular, IPerformularOptions } from './lib/performular';
-export { IPerformularCoreConfig, PerformulerCoreModule } from './lib/module';
+export { IPerformularModuleConfig, PerformulerCoreModule } from './lib/module';
 export { RendererDirective } from './lib/renderer';
 
 export { Abstract, IAbstract } from './lib/models/abstract';
@@ -46,3 +46,11 @@ export {
     IFieldset, Fieldset, FieldsetAttrs, FieldsetComponent,
     FieldsetStyles, PERFORMULAR_FORMCOMPONENT_FIELDSET
 } from './lib/build-in/components/fieldset.component';
+export {
+    ICoreGroup, CoreGroup, CoreGroupComponent,
+    PERFORMULAR_FORMCOMPONENT_GROUP
+} from './lib/build-in/components/group.component';
+export {
+    ICoreList, CoreList, CoreListComponent,
+    PERFORMULAR_FORMCOMPONENT_LIST
+} from './lib/build-in/components/list.component';

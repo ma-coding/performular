@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
+import { Abstract, TContainer } from '../../models/abstract';
 import { Container, IContainer } from '../../models/container';
-import { FormComponent, IOnInitFramework } from '../../models/framework';
+import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
 
 export const PERFORMULAR_FORMCOMPONENT_FIELDSET: 'fieldset' = 'fieldset';
 
@@ -16,8 +17,11 @@ export type FieldsetStyles = 'fieldset' | 'legend';
 export type IFieldset = IContainer<typeof PERFORMULAR_FORMCOMPONENT_FIELDSET, FieldsetAttrs, FieldsetStyles>;
 export type Fieldset = Container<typeof PERFORMULAR_FORMCOMPONENT_FIELDSET, FieldsetAttrs, FieldsetStyles>;
 
-@FormComponent({
-    name: PERFORMULAR_FORMCOMPONENT_FIELDSET
+@FormComponent<TContainer>({
+    name: PERFORMULAR_FORMCOMPONENT_FIELDSET,
+    builder: (context: IBuildContext<TContainer>): Abstract => {
+        return new Container(context.params);
+    }
 })
 @Component({
     selector: 'performular-fieldset',

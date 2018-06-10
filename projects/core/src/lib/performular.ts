@@ -1,8 +1,9 @@
+import { Metadata } from './metadata';
 import { Abstract, IAbstract } from './models/abstract';
-import { Container, IContainer, IContainerParams } from './models/container';
-import { Control, IControl, IControlParams } from './models/control';
-import { Group, IGroup, IGroupParams } from './models/group';
-import { IList, IListParams, List } from './models/list';
+import { IContainer, IContainerParams } from './models/container';
+import { IControl, IControlParams } from './models/control';
+import { IGroup, IGroupParams } from './models/group';
+import { IList, IListParams } from './models/list';
 
 export type FormTypes = Array<IAbstract>;
 // tslint:disable-next-line
@@ -11,13 +12,13 @@ export type Property<T extends FormTypes> = T[Exclude<NonFunctionPropertyNames<T
 export type RemoveKey<T, S> = { [K in Exclude<keyof T, S>]: T[K] };
 
 export interface IPerformularOptions {
-    errorWhen: boolean;
+    updateDebounce?: number;
 }
 
 export interface IPerformular<P extends FormTypes> {
     options?: IPerformularOptions;
     value?: any;
-    property: Property<P>;
+    form: Property<P>;
 }
 
 export class Performular<P extends FormTypes> {
@@ -31,7 +32,7 @@ export class Performular<P extends FormTypes> {
 
     constructor(config: IPerformular<P>) {
         this._config = config;
-        this._form = this._build(config.property, []);
+        this._form = this._build(config.form, []);
     }
 
     private _build(abstract: Property<P>, path: Array<string | number>): Abstract {
@@ -40,6 +41,7 @@ export class Performular<P extends FormTypes> {
                 const container: IContainer = <any>abstract;
                 const containerParams: IContainerParams = {
                     ...container,
+                    options: this._config.options,
                     children: container.children.map((c: any) => {
                         if (c.type === 'container') {
                             return this._build(c, path);
@@ -47,21 +49,27 @@ export class Performular<P extends FormTypes> {
                         return this._build(c, this._addToPath(path, c.id));
                     })
                 };
-                return new Container(containerParams);
+                return Metadata.getFormComponent(containerParams.framework.field).metadata.builder({
+                    params: containerParams
+                });
             }
             case 'control': {
                 const control: IControl = <any>abstract;
                 const controlParams: IControlParams = {
                     ...control,
+                    options: this._config.options,
                     focus: control.focus || false,
                     value: this._getValueFromPath(path)
                 };
-                return new Control(controlParams);
+                return Metadata.getFormComponent(controlParams.framework.field).metadata.builder({
+                    params: controlParams
+                });
             }
             case 'group': {
                 const group: IGroup = <any>abstract;
                 const groupParams: IGroupParams<any, any> = {
                     ...group,
+                    options: this._config.options,
                     children: group.children.map((child: any) => {
                         if (child.type === 'container') {
                             return this._build(child, path);
@@ -70,18 +78,23 @@ export class Performular<P extends FormTypes> {
                         }
                     })
                 };
-                return new Group(groupParams);
+                return Metadata.getFormComponent(groupParams.framework.field).metadata.builder({
+                    params: groupParams
+                });
             }
             case 'list': {
                 const list: IList = <any>abstract;
                 const value: any = this._getValueFromPath(path, this._config.value);
                 const listParams: IListParams = {
                     ...list,
+                    options: this._config.options,
                     children: (value && Array.isArray(value)) ? value.map((c: any, index: number) => {
                         return this._build(list.childDef, this._addToPath(path, index));
                     }) : []
                 };
-                return new List(listParams);
+                return Metadata.getFormComponent(listParams.framework.field).metadata.builder({
+                    params: listParams
+                });
             }
             default: {
                 throw new Error('Unknown Type');

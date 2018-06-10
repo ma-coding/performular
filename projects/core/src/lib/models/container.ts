@@ -4,18 +4,18 @@ import { startWith } from 'rxjs/operators';
 import { use } from '../mixin';
 import { FormTypes, Property } from '../performular';
 import { State } from '../state';
-import { Abstract, IAbstract, IAbstractParams } from './abstract';
+import { Abstract, IAbstract, IAbstractParams, TContainer } from './abstract';
 import { CheckList } from './effect';
 import { Field } from './field';
 import { ILayout, Layout } from './layout';
 
 export interface IContainer<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
-    extends IAbstract<'container', F, A, S> {
+    extends IAbstract<TContainer, F, A, S> {
     children: Property<P>[];
     layout?: ILayout;
 }
 
-export interface IContainerParams<F extends string = any, A = any, S extends string = any> extends IAbstractParams<'container', F, A, S> {
+export interface IContainerParams<F extends string = any, A = any, S extends string = any> extends IAbstractParams<TContainer, F, A, S> {
     children: Abstract[];
     layout?: ILayout;
 }
@@ -29,7 +29,7 @@ export interface IContainerState {
 export interface Container<F extends string = any, A = any, S extends string = any, P = any> extends Layout { }
 
 // @dynamic
-export class Container<F extends string = any, A = any, S extends string = any, P = any> extends Abstract<'container', F, A, S> {
+export class Container<F extends string = any, A = any, S extends string = any, P = any> extends Abstract<TContainer, F, A, S> {
 
     private _container$: State<IContainerState>;
 

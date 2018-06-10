@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { use } from '../mixin';
-import { Abstract, IAbstract } from './abstract';
+import { Abstract, IAbstract, IAbstractParams } from './abstract';
 import { CheckList, IEffectContext } from './effect';
 import { IValidation, Validation } from './validation';
 import { Value, ValueMode } from './value';
@@ -15,7 +15,8 @@ export interface IField<T extends string, F extends string = any, A = any, S ext
     visibility?: IVisibility;
 }
 
-export interface IFieldParams<T extends string, F extends string = any, A = any, S extends string = any> extends IAbstract<T, F, A, S> {
+export interface IFieldParams<T extends string, F extends string = any, A = any, S extends string = any>
+    extends IAbstractParams<T, F, A, S> {
     validation?: IValidation;
     visibility?: IVisibility;
 }

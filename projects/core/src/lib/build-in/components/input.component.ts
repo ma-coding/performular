@@ -2,23 +2,37 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
+import { Abstract, TControl } from '../../models/abstract';
 import { Control, IControl } from '../../models/control';
-import { FormComponent, IOnInitFramework } from '../../models/framework';
+import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
 import { InputValueHandler } from '../cdk/input-value-handler';
 
 export const PERFORMULAR_FORMCOMPONENT_INPUT: 'input' = 'input';
 
 export interface InputAttrs {
     type: string;
+    debounce?: number;
 }
 
 export type InputStyles = 'input';
 
 export type IInput = IControl<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles>;
-export type Input = Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles>;
 
-@FormComponent({
-    name: PERFORMULAR_FORMCOMPONENT_INPUT
+export class Input extends Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles> {
+    public patchValue(value: any, emitUpdate: boolean = true): void {
+        super.patchValue(InputValueHandler.validateValue(value, this.attrs.type), emitUpdate);
+    }
+
+    public setValue(value: any, emitUpdate: boolean = true): void {
+        super.setValue(InputValueHandler.validateValue(value, this.attrs.type), emitUpdate);
+    }
+}
+
+@FormComponent<TControl>({
+    name: PERFORMULAR_FORMCOMPONENT_INPUT,
+    builder: (context: IBuildContext<TControl>): Abstract => {
+        return new Input(context.params);
+    }
 })
 @Component({
     selector: 'performular-input',
@@ -53,7 +67,7 @@ export class InputComponent implements IOnInitFramework<Input>, OnDestroy {
 
     public onInitFramework(field: Input): void {
         this.field = field;
-        this.inputValueHandler = new InputValueHandler(field.attrs.type);
+        this.inputValueHandler = new InputValueHandler(field.attrs.type, field.attrs.debounce || 0);
         this._inputSub = this.inputValueHandler.valueChanges
             .subscribe((value: any) => {
                 this.field.setValue(value);

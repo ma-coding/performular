@@ -6,24 +6,29 @@ export class InputValueHandler {
 
     public valueChanges: Observable<any>;
 
-    constructor(public type: string) {
+    constructor(public type: string, public debounce: number) {
         this.valueChanges = this._valueSubject.pipe(
-            debounceTime(500),
+            debounceTime(debounce),
             map((value: any) => {
-                if (type === 'number') {
-                    try {
-                        return parseFloat(value);
-                    } catch (err) {
-                        return value;
-                    }
-                }
-                return value;
+                return InputValueHandler.validateValue(value, type);
             })
         );
+    }
+
+    public static validateValue(value: any, type: string): any {
+        if (!value) {
+            return null;
+        }
+        if (type === 'number') {
+            const val: number = parseFloat(value);
+            return isNaN(val) ? null : val;
+        }
+        return value;
     }
 
     public setValue(value: any): void {
         this._valueSubject.next(value);
     }
+
 
 }

@@ -3,17 +3,17 @@ import { Observable } from 'rxjs';
 import { use } from '../mixin';
 import { FormTypes, Property } from '../performular';
 import { State } from '../state';
-import { Abstract } from './abstract';
+import { Abstract, TGroup } from './abstract';
 import { Field, IField, IFieldParams } from './field';
 import { ILayout, Layout } from './layout';
 
 export interface IGroup<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
-    extends IField<'group', F, A, S> {
+    extends IField<TGroup, F, A, S> {
     children: Property<P>[];
     layout?: ILayout;
 }
 
-export interface IGroupParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<'group', F, A, S> {
+export interface IGroupParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<TGroup, F, A, S> {
     children: Abstract[];
     layout?: ILayout;
 }
@@ -23,10 +23,10 @@ export interface IGroupState {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S>, Layout { }
+export interface Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<TGroup, F, A, S>, Layout { }
 
 // @dynamic
-export class Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<'group', F, A, S> {
+export class Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<TGroup, F, A, S> {
 
     private _group$: State<IGroupState>;
     @use(Layout) public this: Group<F, A, S, P> | undefined;
@@ -50,15 +50,15 @@ export class Group<F extends string = any, A = any, S extends string = any, P = 
             .filter((child: Field) => child.id in value)
             .forEach((child: Field, index: number, arr: Field[]) => {
                 child.setValue(value[child.id], index === arr.length - 1);
-        });
-}
+            });
+    }
 
     public patchValue(value: any, emitUpdate: boolean = false): void {
         this.getChildFields()
-        .filter((child: Field) => child.id in value)
-        .forEach((child: Field, index: number, arr: Field[]) => {
-            child.patchValue(value[child.id], index === arr.length - 1);
-        });
+            .filter((child: Field) => child.id in value)
+            .forEach((child: Field, index: number, arr: Field[]) => {
+                child.patchValue(value[child.id], index === arr.length - 1);
+            });
     }
 
     public resetValue(emitUpdate: boolean = false): void {

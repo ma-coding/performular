@@ -2,13 +2,15 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
+import { Abstract, TControl } from '../../models/abstract';
 import { Control, IControl } from '../../models/control';
-import { FormComponent, IOnInitFramework } from '../../models/framework';
+import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
 import { InputValueHandler } from '../cdk/input-value-handler';
 
 export const PERFORMULAR_FORMCOMPONENT_TEXTAREA: 'textarea' = 'textarea';
 
 export interface TextareaAttrs {
+    debounce?: number;
     rows?: number;
     cols?: number;
 }
@@ -18,8 +20,11 @@ export type TextareaStyles = 'textarea';
 export type ITextarea = IControl<typeof PERFORMULAR_FORMCOMPONENT_TEXTAREA, TextareaAttrs, TextareaStyles>;
 export type Textarea = Control<typeof PERFORMULAR_FORMCOMPONENT_TEXTAREA, TextareaAttrs, TextareaStyles>;
 
-@FormComponent({
-    name: PERFORMULAR_FORMCOMPONENT_TEXTAREA
+@FormComponent<TControl>({
+    name: PERFORMULAR_FORMCOMPONENT_TEXTAREA,
+    builder: (context: IBuildContext<TControl>): Abstract => {
+        return new Control(context.params);
+    }
 })
 @Component({
     selector: 'performular-textarea',
@@ -55,7 +60,7 @@ export class TextareaComponent implements IOnInitFramework<Textarea>, OnDestroy 
 
     public onInitFramework(field: Textarea): void {
         this.field = field;
-        this.textareaValueHandler = new InputValueHandler('text');
+        this.textareaValueHandler = new InputValueHandler('text', field.attrs.debounce || 0);
         this._textareaSub = this.textareaValueHandler.valueChanges
             .subscribe((value: any) => {
                 this.field.setValue(value);
