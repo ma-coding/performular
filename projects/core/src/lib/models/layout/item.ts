@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 
 import { IViewScales, MapType } from '../../misc';
 import { State } from '../../state';
+import { IAbstract } from '../abstract';
 import { BaseLayout } from './base-layout';
 
 export type FlexValues = string | number;
@@ -15,9 +16,7 @@ export interface IItemProperty {
     flexAlign?: IViewScales<FlexAlignValues>;
 }
 
-export type IItemParams = IItemProperty;
-
-export type IItem = IItemParams;
+export type IItem = IItemProperty;
 
 function selectFlex(state: IItem): MapType<FlexValues> {
     return BaseLayout.convertKeys<FlexValues>('flex')(state.flex);
@@ -35,8 +34,8 @@ function selectFlexOffset(state: IItem): MapType<string> {
     return BaseLayout.convertKeys<string>('offset')(state.flexOffset);
 }
 
-export abstract class Item<S extends IItem> {
-    protected abstract _state$: State<S>;
+export abstract class Item<ST extends IItem = IAbstract> {
+    protected abstract _state$: State<ST>;
 
     get flex(): MapType<FlexValues> {
         return this._state$.get(selectFlex);
@@ -68,6 +67,10 @@ export abstract class Item<S extends IItem> {
 
     get flexOffset$(): Observable<MapType<string>> {
         return this._state$.get$(selectFlexAlign);
+    }
+
+    public _initItem(property: IItemProperty): IItem {
+        return property;
     }
 
 }

@@ -1,6 +1,7 @@
 import { use } from '../mixin';
 import { State } from '../state';
-import { IItem, IItemParams, IItemProperty, Item } from './layout/item';
+import { Framework, IFramework, IFrameworkProperty } from './framework/framework';
+import { IItem, IItemProperty, Item } from './layout/item';
 
 export type TControl = 'control';
 export type TGroup = 'group';
@@ -9,29 +10,48 @@ export type TContainer = 'container';
 
 export type FieldType = TControl | TGroup | TList | TContainer;
 
-export interface IAbstractProperty<T extends FieldType> extends IItemProperty {
+export interface IAbstractProperty<
+    T extends FieldType = FieldType,
+    F extends string = any,
+    A = any,
+    S extends string = 'host'
+    > extends IItemProperty, IFrameworkProperty<F, A, S> {
     type: T;
 }
 
-export interface IAbstractParams<T extends FieldType> extends IItemParams {
+export interface IAbstract<
+    T extends FieldType = FieldType,
+    A = any,
+    S extends string = never
+    > extends IItem, IFramework<A, S> {
     type: T;
 }
 
-export interface IAbstract<T extends FieldType> extends IItem {
-    type: T;
-}
+export interface Abstract<
+    T extends FieldType = FieldType,
+    A = any,
+    S extends string = never,
+    ST extends IAbstract = any
+    > extends Item<ST>, Framework<A, S, ST> { }
 
-export interface Abstract<T extends FieldType, S extends IAbstract<T>> extends Item<S> { }
+export abstract class Abstract<
+    T extends FieldType = FieldType,
+    A = any,
+    S extends string = never,
+    ST extends IAbstract = any
+    > {
 
-export abstract class Abstract<T extends FieldType, S extends IAbstract<T>> {
+    protected abstract _state$: State<ST>;
+    protected _init: IAbstract;
 
-    protected abstract _state$: State<S>;
-    protected _init: IAbstract<T>;
+    @use(Item, Framework) public this: Abstract | undefined;
 
-    @use(Item) public this: Abstract<T, S> | undefined;
-
-    constructor(abs: IAbstract<T>) {
-        this._init = abs;
+    constructor(abs: IAbstract<T, A, S>) {
+        this._init = {
+            ...abs,
+            ...this._initFramework(abs),
+            ...this._initItem(abs)
+        };
     }
 
 }

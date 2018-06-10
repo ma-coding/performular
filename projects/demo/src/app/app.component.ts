@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 
-import { Control } from '../../../core/src/lib/models/control';
-
 // import {
 //     Control,
 //     FormTypes,
@@ -30,15 +28,6 @@ import { Control } from '../../../core/src/lib/models/control';
 export class AppComponent {
 
     constructor() {
-        const c: Control = new Control({
-            type: 'control',
-            focus: true,
-            flex: {
-                main: 100
-            }
-        });
-        console.log(c);
-
     }
 
     // public test: string = 'MENSCH';
