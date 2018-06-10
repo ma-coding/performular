@@ -49,6 +49,7 @@ export class Performular<P extends FormTypes> {
                         return this._build(c, this._addToPath(path, c.id));
                     })
                 };
+                console.log(abstract.id, path);
                 return Metadata.getFormComponent(containerParams.framework.field).metadata.builder({
                     params: containerParams
                 });
@@ -61,6 +62,7 @@ export class Performular<P extends FormTypes> {
                     focus: control.focus || false,
                     value: this._getValueFromPath(path)
                 };
+                console.log(abstract.id, path);
                 return Metadata.getFormComponent(controlParams.framework.field).metadata.builder({
                     params: controlParams
                 });
@@ -78,6 +80,7 @@ export class Performular<P extends FormTypes> {
                         }
                     })
                 };
+                console.log(abstract.id, path);
                 return Metadata.getFormComponent(groupParams.framework.field).metadata.builder({
                     params: groupParams
                 });
@@ -89,9 +92,11 @@ export class Performular<P extends FormTypes> {
                     ...list,
                     options: this._config.options,
                     children: (value && Array.isArray(value)) ? value.map((c: any, index: number) => {
+                        console.log(list.childDef, path, index);
                         return this._build(list.childDef, this._addToPath(path, index));
                     }) : []
                 };
+                console.log(abstract.id, path);
                 return Metadata.getFormComponent(listParams.framework.field).metadata.builder({
                     params: listParams
                 });

@@ -1,43 +1,48 @@
 
-export type Constructor<T> = new (...args: any[]) => T;
+export type Constructor<T> = Function & { prototype: T };
 export type Mixin<T> = Constructor<T>;
 
 export function mix(baseClass: Constructor<any>, mixins: Mixin<any>[]): void {
-    const baseClassNames: string[] = getClassMethodsWithoutConstructor(baseClass);
     for (const mixin of mixins) {
-        const methodNames: string[] = getMethodNames(mixin);
-        methodNames.forEach((methodName: string) => {
-            if (baseClassNames.indexOf(methodName) > -1) {
+        const baseClassDescriptors: PropertyDescriptorMap = getAllPropertyDescriptors(baseClass);
+        const descriptors: PropertyDescriptorMap = getAllPropertyDescriptors(mixin);
+
+        Object.keys(descriptors).forEach((key: string) => {
+            if (key in baseClassDescriptors) {
+                console.error(`${key} ist schon vorhanden!`);
                 return;
             }
-            const descriptor: PropertyDescriptor | undefined = Object.getOwnPropertyDescriptor(mixin.prototype, methodName);
-            if (descriptor) {
-                Object.defineProperty(baseClass.prototype, methodName, descriptor);
-            } else {
-                console.log(methodName);
-                baseClass.prototype[methodName] = mixin.prototype[methodName];
-            }
+            Object.defineProperty(baseClass.prototype, key, descriptors[key]);
         });
     }
-}
-
-export function getMethodNames(mixin: Mixin<any>): string[] {
-    return getClassMethodsWithoutConstructor(mixin as Constructor<any>);
-}
-
-export function getObjectMethods(obj: object): string[] {
-    return Object.getOwnPropertyNames(obj).filter((key: string) => {
-        return obj[key] && (typeof obj[key] === 'function');
-    });
-}
-
-export function getClassMethodsWithoutConstructor(cls: Constructor<any>): string[] {
-    const baseClassMethodNames: string[] = Object.getOwnPropertyNames(cls.prototype);
-    return baseClassMethodNames.slice(1, baseClassMethodNames.length); // Don't mess with the constructor.
 }
 
 export function use(...options: Mixin<any>[]): PropertyDecorator {
     return (target: any, propertyKey: string | symbol): void => {
         mix(target.constructor, options);
     };
+}
+
+export function getAllPropertyDescriptors(mixClass: Constructor<any>): PropertyDescriptorMap {
+    let map: PropertyDescriptorMap = Object.getOwnPropertyDescriptors(mixClass.prototype);
+    let prototype: any = Object.getPrototypeOf(mixClass.prototype);
+    while (prototype) {
+        map = {
+            ...map,
+            ...Object.getOwnPropertyDescriptors(prototype)
+        };
+        prototype = Object.getPrototypeOf(prototype);
+    }
+    delete map['constructor'];
+    delete map['hasOwnProperty'];
+    delete map['isPrototypeOf'];
+    delete map['propertyIsEnumerable'];
+    delete map['toLocaleString'];
+    delete map['toString'];
+    delete map['valueOf'];
+    delete map['__defineGetter__'];
+    delete map['__defineSetter__'];
+    delete map['__lookupGetter__'];
+    delete map['__lookupSetter__'];
+    return map;
 }

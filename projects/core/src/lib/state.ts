@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { distinctUntilChanged, map, pluck } from 'rxjs/operators';
 
 export class State<T extends {}> extends BehaviorSubject<T> {
     constructor(state: T) {
@@ -9,6 +9,17 @@ export class State<T extends {}> extends BehaviorSubject<T> {
     public select<K extends keyof T>(key: K): Observable<T[K]> {
         return this.pipe(
             pluck<T, T[K]>(key),
+            distinctUntilChanged()
+        );
+    }
+
+    public get<K>(selector: (state: T) => K): K {
+        return selector(this.getValue());
+    }
+
+    public get$<K>(selector: (state: T) => K): Observable<K> {
+        return this.pipe(
+            map((state: T) => selector(state)),
             distinctUntilChanged()
         );
     }
