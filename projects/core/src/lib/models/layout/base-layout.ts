@@ -1,4 +1,4 @@
-import { IViewScales, MapType } from '../../misc';
+import { IViewScales, MapType } from '../../utils/misc';
 
 export namespace BaseLayout {
 

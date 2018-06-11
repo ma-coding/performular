@@ -11,14 +11,14 @@ export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Functio
 export type Property<T extends FormTypes> = T[Exclude<NonFunctionPropertyNames<T>, 'length'>];
 export type RemoveKey<T, S> = { [K in Exclude<keyof T, S>]: T[K] };
 
-export interface IPerformularOptions {
+export interface IFormOptions {
     updateDebounce?: number;
 }
 
 export interface IPerformular<P extends FormTypes> {
-    options?: IPerformularOptions;
-    value?: any;
     form: Property<P>;
+    options?: IFormOptions;
+    value?: any;
 }
 
 export class Performular<P extends FormTypes> {

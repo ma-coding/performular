@@ -1,7 +1,7 @@
 import { ElementRef } from '@angular/core';
 
-import { Constructor } from '../../mixin';
-import { State } from '../../state';
+import { Constructor } from '../../utils/mixin';
+import { State } from '../../utils/state';
 import { Abstract, IAbstract } from '../abstract';
 
 export type IStyle<S extends string> = Record<S | 'host', Partial<CSSStyleDeclaration>>;

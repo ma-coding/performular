@@ -1,5 +1,6 @@
-import { use } from '../mixin';
-import { State } from '../state';
+import { IFormOptions } from '../performular';
+import { use } from '../utils/mixin';
+import { State } from '../utils/state';
 import { Framework, IFramework, IFrameworkProperty } from './framework/framework';
 import { IItem, IItemProperty, Item } from './layout/item';
 
@@ -17,6 +18,8 @@ export interface IAbstractProperty<
     S extends string = 'host'
     > extends IItemProperty, IFrameworkProperty<F, A, S> {
     type: T;
+    id: string;
+    options: IFormOptions;
 }
 
 export interface IAbstract<
@@ -25,6 +28,9 @@ export interface IAbstract<
     S extends string = never
     > extends IItem, IFramework<A, S> {
     type: T;
+    id: string;
+    uuid: string;
+    options: IFormOptions;
 }
 
 export interface Abstract<

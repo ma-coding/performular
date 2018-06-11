@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
-import { IViewScales, MapType } from '../../misc';
-import { State } from '../../state';
+import { IViewScales, MapType } from '../../utils/misc';
+import { State } from '../../utils/state';
 import { IAbstract } from '../abstract';
 import { BaseLayout } from './base-layout';
 
@@ -23,15 +23,15 @@ function selectFlex(state: IItem): MapType<FlexValues> {
 }
 
 function selectFlexOrder(state: IItem): MapType<number> {
-    return BaseLayout.convertKeys<number>('order')(state.flexOrder);
+    return BaseLayout.convertKeys<number>('flexOrder', 'order')(state.flexOrder);
 }
 
 function selectFlexAlign(state: IItem): MapType<FlexAlignValues> {
-    return BaseLayout.convertKeys<FlexAlignValues>('align')(state.flexAlign);
+    return BaseLayout.convertKeys<FlexAlignValues>('flexAlign', 'align')(state.flexAlign);
 }
 
 function selectFlexOffset(state: IItem): MapType<string> {
-    return BaseLayout.convertKeys<string>('offset')(state.flexOffset);
+    return BaseLayout.convertKeys<string>('flexOffset', 'offset')(state.flexOffset);
 }
 
 export abstract class Item<ST extends IItem = IAbstract> {
@@ -69,7 +69,7 @@ export abstract class Item<ST extends IItem = IAbstract> {
         return this._state$.get$(selectFlexAlign);
     }
 
-    public _initItem(property: IItemProperty): IItem {
+    protected _initItem(property: IItemProperty): IItem {
         return property;
     }
 
