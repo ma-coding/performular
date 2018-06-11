@@ -16,7 +16,7 @@ export interface ILayoutAlign {
 }
 
 export interface ILayoutProperty {
-    layout: IViewScales<DirectionValues>;
+    layout?: IViewScales<DirectionValues>;
     layoutAlign?: IViewScales<ILayoutAlign>;
     layoutGap?: IViewScales<string>;
 }
@@ -77,6 +77,5 @@ export abstract class Layout<S extends ILayout>  {
             return prev;
         }, {});
     }
-
 
 }

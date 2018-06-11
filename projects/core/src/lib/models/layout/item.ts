@@ -10,7 +10,7 @@ export type FlexValues = string | number;
 export type FlexAlignValues = 'start' | 'baseline' | 'center' | 'end';
 
 export interface IItemProperty {
-    flex: IViewScales<FlexValues>;
+    flex?: IViewScales<FlexValues>;
     flexOrder?: IViewScales<number>;
     flexOffset?: IViewScales<string>;
     flexAlign?: IViewScales<FlexAlignValues>;

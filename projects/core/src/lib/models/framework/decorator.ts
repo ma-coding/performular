@@ -1,12 +1,13 @@
 import { Type } from '@angular/core';
 
-import { Abstract, FieldType, IAbstract, TControl } from '../abstract';
+import { Store } from '../../form/store';
+import { Abstract, FieldType, IAbstract, TContainer, TControl, TGroup, TList } from '../abstract';
 
 export interface IPerformularOnInit<F extends Abstract = any> {
     performularOnInit(field: F): void;
 }
 
-export type FrameworkType<F extends Abstract = any> = Type<IPerformularOnInit<F>>;
+export type FormComponentType<F extends Abstract = any> = Type<IPerformularOnInit<F>>;
 
 export type BuildContextParams<T extends FieldType> = T extends TControl ? any : IAbstract;
 
@@ -24,12 +25,35 @@ export interface IFormComponentDecoration<T extends FieldType> {
 export type FormComponentDecorator<T extends FieldType> =
     (options: IFormComponentDecoration<T>) => ClassDecorator;
 
-export function FormComponent<T extends FieldType>(
-    options: IFormComponentDecoration<T>
-): ClassDecorator {
+export type ControlComponentDecorator = FormComponentDecorator<TControl>;
+export type GroupComponentDecorator = FormComponentDecorator<TGroup>;
+export type ListComponentDecorator = FormComponentDecorator<TList>;
+export type ContainerComponentDecorator = FormComponentDecorator<TContainer>;
+
+export function _addComponentToStore<T extends FieldType>(target: Function, options: IFormComponentDecoration<T>): void {
+    Store.addFormComponent(options, <any>target);
+}
+
+export function ControlComponent(options: ControlComponentDecorator): ClassDecorator {
     return (target: Function): void => {
-        // TODO ADD TO STORE
+        _addComponentToStore<TControl>(target, options);
     };
 }
 
-export const ControlComponent: FormComponentDecorator<TControl> = FormComponent<TControl>;
+export function GroupComponent(options: GroupComponentDecorator): ClassDecorator {
+    return (target: Function): void => {
+        _addComponentToStore<TGroup>(target, options);
+    };
+}
+
+export function ListComponent(options: ListComponentDecorator): ClassDecorator {
+    return (target: Function): void => {
+        _addComponentToStore<TList>(target, options);
+    };
+}
+
+export function ContainerComponent(options: ContainerComponentDecorator): ClassDecorator {
+    return (target: Function): void => {
+        _addComponentToStore<TContainer>(target, options);
+    };
+}

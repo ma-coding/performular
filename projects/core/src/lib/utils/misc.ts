@@ -1,5 +1,8 @@
 import { Observable, of } from 'rxjs';
 
+import { IAbstract } from '../models/abstract';
+import { IEffect } from '../models/effects/effect';
+
 export interface IViewScales<T> {
     main: T;
     xs?: T;
@@ -20,6 +23,21 @@ export interface IViewScales<T> {
 export interface MapType<T> {
     [key: string]: T;
 }
+
+export type FormComponentTypes = Array<IAbstract>;
+export type EffectTypes = Array<IEffect>;
+// tslint:disable-next-line
+export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
+export type Property<T extends Array<any>> = T[Exclude<NonFunctionPropertyNames<T>, 'length'>];
+export type RemoveKey<T, S> = { [K in Exclude<keyof T, S>]: T[K] };
+
+export interface IPerformularTypes<F extends FormComponentTypes = FormComponentTypes, E extends EffectTypes = EffectTypes> {
+    formComponents: F;
+    effects: E;
+}
+
+export type TFormComponents<P extends IPerformularTypes> = Property<[P['formComponents']]>;
+export type TEffects<P extends IPerformularTypes> = Property<[P['effects']]>;
 
 /**
  * Function that returns an unique string.
