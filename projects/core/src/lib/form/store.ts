@@ -56,13 +56,13 @@ export class Store {
         };
     }
 
-    public static getEffect(name: string): IInstancedMetadata<IOnEffect, IEffectDecoration, EffectType> {
+    public static getEffect<ET extends IOnEffect>(name: string): IInstancedMetadata<ET, IEffectDecoration, EffectType> {
         if (!this._effects[name]) {
             this._throwNotFound('effect', name);
         }
         return {
             ...this._effects[name],
-            instance: this.get<IOnEffect>(this._effects[name].target)
+            instance: this.get<ET>(<Type<ET>>this._effects[name].target)
         };
     }
 
