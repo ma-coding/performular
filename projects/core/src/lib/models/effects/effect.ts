@@ -38,7 +38,7 @@ export abstract class Effect<P = any, R = any, ET extends IOnEffect<any, P> = IO
     public meta: IInstancedMetadata<ET, IEffectDecoration, EffectType<R>>;
     public runDetection: RunDetection;
 
-    constructor(effect: IEffect<any, P>) {
+    constructor(effect: IEffectProperty<any, P>) {
         this.id = effect.id || generateUUID();
         this.name = effect.name;
         this.params = effect.params;

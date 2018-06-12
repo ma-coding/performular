@@ -54,7 +54,7 @@ function selectParent(state: IFramework): Abstract | undefined {
     return state.parent;
 }
 
-export abstract class Framework<A = any, S extends string = 'host', ST extends IAbstract<any, any, S> = IAbstract<any, any, S>> {
+export abstract class Framework<A = any, S extends string = 'host', ST extends IAbstract<any, A, S> = IAbstract<any, A, S>> {
 
     get field(): FormComponentType {
         return this._state$.get(selectField);

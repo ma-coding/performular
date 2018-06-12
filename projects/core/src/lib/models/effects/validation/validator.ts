@@ -20,7 +20,7 @@ export interface IOnValidate<P = any> extends IOnEffect<IValidatorError | Observ
 export type ValidatorType<P = any> = Type<IOnValidate<P>>;
 
 export function Validator(options: IEffectDecoration): ClassDecorator {
-    return (target: Function): void {
+    return (target: Function): void => {
         Store.addEffect(options, <any>target);
     };
 }

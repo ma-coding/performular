@@ -1,9 +1,9 @@
 import { Injector, Type } from '@angular/core';
 
+import { FieldType } from '../models/abstract';
 import { EffectType, IEffectDecoration, IOnEffect } from '../models/effects/effect';
 import { IRunDetector, RunDetectorType } from '../models/effects/run-detection/run-detection';
 import { FormComponentType, IFormComponentDecoration } from '../models/framework/decorator';
-import { FieldTypes } from '../modelsold/abstract';
 import { MapType } from '../utils/misc';
 
 export interface IMetadata<M, T> {
@@ -19,7 +19,7 @@ export class Store {
 
     private static _runDetectors: MapType<IMetadata<string, RunDetectorType>> = {};
     private static _effects: MapType<IMetadata<IEffectDecoration, EffectType>> = {};
-    private static _formComponents: MapType<IMetadata<IFormComponentDecoration<FieldTypes>, FormComponentType>> = {};
+    private static _formComponents: MapType<IMetadata<IFormComponentDecoration<FieldType>, FormComponentType>> = {};
 
     /**
      * Static member that holds the Injector.
@@ -42,7 +42,7 @@ export class Store {
         };
     }
 
-    public static addFormComponent(options: IFormComponentDecoration<FieldTypes>, target: FormComponentType): void {
+    public static addFormComponent(options: IFormComponentDecoration<FieldType>, target: FormComponentType): void {
         this._formComponents[options.name] = {
             metadata: options,
             target: target
@@ -66,11 +66,12 @@ export class Store {
         };
     }
 
-    public static getFormComponent(name: string): IMetadata<IFormComponentDecoration<FieldTypes>, FormComponentType> {
-        if (!this._formComponents[name]) {
-            this._throwNotFound('formComponent', name);
-        }
-        return this._formComponents[name];
+    public static getFormComponent(name: string): IMetadata<IFormComponentDecoration<FieldType>, FormComponentType> {
+        return <any>{target: null};
+        // if (!this._formComponents[name]) {
+        //     this._throwNotFound('formComponent', name);
+        // }
+        // return this._formComponents[name];
     }
 
     public static getRunDetector(name: string): IInstancedMetadata<IRunDetector, string, RunDetectorType> {

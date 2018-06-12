@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { IFormOptions } from '../performular';
+import { IFormOptions } from '../form/form';
 import { generateUUID } from '../utils/misc';
 import { use } from '../utils/mixin';
 import { State } from '../utils/state';
@@ -99,17 +99,19 @@ export abstract class Abstract<
     }
 
     protected abstract _state$: State<ST>;
-    protected _init: IAbstract<T, A, S>;
+    protected _init: State<ST>;
 
     @use(Item, Framework) public this: Abstract | undefined;
 
     constructor(abs: IAbstractProperty<T, string, A, S>) {
-        this._init = {
+        this._init = <any>(<IAbstract<T, A, S>>{
             ...abs,
             uuid: generateUUID(),
             ...this._initFramework(abs),
             ...this._initItem(abs)
-        };
+        });
     }
+
+    public abstract update(checklist: Abstract[]): void;
 
 }
