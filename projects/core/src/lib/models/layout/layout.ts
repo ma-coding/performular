@@ -28,7 +28,7 @@ function selectLayout(state: ILayout): MapType<DirectionValues> {
 }
 
 function selectLayoutAlign(state: ILayout): MapType<string> {
-    return this._mergeAxis(BaseLayout.convertKeys<ILayoutAlign>('layoutAlign', 'align')(state.layoutAlign));
+    return BaseLayout.mergeAxis(BaseLayout.convertKeys<ILayoutAlign>('layoutAlign', 'align')(state.layoutAlign));
 }
 
 function selectLayoutGap(state: ILayout): MapType<string> {
@@ -64,18 +64,6 @@ export abstract class Layout<S extends ILayout>  {
 
     protected _initLayout(property: ILayoutProperty): ILayout {
         return property;
-    }
-
-    private _mergeAxis(align: MapType<ILayoutAlign>): MapType<string> {
-        return Object.keys(align).reduce((prev: any, curr: string) => {
-            if (align[curr].mainAxis && align[curr].crossAxis) {
-                prev[curr] = `${align[curr].mainAxis} ${align[curr].crossAxis}`;
-            }
-            if (align[curr].mainAxis && !align[curr].crossAxis) {
-                prev[curr] = align[curr].mainAxis;
-            }
-            return prev;
-        }, {});
     }
 
 }

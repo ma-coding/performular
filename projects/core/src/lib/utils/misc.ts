@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 
-import { IAbstractProperty } from '../models/abstract';
+import { IAbstractParams } from '../models/abstract';
 import { IEffectProperty } from '../models/effects/effect';
 
 export interface IViewScales<T> {
@@ -24,7 +24,7 @@ export interface MapType<T> {
     [key: string]: T;
 }
 
-export type FormComponentTypes = Array<IAbstractProperty>;
+export type FormComponentTypes = Array<IAbstractParams>;
 export type EffectTypes = Array<IEffectProperty>;
 // tslint:disable-next-line
 export type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];

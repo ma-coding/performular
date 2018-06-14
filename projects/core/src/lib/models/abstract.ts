@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
 
 import { IFormOptions } from '../form/form';
 import { generateUUID } from '../utils/misc';
@@ -13,6 +14,16 @@ export type TList = 'list';
 export type TContainer = 'container';
 
 export type FieldType = TControl | TGroup | TList | TContainer;
+
+export interface IAbstractParams<
+    T extends FieldType = any,
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends IItemProperty, IFrameworkProperty<F, A, S> {
+    type: T;
+    id: string;
+}
 
 export interface IAbstractProperty<
     T extends FieldType = any,
@@ -66,6 +77,8 @@ export abstract class Abstract<
     ST extends IAbstract<T, A, S> = any
     > {
 
+    private _updateSubject: Subject<Abstract[]>;
+
     get type(): T {
         return this._state$.get(selectType);
     }
@@ -99,11 +112,12 @@ export abstract class Abstract<
     }
 
     protected abstract _state$: State<ST>;
-    protected _init: State<ST>;
+    protected _init: ST;
 
     @use(Item, Framework) public this: Abstract | undefined;
 
     constructor(abs: IAbstractProperty<T, string, A, S>) {
+        this._updateSubject = new Subject();
         this._init = <any>(<IAbstract<T, A, S>>{
             ...abs,
             uuid: generateUUID(),
@@ -112,6 +126,34 @@ export abstract class Abstract<
         });
     }
 
-    public abstract update(checklist: Abstract[]): void;
+    public update(checklist: Abstract[]): void {
+        this.root._updateSubject.next(checklist);
+    }
 
+    protected abstract _run(checklist: Abstract[]): Observable<void>;
+    protected abstract _update(): void;
+
+    protected _treeUp(): void {
+        this._update();
+        const p: Abstract | undefined = this.parent;
+        if (p) {
+            p._treeUp();
+        }
+    }
+
+    protected _treeDown(checklist: Abstract[]): Observable<void> {
+        const children: Abstract[] = this.children;
+        if (children.length === 0) {
+            return this._run(checklist).pipe(
+                map(() => this._treeUp())
+            );
+        }
+        return this._run(checklist).pipe(
+            concatMap(() =>
+                forkJoin(
+                    ...children.map((c: Abstract) => c._treeDown(checklist))
+                )
+            )
+        );
+    }
 }

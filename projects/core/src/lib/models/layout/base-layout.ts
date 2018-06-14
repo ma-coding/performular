@@ -1,6 +1,19 @@
 import { IViewScales, MapType } from '../../utils/misc';
+import { ILayoutAlign } from './layout';
 
 export namespace BaseLayout {
+
+    export function mergeAxis(align: MapType<ILayoutAlign>): MapType<string> {
+        return Object.keys(align).reduce((prev: any, curr: string) => {
+            if (align[curr].mainAxis && align[curr].crossAxis) {
+                prev[curr] = `${align[curr].mainAxis} ${align[curr].crossAxis}`;
+            }
+            if (align[curr].mainAxis && !align[curr].crossAxis) {
+                prev[curr] = align[curr].mainAxis;
+            }
+            return prev;
+        }, {});
+    }
 
     export function convertKeys<T>(key: string, replaceKey?: string): (data: IViewScales<T> | undefined) => MapType<T> {
         return (data: IViewScales<T> | undefined): MapType<T> => {
