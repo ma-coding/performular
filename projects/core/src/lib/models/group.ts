@@ -1,4 +1,3 @@
-import { IPerformularTypes, TFormComponents } from '../utils/misc';
 import { use } from '../utils/mixin';
 import { State } from '../utils/state';
 import { Abstract, TGroup } from './abstract';
@@ -9,17 +8,15 @@ export interface IGroupParams<
     F extends string = any,
     A = any,
     S extends string = any,
-    P extends IPerformularTypes = any
-    > extends IAbstractFieldParams<TGroup, F, A, S, P>, ILayoutProperty {
-    children: TFormComponents<P>[];
+    > extends IAbstractFieldParams<TGroup, F, A, S>, ILayoutProperty {
+    children: any[];
 }
 
 export interface IGroupProperty<
     F extends string = any,
     A = any,
-    S extends string = any,
-    P extends IPerformularTypes = any
-    > extends IAbstractFieldProperty<TGroup, F, A, S, P>, ILayoutProperty {
+    S extends string = any
+    > extends IAbstractFieldProperty<TGroup, F, A, S>, ILayoutProperty {
     children: Abstract[];
 }
 

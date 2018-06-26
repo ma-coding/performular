@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 
-import { Control } from '../../../core/src/lib/models/control';
-import { Group } from '../../../core/src/lib/models/group';
+import { CoreGroup } from '../../../core/src/lib/build-in/components/group.component';
+import { Performular } from '../../../core/src/lib/form/form';
+import { IEffectProperty } from '../../../core/src/lib/models/effects/effect';
+import { EffectTypes } from '../../../core/src/lib/utils/misc';
+
+export interface ETypes extends EffectTypes {
+    0: IEffectProperty<'required', number>;
+}
 
 @Component({
     selector: 'app-root',
@@ -11,23 +17,85 @@ import { Group } from '../../../core/src/lib/models/group';
 export class AppComponent {
 
     constructor() {
-        const g: Group = new Group({
-            id: 'g',
-            attrs: null,
-            field: 'f',
-            options: {},
-            type: 'group',
-            value: null,
-            children: [
-                new Control({
-                    id: 'test',
-                    attrs: null,
-                    field: 'test',
-                    options: {},
-                    type: 'control',
-                    value: 2
-                })
-            ]
+        const g: CoreGroup = <CoreGroup>Performular.build({
+            value: {
+                test: 10,
+                test2: 90,
+                test3: 490,
+                lst: [15, 20]
+            },
+            form: {
+                id: 'g',
+                attrs: undefined,
+                field: 'group',
+                type: 'group',
+                children: [
+                    {
+                        id: 'test',
+                        attrs: {
+                            type: 'text'
+                        },
+                        field: 'input',
+                        type: 'control',
+                        focus: true
+                    }, {
+                        id: 'fieldg',
+                        attrs: {
+                            legend: 'test'
+                        },
+                        field: 'fieldset',
+                        type: 'container',
+                        children: [
+                            {
+                                id: 'test2',
+                                attrs: {
+                                    type: 'text'
+                                },
+                                field: 'input',
+                                type: 'control'
+                            }, {
+                                id: 'fieldg2',
+                                attrs: {
+                                    legend: 'test'
+                                },
+                                field: 'fieldset',
+                                type: 'container',
+                                children: [
+                                    {
+                                        id: 'test3',
+                                        attrs: {
+                                            type: 'text'
+                                        },
+                                        field: 'input',
+                                        type: 'control'
+                                    }, {
+                                        id: 'lst',
+                                        type: 'list',
+                                        field: 'list',
+                                        attrs: undefined,
+                                        childDef: {
+                                            id: 'fieldg2',
+                                            attrs: {
+                                                legend: 'test'
+                                            },
+                                            field: 'fieldset',
+                                            type: 'container',
+                                            children: [{
+                                                id: 'test4',
+                                                attrs: {
+                                                    type: 'text'
+                                                },
+                                                field: 'input',
+                                                type: 'control'
+                                            }]
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         });
         console.log(g);
     }

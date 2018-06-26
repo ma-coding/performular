@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { IEffectContext } from '../../models/effect';
-import { IRunDetector, RunDetector } from '../../models/run-detector';
+import { IEffectContext } from '../../models/effects/effect';
+import { IRunDetector, RunDetector } from '../../models/effects/run-detection/run-detection';
 
 export const PERFORMULAR_RUNDETECTOR_DEFAULT: string = 'default';
 

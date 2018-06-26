@@ -1,29 +1,37 @@
-import { IPerformularTypes } from '../utils/misc';
+import { Observable } from 'rxjs';
+
+import { EffectTypes } from '../utils/misc';
 import { State } from '../utils/state';
 import { TControl } from './abstract';
 import { AbstractField, IAbstractField, IAbstractFieldParams, IAbstractFieldProperty } from './abstract-field';
 import { ValueMode } from './value/value';
 
-export interface IControlProperty<
+export interface IControlParams<
     F extends string = any,
     A = any,
     S extends string = any,
-    P extends IPerformularTypes = any
-    > extends IAbstractFieldParams<TControl, F, A, S, P> {
+    E extends EffectTypes = any
+    > extends IAbstractFieldParams<TControl, F, A, S> {
+    focus?: boolean;
 }
 
 export interface IControlProperty<
     F extends string = any,
     A = any,
     S extends string = any,
-    P extends IPerformularTypes = any
-    > extends IAbstractFieldProperty<TControl, F, A, S, P> {
+    > extends IAbstractFieldProperty<TControl, F, A, S> {
+    focus: boolean;
 }
 
 export interface IControl<
     A = any,
     S extends string = any
     > extends IAbstractField<TControl, A, S> {
+    focus: boolean;
+}
+
+export function selectFocus(state: IControl): boolean {
+    return state.focus;
 }
 
 export interface Control<
@@ -36,10 +44,22 @@ export class Control<
     S extends string = any,
     > extends AbstractField<TControl, A, S, IControl<A, S>> {
 
+    get focus(): boolean {
+        return this._state$.get(selectFocus);
+    }
+
+    get focus$(): Observable<boolean> {
+        return this._state$.get$(selectFocus);
+    }
+
     protected _state$: State<IControl<A, S>>;
 
     constructor(property: IControlProperty<string, A, S>) {
         super(property);
+        this._init = {
+            ...this._init,
+            focus: property.focus
+        };
         this._state$ = new State<IControl<A, S>>(<any>this._init);
     }
 

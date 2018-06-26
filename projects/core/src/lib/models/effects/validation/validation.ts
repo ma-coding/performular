@@ -1,13 +1,12 @@
 import { forkJoin, Observable, of } from 'rxjs';
 
-import { IPerformularTypes, TEffects } from '../../../utils/misc';
 import { State } from '../../../utils/state';
 import { AbstractField, IAbstractField } from '../../abstract-field';
 import { IEffectContext } from '../effect';
 import { IValidatorProperty, ValidatorHandler } from './validator';
 
-export interface IValidationProperty<P extends IPerformularTypes = any> {
-    validators?: TEffects<P>[];
+export interface IValidationProperty {
+    validators?: IValidatorProperty[];
     forcedError?: string;
 }
 

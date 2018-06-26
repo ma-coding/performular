@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Abstract, TControl } from '../../models/abstract';
-import { Control, IControl } from '../../models/control';
-import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
+import { Control } from '../../models/control';
+import { BuildContext, ControlComponent, IPerformularOnInit } from '../../models/framework/decorator';
 import { InputValueHandler } from '../cdk/input-value-handler';
 
 export const PERFORMULAR_FORMCOMPONENT_INPUT: 'input' = 'input';
@@ -16,9 +16,8 @@ export interface InputAttrs {
 
 export type InputStyles = 'input';
 
-export type IInput = IControl<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles>;
+export class Input extends Control<InputAttrs, InputStyles> {
 
-export class Input extends Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles> {
     public patchValue(value: any, emitUpdate: boolean = true): void {
         super.patchValue(InputValueHandler.validateValue(value, this.attrs.type), emitUpdate);
     }
@@ -28,9 +27,9 @@ export class Input extends Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, Input
     }
 }
 
-@FormComponent<TControl>({
+@ControlComponent({
     name: PERFORMULAR_FORMCOMPONENT_INPUT,
-    builder: (context: IBuildContext<TControl>): Abstract => {
+    builder: (context: BuildContext<TControl>): Abstract => {
         return new Input(context.params);
     }
 })
@@ -52,7 +51,7 @@ export class Input extends Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, Input
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class InputComponent implements IOnInitFramework<Input>, OnDestroy {
+export class InputComponent implements IPerformularOnInit<Input>, OnDestroy {
 
     private _inputSub: Subscription | undefined;
 
@@ -65,7 +64,7 @@ export class InputComponent implements IOnInitFramework<Input>, OnDestroy {
         }
     }
 
-    public onInitFramework(field: Input): void {
+    public performularOnInit(field: Input): void {
         this.field = field;
         this.inputValueHandler = new InputValueHandler(field.attrs.type, field.attrs.debounce || 0);
         this._inputSub = this.inputValueHandler.valueChanges

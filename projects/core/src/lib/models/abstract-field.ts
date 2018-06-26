@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
-import { IPerformularTypes } from '../utils/misc';
 import { use } from '../utils/mixin';
 import { Abstract, FieldType, IAbstract, IAbstractParams, IAbstractProperty } from './abstract';
 import { IEffectContext } from './effects/effect';
@@ -13,17 +12,15 @@ export interface IAbstractFieldParams<
     T extends FieldType = any,
     F extends string = any,
     A = any,
-    S extends string = any,
-    P extends IPerformularTypes = any
-    > extends IAbstractParams<T, F, A, S>, IValidationProperty<P>, IVisibilityProperty<P> { }
+    S extends string = any
+    > extends IAbstractParams<T, F, A, S>, IValidationProperty, IVisibilityProperty { }
 
 export interface IAbstractFieldProperty<
     T extends FieldType = any,
     F extends string = any,
     A = any,
     S extends string = any,
-    P extends IPerformularTypes = any
-    > extends IAbstractProperty<T, F, A, S>, IValidationProperty<P>, IVisibilityProperty<P>, IValueProperty { }
+    > extends IAbstractProperty<T, F, A, S>, IValidationProperty, IVisibilityProperty, IValueProperty { }
 
 export interface IAbstractField<
     T extends FieldType = any,

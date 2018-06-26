@@ -3,6 +3,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { PerformulerCoreModule } from '../../../core/src/lib/module';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -12,7 +13,8 @@ import { AppComponent } from './app.component';
     imports: [
         FormsModule,
         FlexLayoutModule,
-        BrowserModule
+        BrowserModule,
+        PerformulerCoreModule
     ],
     bootstrap: [AppComponent]
 })

@@ -67,11 +67,10 @@ export class Store {
     }
 
     public static getFormComponent(name: string): IMetadata<IFormComponentDecoration<FieldType>, FormComponentType> {
-        return <any>{target: null};
-        // if (!this._formComponents[name]) {
-        //     this._throwNotFound('formComponent', name);
-        // }
-        // return this._formComponents[name];
+        if (!this._formComponents[name]) {
+            this._throwNotFound('formComponent', name);
+        }
+        return this._formComponents[name];
     }
 
     public static getRunDetector(name: string): IInstancedMetadata<IRunDetector, string, RunDetectorType> {

@@ -1,8 +1,8 @@
 import { forkJoin, Observable, Subject } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
 import { IFormOptions } from '../form/form';
-import { generateUUID } from '../utils/misc';
+import { flatten, generateUUID } from '../utils/misc';
 import { use } from '../utils/mixin';
 import { State } from '../utils/state';
 import { Framework, IFramework, IFrameworkProperty } from './framework/framework';
@@ -109,6 +109,15 @@ export abstract class Abstract<
 
     get options$(): Observable<IFormOptions> {
         return this._state$.get$(selectOptions);
+    }
+
+    get updates$(): Observable<void> {
+        return this._updateSubject.pipe(
+            // tslint:disable-next-line:no-magic-numbers
+            buffer(this._updateSubject.pipe(debounceTime(this.options.updateDebounce || 0))),
+            map(flatten),
+            concatMap((checkList: Abstract[]) => this._treeDown(checkList))
+        );
     }
 
     protected abstract _state$: State<ST>;

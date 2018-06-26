@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Abstract, TControl } from '../../models/abstract';
-import { Control, IControl } from '../../models/control';
-import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
+import { Control } from '../../models/control';
+import { BuildContext, ControlComponent, IPerformularOnInit } from '../../models/framework/decorator';
 import { InputValueHandler } from '../cdk/input-value-handler';
 
 export const PERFORMULAR_FORMCOMPONENT_TEXTAREA: 'textarea' = 'textarea';
@@ -17,12 +17,11 @@ export interface TextareaAttrs {
 
 export type TextareaStyles = 'textarea';
 
-export type ITextarea = IControl<typeof PERFORMULAR_FORMCOMPONENT_TEXTAREA, TextareaAttrs, TextareaStyles>;
-export type Textarea = Control<typeof PERFORMULAR_FORMCOMPONENT_TEXTAREA, TextareaAttrs, TextareaStyles>;
+export type Textarea = Control<TextareaAttrs, TextareaStyles>;
 
-@FormComponent<TControl>({
+@ControlComponent({
     name: PERFORMULAR_FORMCOMPONENT_TEXTAREA,
-    builder: (context: IBuildContext<TControl>): Abstract => {
+    builder: (context: BuildContext<TControl>): Abstract => {
         return new Control(context.params);
     }
 })
@@ -45,7 +44,7 @@ export type Textarea = Control<typeof PERFORMULAR_FORMCOMPONENT_TEXTAREA, Textar
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class TextareaComponent implements IOnInitFramework<Textarea>, OnDestroy {
+export class TextareaComponent implements IPerformularOnInit<Textarea>, OnDestroy {
 
     private _textareaSub: Subscription | undefined;
 
@@ -58,7 +57,7 @@ export class TextareaComponent implements IOnInitFramework<Textarea>, OnDestroy 
         }
     }
 
-    public onInitFramework(field: Textarea): void {
+    public performularOnInit(field: Textarea): void {
         this.field = field;
         this.textareaValueHandler = new InputValueHandler('text', field.attrs.debounce || 0);
         this._textareaSub = this.textareaValueHandler.valueChanges

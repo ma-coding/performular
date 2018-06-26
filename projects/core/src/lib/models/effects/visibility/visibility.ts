@@ -1,15 +1,14 @@
 import { forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { IPerformularTypes, TEffects } from '../../../utils/misc';
 import { State } from '../../../utils/state';
 import { AbstractField, IAbstractField } from '../../abstract-field';
 import { IEffectContext, IEffectProperty } from '../effect';
-import { VisibleHandler } from './visible';
+import { IVisibleProperty, VisibleHandler } from './visible';
 
-export interface IVisibilityProperty<P extends IPerformularTypes = any> {
-    hides?: TEffects<P>[];
-    disables?: TEffects<P>[];
+export interface IVisibilityProperty {
+    hides?: IVisibleProperty[];
+    disables?: IVisibleProperty[];
     forcedHidden?: boolean;
     forcedDisabled?: boolean;
 }

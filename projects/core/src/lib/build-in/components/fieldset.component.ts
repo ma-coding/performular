@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Abstract, TContainer } from '../../models/abstract';
-import { Container, IContainer } from '../../models/container';
-import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
+import { Container } from '../../models/container';
+import { BuildContext, ContainerComponent, IPerformularOnInit } from '../../models/framework/decorator';
 
 export const PERFORMULAR_FORMCOMPONENT_FIELDSET: 'fieldset' = 'fieldset';
 
@@ -14,13 +14,12 @@ export interface FieldsetAttrs {
 
 export type FieldsetStyles = 'fieldset' | 'legend';
 
-export type IFieldset = IContainer<typeof PERFORMULAR_FORMCOMPONENT_FIELDSET, FieldsetAttrs, FieldsetStyles>;
-export type Fieldset = Container<typeof PERFORMULAR_FORMCOMPONENT_FIELDSET, FieldsetAttrs, FieldsetStyles>;
+export class Fieldset extends Container<FieldsetAttrs, FieldsetStyles> { }
 
-@FormComponent<TContainer>({
+@ContainerComponent({
     name: PERFORMULAR_FORMCOMPONENT_FIELDSET,
-    builder: (context: IBuildContext<TContainer>): Abstract => {
-        return new Container(context.params);
+    builder: (context: BuildContext<TContainer>): Abstract => {
+        return new Fieldset(context.params);
     }
 })
 @Component({
@@ -39,13 +38,13 @@ export type Fieldset = Container<typeof PERFORMULAR_FORMCOMPONENT_FIELDSET, Fiel
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class FieldsetComponent implements IOnInitFramework<Fieldset> {
+export class FieldsetComponent implements IPerformularOnInit<Fieldset> {
 
     private _textareaSub: Subscription | undefined;
 
     public field: Fieldset = <any>undefined;
 
-    public onInitFramework(field: Fieldset): void {
+    public performularOnInit(field: Fieldset): void {
         this.field = field;
     }
 }
