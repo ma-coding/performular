@@ -66,7 +66,7 @@ export class List<
             ...this._initLayout(property),
             childDef: property.childDef,
             children: property.children,
-            value: this._buildValue(this._getRecursiveChildFields(property.children))
+            ...this._initValue({ value: this._buildValue(this._getRecursiveChildFields(property.children)) })
         };
         this._state$ = new State<IList<A, S>>(<any>this._init);
         this._setParentOfChildren();

@@ -58,6 +58,7 @@ export class Control<
         super(property);
         this._init = {
             ...this._init,
+            ...this._initValue(property),
             focus: property.focus
         };
         this._state$ = new State<IControl<A, S>>(<any>this._init);

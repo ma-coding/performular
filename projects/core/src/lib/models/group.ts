@@ -46,7 +46,7 @@ export class Group<
             ...this._init,
             ...this._initLayout(property),
             children: property.children,
-            value: this._buildValue(this._getRecursiveChildFields(property.children))
+            ...this._initValue({ value: this._buildValue(this._getRecursiveChildFields(property.children)) })
         };
         this._state$ = new State<IGroup<A, S>>(<any>this._init);
         this._setParentOfChildren();

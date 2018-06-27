@@ -69,8 +69,7 @@ export abstract class AbstractField<
         this._init = <any>(<IAbstractField<T, A, S>>{
             ...(<IAbstract<T, A, S>>(<any>this._init)),
             ...this._initValidation(property),
-            ...this._initVisibility(property),
-            ...this._initValue(property)
+            ...this._initVisibility(property)
         });
     }
 

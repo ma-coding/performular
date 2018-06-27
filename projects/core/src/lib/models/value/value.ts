@@ -101,9 +101,8 @@ export class Value<ST extends IAbstractField = IAbstractField> {
     }
 
     private _setValue(value: any): void {
-        console.log('TEST');
         this._valueState$.updateKey('value', value);
-        this._valueState$.updateKey('changed', isEqual(value, this.initValue));
+        this._valueState$.updateKey('changed', !isEqual(value, this.initValue));
         this._valueState$.updateKey('dirty', true);
     }
 

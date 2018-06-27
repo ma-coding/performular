@@ -29,7 +29,7 @@ export class AppComponent {
                 {
                     id: 'test',
                     attrs: {
-                        type: 'text'
+                        type: 'number'
                     },
                     field: 'input',
                     type: 'control',
@@ -38,7 +38,7 @@ export class AppComponent {
                 {
                     id: 'testt',
                     attrs: {
-                        type: 'text'
+                        type: 'number'
                     },
                     field: 'input',
                     type: 'control'
@@ -57,7 +57,7 @@ export class AppComponent {
                         {
                             id: 'test2',
                             attrs: {
-                                type: 'text'
+                                type: 'number'
                             },
                             field: 'input',
                             type: 'control'
@@ -91,7 +91,7 @@ export class AppComponent {
                                         children: [{
                                             id: 'test4',
                                             attrs: {
-                                                type: 'text'
+                                                type: 'number'
                                             },
                                             field: 'input',
                                             type: 'control'
