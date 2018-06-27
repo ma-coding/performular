@@ -27,25 +27,30 @@ export class Input extends Control<InputAttrs, InputStyles> {
     }
 }
 
+export function InputBuilder(context: BuildContext<TControl>): Abstract {
+    return new Input(context.params);
+}
+
 @ControlComponent({
     name: PERFORMULAR_FORMCOMPONENT_INPUT,
-    builder: (context: BuildContext<TControl>): Abstract => {
-        return new Input(context.params);
-    }
+    builder: InputBuilder
 })
 @Component({
     selector: 'performular-input',
     template: `<input
         [id]="field?.uuid"
         [value]="field?.value$ | async"
-        (input)="inputValueHandler.setValue($event.target.value)"
+        (input)="inputValueHandler?.setValue($event.target.value)"
         [ngStyle]="(field?.styles$ | async)?.input"
-        [type]="(field?.attrs$ | async).type"
-        style="width: 100%">`,
+        [type]="(field?.attrs$ | async)?.type">`,
     styles: [`
         :host {
             width: 100%;
             display: block;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
         }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush

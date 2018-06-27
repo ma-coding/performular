@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 
 export type Constructor<T> = Function & { prototype: T };
 export type Mixin<T> = Constructor<T>;
@@ -24,12 +25,12 @@ export function use(...options: Mixin<any>[]): PropertyDecorator {
 }
 
 export function getAllPropertyDescriptors(mixClass: Constructor<any>): PropertyDescriptorMap {
-    let map: PropertyDescriptorMap = Object.getOwnPropertyDescriptors(mixClass.prototype);
+    let map: PropertyDescriptorMap = getOwnDescriptors(mixClass.prototype);
     let prototype: any = Object.getPrototypeOf(mixClass.prototype);
     while (prototype) {
         map = {
             ...map,
-            ...Object.getOwnPropertyDescriptors(prototype)
+            ...getOwnDescriptors(prototype)
         };
         prototype = Object.getPrototypeOf(prototype);
     }
@@ -45,4 +46,19 @@ export function getAllPropertyDescriptors(mixClass: Constructor<any>): PropertyD
     delete map['__lookupGetter__'];
     delete map['__lookupSetter__'];
     return map;
+}
+
+export function getOwnDescriptors(object: any): PropertyDescriptorMap {
+    return Reflect.ownKeys(object).reduce((descriptors: any, key: string | number | symbol) => {
+        return Object.defineProperty(
+            descriptors,
+            key,
+            {
+                configurable: true,
+                enumerable: true,
+                writable: true,
+                value: Object.getOwnPropertyDescriptor(object, key)
+            }
+        );
+    }, {});
 }

@@ -8,11 +8,13 @@ export const PERFORMULAR_FORMCOMPONENT_LIST: 'list' = 'list';
 
 export type CoreList = List<undefined, ''>;
 
+export function ListBuilder(context: BuildContext<TList>): Abstract {
+    return new List(context.params);
+}
+
 @ListComponent({
     name: PERFORMULAR_FORMCOMPONENT_LIST,
-    builder: (context: BuildContext<TList>): Abstract => {
-        return new List(context.params);
-    }
+    builder: ListBuilder
 })
 @Component({
     selector: 'performular-list',

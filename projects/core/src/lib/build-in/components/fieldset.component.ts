@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { Subscription } from 'rxjs';
-
 import { Abstract, TContainer } from '../../models/abstract';
 import { Container } from '../../models/container';
 import { BuildContext, ContainerComponent, IPerformularOnInit } from '../../models/framework/decorator';
@@ -16,11 +14,13 @@ export type FieldsetStyles = 'fieldset' | 'legend';
 
 export class Fieldset extends Container<FieldsetAttrs, FieldsetStyles> { }
 
+export function FieldsetBuilder(context: BuildContext<TContainer>): Abstract {
+    return new Fieldset(context.params);
+}
+
 @ContainerComponent({
     name: PERFORMULAR_FORMCOMPONENT_FIELDSET,
-    builder: (context: BuildContext<TContainer>): Abstract => {
-        return new Fieldset(context.params);
-    }
+    builder: FieldsetBuilder
 })
 @Component({
     selector: 'performular-fieldset',
@@ -34,13 +34,14 @@ export class Fieldset extends Container<FieldsetAttrs, FieldsetStyles> { }
         :host {
             width: 100%;
         }
+        fieldset {
+            width: 100%
+        }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class FieldsetComponent implements IPerformularOnInit<Fieldset> {
-
-    private _textareaSub: Subscription | undefined;
 
     public field: Fieldset = <any>undefined;
 

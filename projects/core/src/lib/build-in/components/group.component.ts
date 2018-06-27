@@ -8,11 +8,13 @@ export const PERFORMULAR_FORMCOMPONENT_GROUP: 'group' = 'group';
 
 export type CoreGroup = Group<undefined, ''>;
 
+export function GroupBuilder(context: BuildContext<TGroup>): Abstract {
+    return new Group(context.params);
+}
+
 @GroupComponent({
     name: PERFORMULAR_FORMCOMPONENT_GROUP,
-    builder: (context: BuildContext<TGroup>): Abstract => {
-        return new Group(context.params);
-    }
+    builder: GroupBuilder
 })
 @Component({
     selector: 'performular-group',

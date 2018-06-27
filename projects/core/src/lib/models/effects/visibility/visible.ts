@@ -9,9 +9,9 @@ import { Effect, IEffectContext, IEffectDecoration, IEffectProperty, IOnEffect }
 
 export type IVisibleReturnType = boolean | Observable<boolean>;
 
-export type IOnValidate<P = any> = IOnEffect<boolean | Observable<boolean>, P>;
+export type IOnVisible<P = any> = IOnEffect<boolean | Observable<boolean>, P>;
 
-export type VisibleType<P = any> = Type<IOnValidate<P>>;
+export type VisibleType<P = any> = Type<IOnVisible<P>>;
 
 export function Visible(options: IEffectDecoration): ClassDecorator {
     return (target: Function): void => {
@@ -21,7 +21,7 @@ export function Visible(options: IEffectDecoration): ClassDecorator {
 
 export type IVisibleProperty<E extends string = any, P = any> = IEffectProperty<E, P>;
 
-export class VisibleHandler<P = any> extends Effect<P, IVisibleReturnType, IOnValidate<P>> {
+export class VisibleHandler<P = any> extends Effect<P, IVisibleReturnType, IOnVisible<P>> {
 
     public result: boolean;
 

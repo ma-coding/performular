@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
 
-import { Effect, IEffectContext } from '../../models/effect';
-import { Field } from '../../models/field';
-import { IOnValidate, IValidatorError } from '../../models/validation';
+import { AbstractField } from '../../models/abstract-field';
+import { IEffectContext } from '../../models/effects/effect';
+import { IOnValidate, IValidatorError, Validator } from '../../models/effects/validation/validator';
 import { isEmptyValue } from '../cdk/is-empty-value';
 import { PERFORMULAR_RUNDETECTOR_ONCHANGE } from '../run-detectors/on-change.run-detector';
 
 export const PERFORMULAR_VALIDATOR_REQUIRED: 'required' = 'required';
 
-@Effect({
+@Validator({
     name: PERFORMULAR_VALIDATOR_REQUIRED,
-    type: 'validator',
     runDetection: PERFORMULAR_RUNDETECTOR_ONCHANGE
 })
 @Injectable()
-export class RequiredValidator implements IOnValidate<Field> {
+export class RequiredValidator implements IOnValidate<void> {
 
     constructor() { }
 
-    public calculate(context: IEffectContext, params?: any): IValidatorError {
+    public calculate(context: IEffectContext, params?: void): IValidatorError {
         if (isEmptyValue(context.field.value)) {
             return {};
         }
     }
 
-    public instanceRendered(field: Field, params: any): void {
+    public instanceRendered(field: AbstractField, params: void): void {
         if (field.elementRef && field.ngRenderer) {
             const element: HTMLElement | null = document.getElementById(field.uuid) || field.elementRef.nativeElement.firstChild;
             if (element) {
@@ -33,7 +32,7 @@ export class RequiredValidator implements IOnValidate<Field> {
         }
     }
 
-    public validatorRemoved(field: Field, params: any): void {
+    public validatorRemoved(field: AbstractField, params: void): void {
         if (field.elementRef && field.ngRenderer) {
             const element: HTMLElement | null = document.getElementById(field.uuid) || field.elementRef.nativeElement.firstChild;
             if (element) {

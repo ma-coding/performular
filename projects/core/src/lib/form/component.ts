@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChildren, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChildren, Input, OnDestroy, Renderer2 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { TemplateDirective, TemplatePosition } from './template';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'performular',
-    template: '<ng-container [performularRenderer]="field"></ng-container>',
+    template: '<ng-container [performularRenderer]="form"></ng-container>',
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -38,7 +38,9 @@ export class FormComponent implements OnDestroy {
         return this._form;
     }
 
-    constructor() { }
+    constructor(
+        private _renderer: Renderer2
+    ) { }
 
     public ngOnDestroy(): void {
         this._destroyForm();
@@ -49,20 +51,26 @@ export class FormComponent implements OnDestroy {
             (this._templates || []).find((t: TemplateDirective) => t.field === field && t.position === position);
     }
 
-    private _onSetForm(field: Abstract): void {
+    private _onSetForm(form: Abstract): void {
         this._destroyForm();
-        this._updateSubscription = field.updates$.subscribe();
-        field.update(
-            field.all.map((f: Abstract) => {
-                return f;
-            })
-        );
-        this._form = field;
+        this._updateSubscription = form.updates$.subscribe();
+        form.update(form.all);
+        form.all.forEach((f: Abstract) => {
+            f.setHostForm(this);
+            f.setNgRenderer(this._renderer);
+        });
+        this._form = form;
     }
 
     private _destroyForm(): void {
         if (this._updateSubscription) {
             this._updateSubscription.unsubscribe();
+        }
+        if (this.form) {
+            this.form.all.forEach((f: Abstract) => {
+                f.setHostForm(undefined);
+                f.setNgRenderer(undefined);
+            });
         }
     }
 }

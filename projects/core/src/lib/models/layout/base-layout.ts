@@ -25,7 +25,7 @@ export namespace BaseLayout {
                 if (curr === 'main') {
                     prev[useKey] = data[curr];
                 } else {
-                    prev[useKey + this._capitalizeFirstLetterFunc(curr)] = data[curr];
+                    prev[useKey + capitalizeFirstLetterFunc(curr)] = data[curr];
                 }
                 return prev;
             }, {});

@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { IViewScales, MapType } from '../../utils/misc';
 import { State } from '../../utils/state';
@@ -67,6 +68,15 @@ export abstract class Item<ST extends IItem = IAbstract> {
 
     get flexOffset$(): Observable<MapType<string>> {
         return this._state$.get$(selectFlexAlign);
+    }
+
+    get itemChanges$(): Observable<void> {
+        return combineLatest(
+            this.flex$,
+            this.flexOffset$,
+            this.flexAlign$,
+            this.flexOrder$
+        ).pipe(map(() => { }));
     }
 
     protected _initItem(property: IItemProperty): IItem {

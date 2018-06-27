@@ -19,22 +19,23 @@ export type TextareaStyles = 'textarea';
 
 export type Textarea = Control<TextareaAttrs, TextareaStyles>;
 
+export function TextareaBuilder(context: BuildContext<TControl>): Abstract {
+    return new Control(context.params);
+}
+
 @ControlComponent({
     name: PERFORMULAR_FORMCOMPONENT_TEXTAREA,
-    builder: (context: BuildContext<TControl>): Abstract => {
-        return new Control(context.params);
-    }
+    builder: TextareaBuilder
 })
 @Component({
     selector: 'performular-textarea',
     template: `<textarea
         [id]="field?.uuid"
-        [rows]="(field?.attrs$ | async).rows"
-        [cols]="(field?.attrs$ | async).cols"
+        [rows]="(field?.attrs$ | async)?.rows"
+        [cols]="(field?.attrs$ | async)?.cols"
         [value]="field?.value$ | async"
-        (input)="textareaValueHandler.setValue($event.target.value)"
-        [ngStyle]="(field?.styles$ | async)?.textarea"
-        style="width: 100%"></textarea>`,
+        (input)="textareaValueHandler?.setValue($event.target.value)"
+        [ngStyle]="(field?.styles$ | async)?.textarea"></textarea>`,
     styles: [`
         :host {
             width: 100%;

@@ -17,7 +17,7 @@ export interface IFormConfig {
     value?: any;
     options?: IFormOptions;
 }
-
+// @dynamic
 export class Performular {
 
     public static build(config: IFormConfig): Abstract {
@@ -25,7 +25,7 @@ export class Performular {
     }
 
     private static _build(form: any, value: any, options?: IFormOptions): Abstract {
-        const property: IAbstractProperty = this._buildProperty(form, value, options);
+        const property: IAbstractProperty = this._buildProperty(form, value, options || {});
         const metadata: IFormComponentDecoration<any> = Store.getFormComponent(property.field).metadata;
         const builder: BuildFunction<any> = metadata.builder;
         return builder({ params: property });
@@ -67,7 +67,7 @@ export class Performular {
                 };
             }
             default: {
-                throw Error(`Unknown Form Type ${form.type} use container list group or control!`);
+                throw Error(`Unknown Form Type ${form.type} use container, list, group or control!`);
             }
         }
     }

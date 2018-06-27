@@ -14,7 +14,7 @@ export interface IMetadata<M, T> {
 export interface IInstancedMetadata<I, M, T> extends IMetadata<M, T> {
     instance: I;
 }
-
+// @dynamic
 export class Store {
 
     private static _runDetectors: MapType<IMetadata<string, RunDetectorType>> = {};

@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { IViewScales, MapType } from '../../utils/misc';
 import { State } from '../../utils/state';
@@ -60,6 +61,14 @@ export abstract class Layout<S extends ILayout>  {
 
     get layoutAlign$(): Observable<MapType<string>> {
         return this._state$.get$(selectLayoutAlign);
+    }
+
+    get layoutChanges$(): Observable<void> {
+        return combineLatest(
+            this.layoutAlign$,
+            this.layoutDirection$,
+            this.layoutGap$
+        ).pipe(map(() => { }));
     }
 
     protected _initLayout(property: ILayoutProperty): ILayout {

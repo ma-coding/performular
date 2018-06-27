@@ -8,7 +8,7 @@ import { createObservable, MapType } from '../../../utils/misc';
 import { AbstractField } from '../../abstract-field';
 import { Effect, IEffectContext, IEffectDecoration, IEffectProperty, IOnEffect } from '../effect';
 
-export type IValidatorError = MapType<string> | undefined;
+export type IValidatorError = MapType<any> | undefined;
 
 export type IValidatorReturnType = IValidatorError | Observable<IValidatorError>;
 

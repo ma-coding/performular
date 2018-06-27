@@ -1,12 +1,14 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, Renderer2 } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
+import { FormComponent } from '../../form/component';
+import { RendererDirective } from '../../form/renderer';
 import { Store } from '../../form/store';
 import { flatten } from '../../utils/misc';
 import { State } from '../../utils/state';
 import { Abstract, IAbstract } from '../abstract';
-import { FormComponentType } from './decorator';
+import { FormComponentType, IPerformularOnInit } from './decorator';
 
 export type IStyle<S extends string> = Partial<Record<S | 'host', Partial<CSSStyleDeclaration>>>;
 
@@ -17,25 +19,33 @@ export interface IFrameworkProperty<F extends string = any, A = any, S extends s
 }
 
 export interface IFramework<A = any, S extends string = 'host'> {
-    field: FormComponentType;
+    fieldCmp: FormComponentType;
     fieldDef: string;
     attrs: A;
     styles: IStyle<S>;
     children: Abstract[];
     parent?: Abstract;
     elementRef?: ElementRef;
-    instance?: any;
-    // renderer?: RendererDirective;
-    // ngRenderer?: Renderer2;
-    // form?: PerformularComponent;
+    instance?: IPerformularOnInit;
+    renderer?: RendererDirective;
+    ngRenderer?: Renderer2;
+    hostForm?: FormComponent;
 }
 
-function selectField(state: IFramework): FormComponentType {
-    return state.field;
+function selectFieldCmp(state: IFramework): FormComponentType {
+    return state.fieldCmp;
 }
 
 function selectFieldDef(state: IFramework): string {
     return state.fieldDef;
+}
+
+function selectElementRef(state: IFramework): ElementRef | undefined {
+    return state.elementRef;
+}
+
+function selectInstance(state: IFramework): IPerformularOnInit | undefined {
+    return state.instance;
 }
 
 function selectAttrs<A>(state: IFramework<A>): A {
@@ -54,22 +64,50 @@ function selectParent(state: IFramework): Abstract | undefined {
     return state.parent;
 }
 
+function selectRenderer(state: IFramework): RendererDirective | undefined {
+    return state.renderer;
+}
+
+function selectNgRenderer(state: IFramework): Renderer2 | undefined {
+    return state.ngRenderer;
+}
+
+function selectHostForm(state: IFramework): FormComponent | undefined {
+    return state.hostForm;
+}
+
 export abstract class Framework<A = any, S extends string = 'host', ST extends IAbstract<any, A, S> = IAbstract<any, A, S>> {
 
-    get field(): FormComponentType {
-        return this._state$.get(selectField);
+    get fieldCmp(): ReturnType<typeof selectFieldCmp> {
+        return this._state$.get(selectFieldCmp);
     }
 
-    get field$(): Observable<FormComponentType> {
-        return this._state$.get$(selectField);
+    get fieldCmp$(): Observable<ReturnType<typeof selectFieldCmp>> {
+        return this._state$.get$(selectFieldCmp);
     }
 
-    get fieldDef(): string {
+    get fieldDef(): ReturnType<typeof selectFieldDef> {
         return this._state$.get(selectFieldDef);
     }
 
-    get fieldDef$(): Observable<string> {
+    get fieldDef$(): Observable<ReturnType<typeof selectFieldDef>> {
         return this._state$.get$(selectFieldDef);
+    }
+
+    get elementRef(): ReturnType<typeof selectElementRef> {
+        return this._state$.get(selectElementRef);
+    }
+
+    get elementRef$(): Observable<ReturnType<typeof selectElementRef>> {
+        return this._state$.get$(selectElementRef);
+    }
+
+    get instance(): ReturnType<typeof selectInstance> {
+        return this._state$.get(selectInstance);
+    }
+
+    get instance$(): Observable<ReturnType<typeof selectInstance>> {
+        return this._state$.get$(selectInstance);
     }
 
     get attrs(): A {
@@ -88,20 +126,44 @@ export abstract class Framework<A = any, S extends string = 'host', ST extends I
         return this._state$.get$(selectStyles);
     }
 
-    get children(): Abstract[] {
+    get children(): ReturnType<typeof selectChildren> {
         return this._state$.get(selectChildren);
     }
 
-    get children$(): Observable<Abstract[]> {
+    get children$(): Observable<ReturnType<typeof selectChildren>> {
         return this._state$.get$(selectChildren);
     }
 
-    get parent(): Abstract | undefined {
+    get parent(): ReturnType<typeof selectParent> {
         return this._state$.get(selectParent);
     }
 
-    get parent$(): Observable<Abstract | undefined> {
+    get parent$(): Observable<ReturnType<typeof selectParent>> {
         return this._state$.get$(selectParent);
+    }
+
+    get renderer(): ReturnType<typeof selectRenderer> {
+        return this._state$.get(selectRenderer);
+    }
+
+    get renderer$(): Observable<ReturnType<typeof selectRenderer>> {
+        return this._state$.get$(selectRenderer);
+    }
+
+    get ngRenderer(): ReturnType<typeof selectNgRenderer> {
+        return this._state$.get(selectNgRenderer);
+    }
+
+    get ngRenderer$(): Observable<ReturnType<typeof selectNgRenderer>> {
+        return this._state$.get$(selectNgRenderer);
+    }
+
+    get hostForm(): ReturnType<typeof selectHostForm> {
+        return this._state$.get(selectHostForm);
+    }
+
+    get hostForm$(): Observable<ReturnType<typeof selectHostForm>> {
+        return this._state$.get$(selectHostForm);
     }
 
     get root(): Abstract {
@@ -126,6 +188,26 @@ export abstract class Framework<A = any, S extends string = 'host', ST extends I
 
     protected abstract _state$: State<ST>;
 
+    public setRenderer(renderer: RendererDirective | undefined): void {
+        this._state$.updateKey('renderer', renderer);
+    }
+
+    public setNgRenderer(ngRenderer: Renderer2 | undefined): void {
+        this._state$.updateKey('ngRenderer', ngRenderer);
+    }
+
+    public setHostForm(hostForm: FormComponent | undefined): void {
+        this._state$.updateKey('hostForm', hostForm);
+    }
+
+    public setElementRef(elementRef: ElementRef | undefined): void {
+        this._state$.updateKey('elementRef', elementRef);
+    }
+
+    public setInstance(instance: IPerformularOnInit | undefined): void {
+        this._state$.updateKey('instance', instance);
+    }
+
     protected _setParent(parent: Abstract): void {
         this._state$.updateKey('parent', parent);
     }
@@ -136,7 +218,7 @@ export abstract class Framework<A = any, S extends string = 'host', ST extends I
 
     protected _initFramework<T extends string>(property: IFrameworkProperty<T, A, S>): IFramework<A, S> {
         return {
-            field: Store.getFormComponent(property.field).target,
+            fieldCmp: Store.getFormComponent(property.field).target,
             fieldDef: property.field,
             attrs: property.attrs,
             styles: property.styles || {},
