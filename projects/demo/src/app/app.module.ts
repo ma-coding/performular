@@ -3,8 +3,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { PerformulerCoreModule } from '@performular/core';
+import { PerformularCoreModule } from '@performular/core';
 
+import { PerformularUiMaterialModule } from '../../../ui-material/src/lib/ui-material.module';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -15,7 +16,8 @@ import { AppComponent } from './app.component';
         FormsModule,
         FlexLayoutModule,
         BrowserModule,
-        PerformulerCoreModule
+        PerformularCoreModule,
+        PerformularUiMaterialModule
     ],
     bootstrap: [AppComponent]
 })

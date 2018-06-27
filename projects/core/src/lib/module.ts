@@ -78,7 +78,7 @@ export const buildInRunDetectors: RunDetectorType[] = [
         ...declarations
     ]
 })
-export class PerformulerCoreModule {
+export class PerformularCoreModule {
 
     constructor(
         private _injector: Injector,
@@ -98,7 +98,7 @@ export class PerformulerCoreModule {
                 ...(config.effects || []),
                 ...(config.runDetectors || [])
             ],
-            ngModule: PerformulerCoreModule
+            ngModule: PerformularCoreModule
         };
     }
 }

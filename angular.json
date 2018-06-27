@@ -23,7 +23,7 @@
                             "projects/demo/src/assets"
                         ],
                         "styles": [
-                            "projects/demo/src/styles.css"
+                            "projects/demo/src/styles.scss"
                         ],
                         "scripts": []
                     },
@@ -72,7 +72,7 @@
                         "tsConfig": "projects/demo/tsconfig.spec.json",
                         "karmaConfig": "projects/demo/karma.conf.js",
                         "styles": [
-                            "projects/demo/styles.css"
+                            "projects/demo/styles.scss"
                         ],
                         "scripts": [],
                         "assets": [
@@ -88,28 +88,6 @@
                             "projects/demo/tsconfig.app.json",
                             "projects/demo/tsconfig.spec.json"
                         ],
-                        "exclude": [
-                            "**/node_modules/**"
-                        ]
-                    }
-                }
-            }
-        },
-        "demo-e2e": {
-            "root": "projects/demo-e2e/",
-            "projectType": "application",
-            "architect": {
-                "e2e": {
-                    "builder": "@angular-devkit/build-angular:protractor",
-                    "options": {
-                        "protractorConfig": "projects/demo-e2e/protractor.conf.js",
-                        "devServerTarget": "demo:serve"
-                    }
-                },
-                "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
-                    "options": {
-                        "tsConfig": "projects/demo-e2e/tsconfig.e2e.json",
                         "exclude": [
                             "**/node_modules/**"
                         ]
@@ -149,6 +127,46 @@
                         "tsConfig": [
                             "projects/core/tsconfig.lib.json",
                             "projects/core/tsconfig.spec.json"
+                        ],
+                        "exclude": [
+                            "**/node_modules/**"
+                        ]
+                    }
+                }
+            }
+        },
+        "ui-material": {
+            "root": "projects/ui-material",
+            "sourceRoot": "projects/ui-material/src",
+            "projectType": "library",
+            "prefix": "lib",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-ng-packagr:build",
+                    "options": {
+                        "tsConfig": "projects/ui-material/tsconfig.lib.json",
+                        "project": "projects/ui-material/ng-package.json"
+                    },
+                    "configurations": {
+                        "production": {
+                            "project": "projects/ui-material/ng-package.prod.json"
+                        }
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "projects/ui-material/src/test.ts",
+                        "tsConfig": "projects/ui-material/tsconfig.spec.json",
+                        "karmaConfig": "projects/ui-material/karma.conf.js"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "projects/ui-material/tsconfig.lib.json",
+                            "projects/ui-material/tsconfig.spec.json"
                         ],
                         "exclude": [
                             "**/node_modules/**"

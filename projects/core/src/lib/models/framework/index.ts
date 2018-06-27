@@ -1,1 +1,1 @@
-export { IPerformularOnInit, ControlComponent, GroupComponent, ListComponent, ContainerComponent } from './decorator';
+export { IPerformularOnInit, ControlComponent, GroupComponent, ListComponent, ContainerComponent, BuildContext } from './decorator';

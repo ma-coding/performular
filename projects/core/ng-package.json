@@ -3,6 +3,9 @@
     "dest": "../../dist/core",
     "deleteDestPath": false,
     "lib": {
-        "entryFile": "src/index.ts"
+        "entryFile": "src/index.ts",
+        "umdModuleIds": {
+            "rxjs": "rxjs"
+        }
     }
 }

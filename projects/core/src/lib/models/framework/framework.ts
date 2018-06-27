@@ -32,47 +32,47 @@ export interface IFramework<A = any, S extends string = 'host'> {
     hostForm?: FormComponent;
 }
 
-function selectFieldCmp(state: IFramework): FormComponentType {
+export function selectFieldCmp(state: IFramework): FormComponentType {
     return state.fieldCmp;
 }
 
-function selectFieldDef(state: IFramework): string {
+export function selectFieldDef(state: IFramework): string {
     return state.fieldDef;
 }
 
-function selectElementRef(state: IFramework): ElementRef | undefined {
+export function selectElementRef(state: IFramework): ElementRef | undefined {
     return state.elementRef;
 }
 
-function selectInstance(state: IFramework): IPerformularOnInit | undefined {
+export function selectInstance(state: IFramework): IPerformularOnInit | undefined {
     return state.instance;
 }
 
-function selectAttrs<A>(state: IFramework<A>): A {
+export function selectAttrs<A>(state: IFramework<A>): A {
     return state.attrs;
 }
 
-function selectStyles<S extends string = 'host'>(state: IFramework<any, S>): IStyle<S> {
+export function selectStyles<S extends string = 'host'>(state: IFramework<any, S>): IStyle<S> {
     return state.styles;
 }
 
-function selectChildren(state: IFramework): Abstract[] {
+export function selectChildren(state: IFramework): Abstract[] {
     return state.children;
 }
 
-function selectParent(state: IFramework): Abstract | undefined {
+export function selectParent(state: IFramework): Abstract | undefined {
     return state.parent;
 }
 
-function selectRenderer(state: IFramework): RendererDirective | undefined {
+export function selectRenderer(state: IFramework): RendererDirective | undefined {
     return state.renderer;
 }
 
-function selectNgRenderer(state: IFramework): Renderer2 | undefined {
+export function selectNgRenderer(state: IFramework): Renderer2 | undefined {
     return state.ngRenderer;
 }
 
-function selectHostForm(state: IFramework): FormComponent | undefined {
+export function selectHostForm(state: IFramework): FormComponent | undefined {
     return state.hostForm;
 }
 

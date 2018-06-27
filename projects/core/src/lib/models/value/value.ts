@@ -1,7 +1,6 @@
-import { cloneDeep } from 'lodash';
 import { Observable } from 'rxjs';
 
-import { isEqual } from '../../utils/misc';
+import { cloneDeep, isEqual } from '../../utils/misc';
 import { State } from '../../utils/state';
 import { AbstractField, IAbstractField } from '../abstract-field';
 

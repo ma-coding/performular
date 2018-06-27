@@ -12,7 +12,7 @@ export class AppComponent {
     public form: CoreGroup = <CoreGroup>Performular.build({
         value: {
             test: 10,
-            testt: 8,
+            testt: true,
             test2: 90,
             test3: 490,
             lst: [15, 20, 30]
@@ -38,9 +38,9 @@ export class AppComponent {
                 {
                     id: 'testt',
                     attrs: {
-                        type: 'number'
+                        placeholder: 'ABC'
                     },
-                    field: 'input',
+                    field: 'matCheckbox',
                     type: 'control'
                 },
                 {
