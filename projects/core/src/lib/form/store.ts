@@ -1,6 +1,7 @@
 import { Injector, Type } from '@angular/core';
 
 import { FieldType } from '../models/abstract';
+import { ControlDatasourceType, IControlDatasource, IControlDatasourceDecoration } from '../models/datasource/datasource';
 import { EffectType, IEffectDecoration, IOnEffect } from '../models/effects/effect';
 import { IRunDetector, RunDetectorType } from '../models/effects/run-detection/run-detection';
 import { FormComponentType, IFormComponentDecoration } from '../models/framework/decorator';
@@ -19,6 +20,7 @@ export class Store {
 
     private static _runDetectors: MapType<IMetadata<string, RunDetectorType>> = {};
     private static _effects: MapType<IMetadata<IEffectDecoration, EffectType>> = {};
+    private static _controlDatasources: MapType<IMetadata<IControlDatasourceDecoration, ControlDatasourceType>> = {};
     private static _formComponents: MapType<IMetadata<IFormComponentDecoration<FieldType>, FormComponentType>> = {};
 
     /**
@@ -33,6 +35,13 @@ export class Store {
             this._throwError();
         }
         return inst;
+    }
+
+    public static addControlDatasource(options: IControlDatasourceDecoration, target: ControlDatasourceType): void {
+        this._controlDatasources[options.name] = {
+            metadata: options,
+            target: target
+        };
     }
 
     public static addEffect(options: IEffectDecoration, target: EffectType): void {
@@ -63,6 +72,18 @@ export class Store {
         return {
             ...this._effects[name],
             instance: this.get<ET>(<Type<ET>>this._effects[name].target)
+        };
+    }
+
+    public static getControlDatasource(
+        name: string
+    ): IInstancedMetadata<IControlDatasource, IControlDatasourceDecoration, ControlDatasourceType> {
+        if (!this._controlDatasources[name]) {
+            this._throwNotFound('controlDatasource', name);
+        }
+        return {
+            ...this._controlDatasources[name],
+            instance: this.get<IControlDatasource>(this._controlDatasources[name].target)
         };
     }
 

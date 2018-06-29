@@ -1,12 +1,36 @@
 import { NgModule } from '@angular/core';
-import { MatCheckboxModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import {
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+} from '@angular/material';
 
 import { PerformularCoreModule } from '@performular/core';
 
 import { PerformularMatCheckboxComponent } from './checkbox.component';
+import { PerformularMatDatepickerComponent } from './datepicker.component';
+import { PerformularMatInputComponent } from './input.component';
+import { PerformularMatRadioComponent } from './radio.component';
+import { PerformularMatSelectComponent } from './select.component';
+import { PerformularMatSliderComponent } from './slider.component';
+import { PerformularMatTextareaComponent } from './textarea.component';
+import { PerformularMatToggleComponent } from './toggle.component';
 
 export const buildInFormComponents: any[] = [
-    PerformularMatCheckboxComponent
+    PerformularMatCheckboxComponent,
+    PerformularMatSliderComponent,
+    PerformularMatToggleComponent,
+    PerformularMatRadioComponent,
+    PerformularMatInputComponent,
+    PerformularMatTextareaComponent,
+    PerformularMatDatepickerComponent,
+    PerformularMatSelectComponent
 ];
 
 /**
@@ -21,13 +45,18 @@ export const buildInFormComponents: any[] = [
         ...buildInFormComponents,
     ],
     imports: [
+        FormsModule,
+        MatInputModule,
+        MatFormFieldModule,
         MatCheckboxModule,
+        MatSliderModule,
+        MatSlideToggleModule,
+        MatRadioModule,
+        MatDatepickerModule,
+        MatSelectModule,
         PerformularCoreModule.withConfig({
             formComponents: buildInFormComponents
         })
-    ],
-    providers: [
-    ],
-    exports: []
+    ]
 })
 export class PerformularUiMaterialModule { }

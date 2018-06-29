@@ -15,6 +15,7 @@ export interface IValidation {
     forcedError: string | undefined;
     errors: string[];
     invalid: boolean;
+    errorState: boolean;
 }
 
 export function selectValidators(state: IAbstractField): ValidatorHandler[] {
@@ -31,6 +32,10 @@ export function selectErrors(state: IAbstractField): string[] {
 
 export function selectInvalid(state: IAbstractField): boolean {
     return state.invalid;
+}
+
+export function selectErrorState(state: IAbstractField): boolean {
+    return state.errorState;
 }
 
 export abstract class Validation<ST extends IAbstractField = IAbstractField> {
@@ -65,6 +70,14 @@ export abstract class Validation<ST extends IAbstractField = IAbstractField> {
 
     get invalid$(): Observable<boolean> {
         return this._validationState$.get$(selectInvalid);
+    }
+
+    get errorState(): boolean {
+        return this._validationState$.get(selectErrorState);
+    }
+
+    get errorState$(): Observable<boolean> {
+        return this._validationState$.get$(selectErrorState);
     }
 
     protected get _validationState$(): State<ST> {
@@ -116,7 +129,8 @@ export abstract class Validation<ST extends IAbstractField = IAbstractField> {
             validators: (validation.validators || []).map((validator: IValidatorProperty) => new ValidatorHandler(validator)),
             forcedError: validation.forcedError,
             errors: !!validation.forcedError ? [validation.forcedError] : [],
-            invalid: !!validation.forcedError
+            invalid: !!validation.forcedError,
+            errorState: false
         };
     }
 
@@ -133,6 +147,7 @@ export abstract class Validation<ST extends IAbstractField = IAbstractField> {
     protected _updateValidation(): void {
         this._validationState$.updateKey('errors', this._calculateErrors());
         this._validationState$.updateKey('invalid', this._isInvalid());
+        this._validationState$.updateKey('errorState', this._isErrorState());
     }
 
     private _calculateErrors(): string[] {
@@ -148,6 +163,10 @@ export abstract class Validation<ST extends IAbstractField = IAbstractField> {
         return !!this.forcedError ||
             this.validators.some((v: ValidatorHandler) => !!v.error) ||
             this._validationField.childFields.some((f: AbstractField) => f.invalid);
+    }
+
+    private _isErrorState(): boolean {
+        return this._validationField.options.errorStateWhen(this._validationField);
     }
 
     private _shouldNotRunValidation(): boolean {

@@ -1,5 +1,6 @@
 export * from './framework';
 export * from './effects';
+export * from './datasource';
 export { Abstract, TContainer, TControl, TGroup, TList } from './abstract';
 export { AbstractField } from './abstract-field';
 export { IControlParams, IControlProperty, Control } from './control';

@@ -4,9 +4,10 @@ export { Input, InputAttrs, InputStyles, PERFORMULAR_FORMCOMPONENT_INPUT } from 
 export { CoreList, PERFORMULAR_FORMCOMPONENT_LIST } from './components/list.component';
 export { Textarea, TextareaAttrs, TextareaStyles, PERFORMULAR_FORMCOMPONENT_TEXTAREA } from './components/textarea.component';
 
+export { InputValueHandler } from './cdk/input-value-handler';
+
 export { PERFORMULAR_RUNDETECTOR_DEFAULT } from './run-detectors/default.run-detector';
 export { PERFORMULAR_RUNDETECTOR_ONCHANGE } from './run-detectors/on-change.run-detector';
-
 
 export { PERFORMULAR_VALIDATOR_MAXLENGTH } from './validators/max-length.validator';
 export { PERFORMULAR_VALIDATOR_MAX } from './validators/max.validator';

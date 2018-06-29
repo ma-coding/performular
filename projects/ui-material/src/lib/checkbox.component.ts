@@ -1,15 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material';
+import { MatCheckboxChange, ThemePalette } from '@angular/material';
 
 import { Abstract, BuildContext, Control, ControlComponent, IPerformularOnInit, TControl } from '@performular/core';
 
 export const PERFORMULAR_FORMCOMPONENT_MATCHECKBOX: 'matCheckbox' = 'matCheckbox';
 
 export interface MatCheckboxAttrs {
+    ariaLabel?: string;
+    ariaLabelledby?: string;
+    disableRipple?: boolean;
     labelPosition?: 'before' | 'after';
     name?: string | null;
     placeholder?: string;
-    color?: string;
+    color?: ThemePalette;
 }
 
 export type MatCheckboxStyles = 'checkbox' | 'placeholder';
@@ -29,17 +32,19 @@ export function MatCheckboxBuilder(context: BuildContext<TControl>): Abstract {
     template: `<mat-checkbox
     [ngStyle]="(field?.styles$ | async)?.checkbox"
     [disabled]="(field?.disabled$ | async)"
+    [aria-label]="(field?.attrs$ | async)?.ariaLabel"
+    [aria-labelledby]="(field?.attrs$ | async)?.ariaLabelledby"
+    [disableRipple]="(field?.attrs$ | async)?.disableRipple"
     [color]="(field?.attrs$ | async)?.color"
     [labelPosition]="(field?.attrs$ | async)?.labelPosition"
     [name]="(field?.attrs$ | async)?.name"
     (change)="change($event)"
     [value]="field?.value"
     [checked]="field?.value">
-<span
-    [ngStyle]="(field?.styles$ | async)?.placeholder">
-    {{(field?.attrs$ | async)?.placeholder}}
-</span>
-
+        <span
+            [ngStyle]="(field?.styles$ | async)?.placeholder">
+            {{(field?.attrs$ | async)?.placeholder}}
+        </span>
 </mat-checkbox>`,
     styles: [`
         :host {
@@ -48,6 +53,9 @@ export function MatCheckboxBuilder(context: BuildContext<TControl>): Abstract {
         }
         mat-checkbox {
             width: 100%;
+            display: block;
+            padding-top: 12px;
+            padding-bottom: 12px;
         }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush

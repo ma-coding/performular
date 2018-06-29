@@ -17,7 +17,7 @@ export class MaxValidator implements IOnValidate<number> {
 
     constructor() { }
 
-    public calculate(context: IEffectContext, params?: number): IValidatorError {
+    public calculate(context: IEffectContext, params?: number | Date): IValidatorError {
         const value: any = context.field.value;
         if (isEmptyValue(value) || isEmptyValue(params)) {
             return;
@@ -31,7 +31,7 @@ export class MaxValidator implements IOnValidate<number> {
         }
     }
 
-    public instanceRendered(field: AbstractField, params?: number): void {
+    public instanceRendered(field: AbstractField, params?: number | Date): void {
         if (field.elementRef && field.ngRenderer) {
             const element: HTMLElement | null = document.getElementById(field.uuid) || field.elementRef.nativeElement.firstChild;
             if (element && params) {
@@ -40,7 +40,7 @@ export class MaxValidator implements IOnValidate<number> {
         }
     }
 
-    public validatorRemoved(field: AbstractField, params?: number): void {
+    public validatorRemoved(field: AbstractField, params?: number | Date): void {
         if (field.elementRef && field.ngRenderer) {
             const element: HTMLElement | null = document.getElementById(field.uuid) || field.elementRef.nativeElement.firstChild;
             if (element) {

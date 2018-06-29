@@ -1,22 +1,31 @@
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import 'hammerjs';
 
 import { PerformularCoreModule } from '@performular/core';
+import { PerformularUiMaterialModule } from '@performular/ui-material';
 
-import { PerformularUiMaterialModule } from '../../../ui-material/src/lib/ui-material.module';
 import { AppComponent } from './app.component';
+import { TestDatasource } from './test.datasource';
 
 @NgModule({
     declarations: [
         AppComponent
     ],
     imports: [
-        FormsModule,
+        BrowserAnimationsModule,
         FlexLayoutModule,
+        MatNativeDateModule,
         BrowserModule,
-        PerformularCoreModule,
+        PerformularCoreModule.withConfig({
+            controlDatasources: [
+                TestDatasource
+            ]
+        }),
         PerformularUiMaterialModule
     ],
     bootstrap: [AppComponent]

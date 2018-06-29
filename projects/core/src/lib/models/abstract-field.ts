@@ -58,6 +58,14 @@ export abstract class AbstractField<
         }
     }
 
+    get rootField(): AbstractField {
+        let field: AbstractField = this;
+        while (field.parentField) {
+            field = field.parentField;
+        }
+        return field;
+    }
+
     get childFields(): AbstractField[] {
         return this._getRecursiveChildFields(this.children);
     }

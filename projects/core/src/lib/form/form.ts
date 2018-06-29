@@ -1,4 +1,5 @@
 import { Abstract, IAbstractProperty } from '../models/abstract';
+import { AbstractField } from '../models/abstract-field';
 import { IContainerParams, IContainerProperty } from '../models/container';
 import { IControlParams, IControlProperty } from '../models/control';
 import { BuildFunction, IFormComponentDecoration } from '../models/framework/decorator';
@@ -8,6 +9,7 @@ import { Store } from './store';
 
 export interface IFormOptions {
     updateDebounce?: number;
+    errorStateWhen: (field: AbstractField) => boolean;
 }
 
 export type ParamType = IControlParams | IGroupParams | IContainerParams | IListParams;
@@ -15,7 +17,7 @@ export type ParamType = IControlParams | IGroupParams | IContainerParams | IList
 export interface IFormConfig {
     form: ParamType;
     value?: any;
-    options?: IFormOptions;
+    options: IFormOptions;
 }
 // @dynamic
 export class Performular {
@@ -25,7 +27,7 @@ export class Performular {
     }
 
     private static _build(form: any, value: any, options?: IFormOptions): Abstract {
-        const property: IAbstractProperty = this._buildProperty(form, value, options || {});
+        const property: IAbstractProperty = this._buildProperty(form, value, options);
         const metadata: IFormComponentDecoration<any> = Store.getFormComponent(property.field).metadata;
         const builder: BuildFunction<any> = metadata.builder;
         return builder({ params: property });
@@ -44,7 +46,7 @@ export class Performular {
                         if (c.type === 'container') {
                             return this._build(c, value, options);
                         }
-                        return this._build(c, value && value[c.id] ? value[c.id] : value, options);
+                        return this._build(c, value && value[c.id] !== undefined ? value[c.id] : value, options);
                     })
                 };
             }

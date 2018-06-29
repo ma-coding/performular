@@ -10,10 +10,16 @@ import { CoreListComponent } from './build-in/components/list.component';
 import { TextareaComponent } from './build-in/components/textarea.component';
 import { DefaultRunDetector } from './build-in/run-detectors/default.run-detector';
 import { OnChangeRunDetector } from './build-in/run-detectors/on-change.run-detector';
+import { MaxLengthValidator } from './build-in/validators/max-length.validator';
+import { MaxValidator } from './build-in/validators/max.validator';
+import { MinLengthValidator } from './build-in/validators/min-length.validator';
+import { MinValidator } from './build-in/validators/min.validator';
+import { RequiredValidator } from './build-in/validators/required.validator';
 import { FormComponent } from './form/component';
 import { RendererDirective } from './form/renderer';
 import { Store } from './form/store';
 import { TemplateDirective } from './form/template';
+import { ControlDatasourceType } from './models/datasource/datasource';
 import { EffectType } from './models/effects/effect';
 import { RunDetectorType } from './models/effects/run-detection/run-detection';
 import { FormComponentType } from './models/framework/decorator';
@@ -22,6 +28,7 @@ export interface IPerformularModuleConfig {
     formComponents?: FormComponentType[];
     effects?: EffectType[];
     runDetectors?: RunDetectorType[];
+    controlDatasources?: ControlDatasourceType[];
 }
 
 export const declarations: any[] = [
@@ -39,11 +46,11 @@ export const buildInFormComponents: FormComponentType[] = [
 ];
 
 export const buildInEffects: EffectType[] = [
-    // RequiredValidator,
-    // MinValidator,
-    // MaxValidator,
-    // MinLengthValidator,
-    // MaxLengthValidator,
+    RequiredValidator,
+    MinValidator,
+    MaxValidator,
+    MinLengthValidator,
+    MaxLengthValidator,
 ];
 
 export const buildInRunDetectors: RunDetectorType[] = [
@@ -96,7 +103,8 @@ export class PerformularCoreModule {
                     multi: true
                 },
                 ...(config.effects || []),
-                ...(config.runDetectors || [])
+                ...(config.runDetectors || []),
+                ...(config.controlDatasources || []),
             ],
             ngModule: PerformularCoreModule
         };
