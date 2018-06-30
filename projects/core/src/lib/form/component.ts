@@ -54,11 +54,11 @@ export class FormComponent implements OnDestroy {
     private _onSetForm(form: Abstract): void {
         this._destroyForm();
         this._updateSubscription = form.updates$.subscribe();
-        form.update(form.all);
         form.all.forEach((f: Abstract) => {
             f.setHostForm(this);
             f.setNgRenderer(this._renderer);
         });
+        form.update(form.all);
         this._form = form;
     }
 
