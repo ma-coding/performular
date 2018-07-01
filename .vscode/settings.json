@@ -1,0 +1,17 @@
+{
+    "editor.tabSize": 4,
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "typescriptHero.imports.grouping": [
+        "/@angular/",
+        "/^((?!@performular)(?!\\.).)+/",
+        "/@performular/",
+        "Workspace"
+    ],
+    "typescriptHero.imports.organizeOnSave": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "auto-close-tag.activationOnLanguage": [
+        "html"
+    ],
+    "typescript.tsdk": "node_modules/typescript/lib"
+}
