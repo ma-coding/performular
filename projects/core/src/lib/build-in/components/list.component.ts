@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { Abstract, TList } from '../../models/abstract';
-import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
-import { IList, List } from '../../models/list';
-import { FormTypes } from '../../performular';
+import { BuildContext, IPerformularOnInit, ListComponent } from '../../models/framework/decorator';
+import { List } from '../../models/list';
 
 export const PERFORMULAR_FORMCOMPONENT_LIST: 'list' = 'list';
 
-export type ICoreList<P extends FormTypes> = IList<typeof PERFORMULAR_FORMCOMPONENT_LIST, undefined, '', P>;
-export type CoreList = List<typeof PERFORMULAR_FORMCOMPONENT_LIST, undefined, ''>;
+export type CoreList = List<undefined, ''>;
 
-@FormComponent<TList>({
+export function ListBuilder(context: BuildContext<TList>): Abstract {
+    return new List(context.params);
+}
+
+@ListComponent({
     name: PERFORMULAR_FORMCOMPONENT_LIST,
-    builder: (context: IBuildContext<TList>): Abstract => {
-        return new List(context.params);
-    }
+    builder: ListBuilder
 })
 @Component({
     selector: 'performular-list',
@@ -26,11 +26,11 @@ export type CoreList = List<typeof PERFORMULAR_FORMCOMPONENT_LIST, undefined, ''
     styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CoreListComponent implements IOnInitFramework<CoreList> {
+export class CoreListComponent implements IPerformularOnInit<CoreList> {
 
     public list: CoreList | undefined;
 
-    public onInitFramework(field: CoreList): void {
+    public performularOnInit(field: CoreList): void {
         this.list = field;
     }
 }

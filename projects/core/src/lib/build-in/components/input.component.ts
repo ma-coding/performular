@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Abstract, TControl } from '../../models/abstract';
-import { Control, IControl } from '../../models/control';
-import { FormComponent, IBuildContext, IOnInitFramework } from '../../models/framework';
+import { Control } from '../../models/control';
+import { BuildContext, ControlComponent, IPerformularOnInit } from '../../models/framework/decorator';
 import { InputValueHandler } from '../cdk/input-value-handler';
 
 export const PERFORMULAR_FORMCOMPONENT_INPUT: 'input' = 'input';
@@ -16,9 +16,8 @@ export interface InputAttrs {
 
 export type InputStyles = 'input';
 
-export type IInput = IControl<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles>;
+export class Input extends Control<InputAttrs, InputStyles> {
 
-export class Input extends Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, InputAttrs, InputStyles> {
     public patchValue(value: any, emitUpdate: boolean = true): void {
         super.patchValue(InputValueHandler.validateValue(value, this.attrs.type), emitUpdate);
     }
@@ -28,31 +27,36 @@ export class Input extends Control<typeof PERFORMULAR_FORMCOMPONENT_INPUT, Input
     }
 }
 
-@FormComponent<TControl>({
+export function InputBuilder(context: BuildContext<TControl>): Abstract {
+    return new Input(context.params);
+}
+
+@ControlComponent({
     name: PERFORMULAR_FORMCOMPONENT_INPUT,
-    builder: (context: IBuildContext<TControl>): Abstract => {
-        return new Input(context.params);
-    }
+    builder: InputBuilder
 })
 @Component({
     selector: 'performular-input',
     template: `<input
         [id]="field?.uuid"
         [value]="field?.value$ | async"
-        (input)="inputValueHandler.setValue($event.target.value)"
+        (input)="inputValueHandler?.setValue($event.target.value)"
         [ngStyle]="(field?.styles$ | async)?.input"
-        [type]="(field?.attrs$ | async).type"
-        style="width: 100%">`,
+        [type]="(field?.attrs$ | async)?.type">`,
     styles: [`
         :host {
             width: 100%;
             display: block;
         }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+        }
     `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class InputComponent implements IOnInitFramework<Input>, OnDestroy {
+export class InputComponent implements IPerformularOnInit<Input>, OnDestroy {
 
     private _inputSub: Subscription | undefined;
 
@@ -65,7 +69,7 @@ export class InputComponent implements IOnInitFramework<Input>, OnDestroy {
         }
     }
 
-    public onInitFramework(field: Input): void {
+    public performularOnInit(field: Input): void {
         this.field = field;
         this.inputValueHandler = new InputValueHandler(field.attrs.type, field.attrs.debounce || 0);
         this._inputSub = this.inputValueHandler.valueChanges

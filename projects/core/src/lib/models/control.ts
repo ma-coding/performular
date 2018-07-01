@@ -1,22 +1,67 @@
-import { Abstract, TControl } from './abstract';
-import { Field, IField, IFieldParams } from './field';
-import { ValueMode } from './value';
+import { Observable } from 'rxjs';
 
-export interface IControl<F extends string = any, A = any, S extends string = any> extends IField<TControl, F, A, S> {
+import { EffectTypes } from '../utils/misc';
+import { State } from '../utils/state';
+import { TControl } from './abstract';
+import { AbstractField, IAbstractField, IAbstractFieldParams, IAbstractFieldProperty } from './abstract-field';
+import { ValueMode } from './value/value';
+
+export interface IControlParams<
+    F extends string = any,
+    A = any,
+    S extends string = any,
+    E extends EffectTypes = any
+    > extends IAbstractFieldParams<TControl, F, A, S> {
     focus?: boolean;
 }
 
-export interface IControlParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<TControl, F, A, S> {
+export interface IControlProperty<
+    F extends string = any,
+    A = any,
+    S extends string = any,
+    > extends IAbstractFieldProperty<TControl, F, A, S> {
     focus: boolean;
-    value: any;
 }
 
-// @dynamic
-export class Control<F extends string = any, A = any, S extends string = any> extends Field<TControl, F, A, S> {
+export interface IControl<
+    A = any,
+    S extends string = any
+    > extends IAbstractField<TControl, A, S> {
+    focus: boolean;
+}
 
-    constructor(control: IControlParams<F, A, S>) {
-        super(control);
-        this._initValue(control.value);
+export function selectFocus(state: IControl): boolean {
+    return state.focus;
+}
+
+export interface Control<
+    A = any,
+    S extends string = any,
+    > extends AbstractField<TControl, A, S, IControl<A, S>> { }
+
+export class Control<
+    A = any,
+    S extends string = any,
+    > extends AbstractField<TControl, A, S, IControl<A, S>> {
+
+    get focus(): boolean {
+        return this._state$.get(selectFocus);
+    }
+
+    get focus$(): Observable<boolean> {
+        return this._state$.get$(selectFocus);
+    }
+
+    protected _state$: State<IControl<A, S>>;
+
+    constructor(property: IControlProperty<string, A, S>) {
+        super(property);
+        this._init = {
+            ...this._init,
+            ...this._initValue(property),
+            focus: property.focus
+        };
+        this._state$ = new State<IControl<A, S>>(<any>this._init);
     }
 
     public setValue(value: any, emitUpdate: boolean = true): void {
@@ -40,9 +85,7 @@ export class Control<F extends string = any, A = any, S extends string = any> ex
         }
     }
 
-    protected _forEachChild(cb: (child: Abstract) => void): void { }
-
-    protected _buildValue(): any {
+    protected _buildValue(children: AbstractField[] | undefined = this.childFields): void {
         throw new Error('The Control value should never be build!');
     }
 }

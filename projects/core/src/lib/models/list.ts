@@ -1,119 +1,135 @@
 import { Observable } from 'rxjs';
 
-import { use } from '../mixin';
-import { FormTypes, Performular, Property } from '../performular';
-import { State } from '../state';
-import { Abstract, IAbstract, TList } from './abstract';
-import { Field, IField, IFieldParams } from './field';
-import { ILayout, Layout } from './layout';
-import { ValueMode } from './value';
+import { Performular } from '../form/form';
+import { use } from '../utils/mixin';
+import { State } from '../utils/state';
+import { Abstract, IAbstractParams, TList } from './abstract';
+import { AbstractField, IAbstractField, IAbstractFieldParams, IAbstractFieldProperty } from './abstract-field';
+import { ILayoutProperty, Layout } from './layout/layout';
+import { ValueMode } from './value/value';
 
-export interface IList<F extends string = any, A = any, S extends string = any, P extends FormTypes = any> extends IField<TList, F, A, S> {
-    childDef: Property<P>;
-    layout?: ILayout;
+export interface IListParams<
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends IAbstractFieldParams<TList, F, A, S>, ILayoutProperty {
+    childDef: any;
 }
 
-export interface IListParams<F extends string = any, A = any, S extends string = any, P = any> extends IFieldParams<TList, F, A, S> {
-    childDef: IAbstract;
+export interface IListProperty<
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends IAbstractFieldProperty<TList, F, A, S>, ILayoutProperty {
+    childDef: IAbstractParams;
     children: Abstract[];
-    layout?: ILayout;
 }
 
-export interface IListState {
-    childDef: IAbstract;
-    children: Abstract[];
-    layout?: ILayout;
+export interface IList<
+    A = any,
+    S extends string = any
+    > extends IAbstractField<TList, A, S>, ILayoutProperty {
+    childDef: IAbstractParams;
 }
 
-// tslint:disable-next-line:no-empty-interface
-export interface List<F extends string = any, A = any, S extends string = any, P = any> extends Field<TList, F, A, S>, Layout { }
+export function selectChildDef(state: IList): IAbstractParams {
+    return state.childDef;
+}
 
-// @dynamic
-export class List<F extends string = any, A = any, S extends string = any, P = any> extends Field<TList, F, A, S> {
+export interface List<
+    A = any,
+    S extends string = any,
+    > extends AbstractField<TList, A, S, IList<A, S>>, Layout<IList<A, S>> {
+}
 
-    private _list$: State<IListState>;
-    @use(Layout) public this: List<F, A, S, P> | undefined;
+export class List<
+    A = any,
+    S extends string = any,
+    > extends AbstractField<TList, A, S, IList<A, S>> {
 
-    get children$(): Observable<Abstract[]> {
-        return this._list$.select('children');
+    get childDef(): IAbstractParams {
+        return this._state$.get(selectChildDef);
     }
 
-    constructor(list: IListParams<F, A, S>) {
-        super(list);
-        this._initLayout(list.layout);
-        this._setParents(list.children);
-        this._list$ = new State<IListState>({
-            childDef: list.childDef,
-            children: list.children
-        });
-        this._initValue(this._buildValue());
+    get childDef$(): Observable<IAbstractParams> {
+        return this._state$.get$(selectChildDef);
+    }
+
+    protected _state$: State<IList<A, S>>;
+
+    @use(Layout) public this: List | undefined;
+
+    constructor(property: IListProperty<string, A, S>) {
+        super(property);
+        this._init = {
+            ...this._init,
+            ...this._initLayout(property),
+            childDef: property.childDef,
+            children: property.children,
+            ...this._initValue({ value: this._buildValue(this._getRecursiveChildFields(property.children)) })
+        };
+        this._state$ = new State<IList<A, S>>(<any>this._init);
+        this._setParentOfChildren();
     }
 
     public setValue(value: any, emitUpdate: boolean = false): void {
-        this.getChildFields()
-            .filter((child: Field, index: number, arr: Field[]) => index <= value.length - 1)
-            .forEach((child: Field, index: number, arr: Field[]) => {
+        this.childFields
+            .filter((child: AbstractField) => child.id in value)
+            .forEach((child: AbstractField, index: number, arr: AbstractField[]) => {
                 child.setValue(value[index], index === arr.length - 1);
             });
     }
 
     public patchValue(value: any, emitUpdate: boolean = false): void {
-        this.getChildFields()
-            .filter((child: Field, index: number, arr: Field[]) => index <= value.length - 1)
-            .forEach((child: Field, index: number, arr: Field[]) => {
+        this.childFields
+            .filter((child: AbstractField) => child.id in value)
+            .forEach((child: AbstractField, index: number, arr: AbstractField[]) => {
                 child.patchValue(value[index], index === arr.length - 1);
             });
     }
 
+    public resetValue(emitUpdate: boolean = false): void {
+        this.childFields.forEach((child: AbstractField, index: number, arr: AbstractField[]) => {
+            child.resetValue(index === arr.length - 1);
+        });
+    }
+
     public pushField(emitUpdate: boolean = true): void {
         this._updateChildren([
-            ...this._list$.getValue().children,
-            new Performular({
-                form: this._list$.getValue().childDef
-            }).form
+            ...this.children,
+            Performular.build({ form: this.childDef, options: this.options })
         ], emitUpdate);
     }
 
     public popField(emitUpdate: boolean = true): void {
-        const children: Abstract[] = this.getChildren();
+        const children: Abstract[] = this.children;
         children.pop();
         this._updateChildren(children, emitUpdate);
     }
 
     public removeFieldAtIndex(index: number): void {
-        const children: Abstract[] = this.getChildren();
+        const children: Abstract[] = this.children;
         children.splice(index, 1);
         this._updateChildren(children, true);
     }
 
-    public resetValue(emitUpdate: boolean = false): void {
-        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
-            child.resetValue(index === arr.length - 1);
-        });
-    }
-
     public getIndex(field: Abstract): number {
-        const aResult: number = this.getChildren().indexOf(field);
+        const aResult: number = this.children.indexOf(field);
         if (aResult >= 0) {
             return aResult;
         }
-        const fResult: number = this.getChildFields().indexOf(<Field>field);
+        const fResult: number = this.children.indexOf(<AbstractField>field);
         return fResult || -1;
     }
 
-    protected _buildValue(): any {
-        const childFields: Field[] = this.getChildFields();
-        return childFields.map((child: Field) => {
+    protected _buildValue(children: AbstractField[] | undefined = this.childFields): any {
+        return children.map((child: AbstractField) => {
             return child.value;
         });
     }
 
-    protected _forEachChild(cb: (child: Abstract) => void): void {
-        this._list$.getValue().children.forEach(cb);
-    }
-
     private _updateChildren(children: Abstract[], emitUpdate: boolean): void {
-        this._list$.updateKey('children', [
+        this._state$.updateKey('children', [
             ...children
         ]);
         if (emitUpdate) {
@@ -122,15 +138,8 @@ export class List<F extends string = any, A = any, S extends string = any, P = a
     }
 
     private _emitChildrenUpdate(): void {
-        this._resetChildParents();
+        this._setParentOfChildren();
         this._createValue(ValueMode.SET, this._buildValue());
         this._updateParentValue([this], ValueMode.SET);
-    }
-
-    private _resetChildParents(children: Abstract[] = this.getChildren()): void {
-        children.forEach((child: Abstract) => {
-            child.setParent(this);
-            child.setForm(this.form);
-        });
     }
 }

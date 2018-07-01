@@ -1,136 +1,145 @@
 import { forkJoin, Observable, Subject } from 'rxjs';
 import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
-import { flatten, generateUUID } from '../misc';
-import { use } from '../mixin';
-import { IPerformularOptions } from '../performular';
-import { CheckList } from './effect';
-import { Framework, IFramework } from './framework';
-import { IItem, Item } from './item';
+import { IFormOptions } from '../form/form';
+import { flatten, generateUUID } from '../utils/misc';
+import { use } from '../utils/mixin';
+import { State } from '../utils/state';
+import { Framework, IFramework, IFrameworkProperty } from './framework/framework';
+import { IItem, IItemProperty, Item } from './layout/item';
 
 export type TControl = 'control';
-export type TContainer = 'container';
 export type TGroup = 'group';
 export type TList = 'list';
+export type TContainer = 'container';
 
-export type FieldTypes = TControl | TContainer | TGroup | TList;
+export type FieldType = TControl | TGroup | TList | TContainer;
 
-export interface IAbstract<T extends string = any, F extends string = any, A = any, S extends string = any> {
-    type: T;
-    id: string;
-    framework: IFramework<F, A, S>;
-    item?: IItem;
-}
-
-export interface IAbstractParams<T extends string = any, F extends string = any, A = any, S extends string = any> {
-    type: T;
-    id: string;
-    framework: IFramework<F, A, S>;
-    item?: IItem;
-    options?: IPerformularOptions;
-}
-
-export interface Abstract<
-    T extends string = any, F extends string = any, A = any, S extends string = any
-    > extends Item, Framework<F, A, S> { }
-
-// @dynamic
-export abstract class Abstract<
-    T extends string = any,
+export interface IAbstractParams<
+    T extends FieldType = any,
     F extends string = any,
     A = any,
     S extends string = any
-    > {
-    private _type: string;
-    private _options: IPerformularOptions;
-    private _id: string;
-    private _uuid: string;
-    private _updateSubject: Subject<CheckList>;
+    > extends IItemProperty, IFrameworkProperty<F, A, S> {
+    type: T;
+    id: string;
+}
 
-    @use(Item, Framework) public this: Abstract<T, F, A, S> | undefined;
+export interface IAbstractProperty<
+    T extends FieldType = any,
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends IItemProperty, IFrameworkProperty<F, A, S> {
+    type: T;
+    id: string;
+    options: IFormOptions;
+}
+
+export interface IAbstract<
+    T extends FieldType = any,
+    A = any,
+    S extends string = any
+    > extends IItem, IFramework<A, S> {
+    type: T;
+    id: string;
+    uuid: string;
+    options: IFormOptions;
+}
+
+export function selectType<T extends FieldType>(state: IAbstract<T>): T {
+    return state.type;
+}
+
+export function selectId(state: IAbstract): string {
+    return state.id;
+}
+
+export function selectUuid(state: IAbstract): string {
+    return state.uuid;
+}
+
+export function selectOptions(state: IAbstract): IFormOptions {
+    return state.options;
+}
+
+export interface Abstract<
+    T extends FieldType = any,
+    A = any,
+    S extends string = any,
+    ST extends IAbstract<T, A, S> = any
+    > extends Item<ST>, Framework<A, S, ST> { }
+
+export abstract class Abstract<
+    T extends FieldType = any,
+    A = any,
+    S extends string = any,
+    ST extends IAbstract<T, A, S> = any
+    > {
+
+    private _updateSubject: Subject<Abstract[]>;
+
+    get type(): T {
+        return this._state$.get(selectType);
+    }
+
+    get type$(): Observable<T> {
+        return this._state$.get$(selectType);
+    }
 
     get id(): string {
-        return this._id;
+        return this._state$.get(selectId);
+    }
+
+    get id$(): Observable<string> {
+        return this._state$.get$(selectId);
     }
 
     get uuid(): string {
-        return this._uuid;
+        return this._state$.get(selectUuid);
     }
 
-    get isContainer(): boolean {
-        return this._type === 'container';
+    get uuid$(): Observable<string> {
+        return this._state$.get$(selectUuid);
     }
 
-    get isControl(): boolean {
-        return this._type === 'control';
+    get options(): IFormOptions {
+        return this._state$.get(selectOptions);
     }
 
-    get isGroup(): boolean {
-        return this._type === 'group';
-    }
-
-    get isArray(): boolean {
-        return this._type === 'array';
-    }
-
-    get isField(): boolean {
-        return !this.isContainer;
+    get options$(): Observable<IFormOptions> {
+        return this._state$.get$(selectOptions);
     }
 
     get updates$(): Observable<void> {
         return this._updateSubject.pipe(
             // tslint:disable-next-line:no-magic-numbers
-            buffer(this._updateSubject.pipe(debounceTime(this._options.updateDebounce || 0))),
+            buffer(this._updateSubject.pipe(debounceTime(this.options.updateDebounce || 0))),
             map(flatten),
-            concatMap((checkList: CheckList) => this._treeDown(checkList))
+            concatMap((checkList: Abstract[]) => this._treeDown(checkList))
         );
     }
 
-    constructor(abstract: IAbstractParams<T, F, A, S>) {
-        this._type = abstract.type;
-        this._id = abstract.id;
-        this._options = abstract.options || <IPerformularOptions>{};
-        this._uuid = generateUUID();
-        this._initItem(abstract.item);
-        this._initFramework(abstract.framework);
+    protected abstract _state$: State<ST>;
+    protected _init: ST;
+
+    @use(Item, Framework) public this: Abstract | undefined;
+
+    constructor(abs: IAbstractProperty<T, string, A, S>) {
         this._updateSubject = new Subject();
-    }
-
-    public getChildren(): Abstract[] {
-        const children: Abstract[] = [];
-        this._forEachChild((child: Abstract) => {
-            children.push(child);
+        this._init = <any>(<IAbstract<T, A, S>>{
+            ...abs,
+            uuid: generateUUID(),
+            ...this._initFramework(abs),
+            ...this._initItem(abs)
         });
-        return children;
     }
 
-    public getChildListRecursive(): Abstract[] {
-        return [
-            this,
-            ...flatten(this.getChildren().map((c: Abstract) => c.getChildListRecursive()))
-        ];
+    public update(checklist: Abstract[]): void {
+        this.root._updateSubject.next(checklist);
     }
 
-    public getRoot(): Abstract {
-        let r: Abstract = this;
-        while (r.parent) {
-            const p: Abstract | undefined = r.parent;
-            if (p) {
-                r = p;
-            } else {
-                return r;
-            }
-        }
-        return r;
-    }
-
-    public update(checklist: CheckList): void {
-        this.getRoot()._updateSubject.next(checklist);
-    }
-
-    protected abstract _forEachChild(cb: (child: Abstract) => void): void;
-
-    protected abstract _run(checklist: CheckList): Observable<void>;
+    protected abstract _run(checklist: Abstract[]): Observable<void>;
     protected abstract _update(): void;
 
     protected _treeUp(): void {
@@ -141,8 +150,8 @@ export abstract class Abstract<
         }
     }
 
-    protected _treeDown(checklist: CheckList): Observable<void> {
-        const children: Abstract[] = this.getChildren();
+    protected _treeDown(checklist: Abstract[]): Observable<void> {
+        const children: Abstract[] = this.children;
         if (children.length === 0) {
             return this._run(checklist).pipe(
                 map(() => this._treeUp())
@@ -156,11 +165,4 @@ export abstract class Abstract<
             )
         );
     }
-
-    protected _setParents(children: Abstract[]): void {
-        children.forEach((c: Abstract) => {
-            c.setParent(this);
-        });
-    }
-
 }

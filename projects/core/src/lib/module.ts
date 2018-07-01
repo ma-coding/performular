@@ -15,27 +15,29 @@ import { MaxValidator } from './build-in/validators/max.validator';
 import { MinLengthValidator } from './build-in/validators/min-length.validator';
 import { MinValidator } from './build-in/validators/min.validator';
 import { RequiredValidator } from './build-in/validators/required.validator';
-import { FormComponent } from './form';
-import { Loader } from './loader';
-import { EffectType } from './models/effect';
-import { FrameworkType } from './models/framework';
-import { RunDetectorType } from './models/run-detector';
-import { RendererDirective } from './renderer';
-import { TemplateDirective } from './template';
+import { FormComponent } from './form/component';
+import { RendererDirective } from './form/renderer';
+import { Store } from './form/store';
+import { TemplateDirective } from './form/template';
+import { ControlDatasourceType } from './models/datasource/datasource';
+import { EffectType } from './models/effects/effect';
+import { RunDetectorType } from './models/effects/run-detection/run-detection';
+import { FormComponentType } from './models/framework/decorator';
 
 export interface IPerformularModuleConfig {
-    formComponents?: FrameworkType[];
+    formComponents?: FormComponentType[];
     effects?: EffectType[];
     runDetectors?: RunDetectorType[];
+    controlDatasources?: ControlDatasourceType[];
 }
 
 export const declarations: any[] = [
-    FormComponent,
     RendererDirective,
-    TemplateDirective
+    TemplateDirective,
+    FormComponent
 ];
 
-export const buildInFormComponents: FrameworkType[] = [
+export const buildInFormComponents: FormComponentType[] = [
     InputComponent,
     TextareaComponent,
     FieldsetComponent,
@@ -73,7 +75,7 @@ export const buildInRunDetectors: RunDetectorType[] = [
         FlexLayoutModule
     ],
     providers: [
-        Loader,
+        Store,
         ...buildInEffects,
         ...buildInRunDetectors
     ],
@@ -83,11 +85,11 @@ export const buildInRunDetectors: RunDetectorType[] = [
         ...declarations
     ]
 })
-export class PerformulerCoreModule {
+export class PerformularCoreModule {
 
     constructor(
         private _injector: Injector,
-        private _loader: Loader
+        private _loader: Store
     ) {
         this._loader.connect(this._injector);
     }
@@ -101,9 +103,10 @@ export class PerformulerCoreModule {
                     multi: true
                 },
                 ...(config.effects || []),
-                ...(config.runDetectors || [])
+                ...(config.runDetectors || []),
+                ...(config.controlDatasources || []),
             ],
-            ngModule: PerformulerCoreModule
+            ngModule: PerformularCoreModule
         };
     }
 }

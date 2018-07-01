@@ -1,81 +1,83 @@
-import { Observable } from 'rxjs';
-
-import { use } from '../mixin';
-import { FormTypes, Property } from '../performular';
-import { State } from '../state';
+import { use } from '../utils/mixin';
+import { State } from '../utils/state';
 import { Abstract, TGroup } from './abstract';
-import { Field, IField, IFieldParams } from './field';
-import { ILayout, Layout } from './layout';
+import { AbstractField, IAbstractField, IAbstractFieldParams, IAbstractFieldProperty } from './abstract-field';
+import { ILayoutProperty, Layout } from './layout/layout';
 
-export interface IGroup<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
-    extends IField<TGroup, F, A, S> {
-    children: Property<P>[];
-    layout?: ILayout;
+export interface IGroupParams<
+    F extends string = any,
+    A = any,
+    S extends string = any,
+    > extends IAbstractFieldParams<TGroup, F, A, S>, ILayoutProperty {
+    children: any[];
 }
 
-export interface IGroupParams<F extends string = any, A = any, S extends string = any> extends IFieldParams<TGroup, F, A, S> {
+export interface IGroupProperty<
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends IAbstractFieldProperty<TGroup, F, A, S>, ILayoutProperty {
     children: Abstract[];
-    layout?: ILayout;
 }
 
-export interface IGroupState {
-    children: Abstract[];
+export interface IGroup<
+    A = any,
+    S extends string = any
+    > extends IAbstractField<TGroup, A, S>, ILayoutProperty {
 }
 
-// tslint:disable-next-line:no-empty-interface
-export interface Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<TGroup, F, A, S>, Layout { }
+export interface Group<
+    A = any,
+    S extends string = any,
+    > extends AbstractField<TGroup, A, S, IGroup<A, S>>, Layout<IGroup<A, S>> { }
 
-// @dynamic
-export class Group<F extends string = any, A = any, S extends string = any, P = any> extends Field<TGroup, F, A, S> {
+export class Group<
+    A = any,
+    S extends string = any,
+    > extends AbstractField<TGroup, A, S, IGroup<A, S>> {
 
-    private _group$: State<IGroupState>;
-    @use(Layout) public this: Group<F, A, S, P> | undefined;
+    protected _state$: State<IGroup<A, S>>;
 
-    get children$(): Observable<Abstract[]> {
-        return this._group$.select('children');
-    }
+    @use(Layout) public this: Group | undefined;
 
-    constructor(group: IGroupParams<F, A, S>) {
-        super(group);
-        this._initLayout(group.layout);
-        this._setParents(group.children);
-        this._group$ = new State<IGroupState>({
-            children: group.children
-        });
-        this._initValue(this._buildValue());
+    constructor(property: IGroupProperty<string, A, S>) {
+        super(property);
+        this._init = {
+            ...this._init,
+            ...this._initLayout(property),
+            children: property.children,
+            ...this._initValue({ value: this._buildValue(this._getRecursiveChildFields(property.children)) })
+        };
+        this._state$ = new State<IGroup<A, S>>(<any>this._init);
+        this._setParentOfChildren();
     }
 
     public setValue(value: any, emitUpdate: boolean = false): void {
-        this.getChildFields()
-            .filter((child: Field) => child.id in value)
-            .forEach((child: Field, index: number, arr: Field[]) => {
+        this.childFields
+            .filter((child: AbstractField) => child.id in value)
+            .forEach((child: AbstractField, index: number, arr: AbstractField[]) => {
                 child.setValue(value[child.id], index === arr.length - 1);
             });
     }
 
     public patchValue(value: any, emitUpdate: boolean = false): void {
-        this.getChildFields()
-            .filter((child: Field) => child.id in value)
-            .forEach((child: Field, index: number, arr: Field[]) => {
+        this.childFields
+            .filter((child: AbstractField) => child.id in value)
+            .forEach((child: AbstractField, index: number, arr: AbstractField[]) => {
                 child.patchValue(value[child.id], index === arr.length - 1);
             });
     }
 
     public resetValue(emitUpdate: boolean = false): void {
-        this.getChildFields().forEach((child: Field, index: number, arr: Field[]) => {
+        this.childFields.forEach((child: AbstractField, index: number, arr: AbstractField[]) => {
             child.resetValue(index === arr.length - 1);
         });
     }
 
-    protected _buildValue(): any {
-        const childFields: Field[] = this.getChildFields();
-        return childFields.reduce((prev: any, child: Field) => {
+    protected _buildValue(children: AbstractField[] | undefined = this.childFields): any {
+        return children.reduce((prev: any, child: AbstractField) => {
             prev[child.id] = child.value;
             return prev;
         }, {});
-    }
-
-    protected _forEachChild(cb: (child: Abstract) => void): void {
-        this._group$.getValue().children.forEach(cb);
     }
 }

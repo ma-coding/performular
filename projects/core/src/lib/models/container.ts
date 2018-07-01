@@ -1,83 +1,90 @@
 import { Observable, of } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 
-import { use } from '../mixin';
-import { FormTypes, Property } from '../performular';
-import { State } from '../state';
-import { Abstract, IAbstract, IAbstractParams, TContainer } from './abstract';
-import { CheckList } from './effect';
-import { Field } from './field';
-import { ILayout, Layout } from './layout';
+import { FormComponentTypes, Property } from '../utils/misc';
+import { use } from '../utils/mixin';
+import { State } from '../utils/state';
+import { Abstract, IAbstract, IAbstractParams, IAbstractProperty, TContainer } from './abstract';
+import { AbstractField } from './abstract-field';
+import { ILayoutProperty, Layout } from './layout/layout';
 
-export interface IContainer<F extends string = any, A = any, S extends string = any, P extends FormTypes = any>
-    extends IAbstract<TContainer, F, A, S> {
+export interface IContainerParams<
+    F extends string = any,
+    A = any,
+    S extends string = any,
+    P extends FormComponentTypes = any
+    > extends IAbstractParams<TContainer, F, A, S>, ILayoutProperty {
     children: Property<P>[];
-    layout?: ILayout;
 }
 
-export interface IContainerParams<F extends string = any, A = any, S extends string = any> extends IAbstractParams<TContainer, F, A, S> {
+export interface IContainerProperty<
+    F extends string = any,
+    A = any,
+    S extends string = any
+    > extends IAbstractProperty<TContainer, F, A, S>, ILayoutProperty {
     children: Abstract[];
-    layout?: ILayout;
 }
 
-export interface IContainerState {
-    children: Abstract[];
+export interface IContainer<
+    A = any,
+    S extends string = any
+    > extends IAbstract<TContainer, A, S>, ILayoutProperty {
     hidden: boolean;
 }
 
-// tslint:disable-next-line:no-empty-interface
-export interface Container<F extends string = any, A = any, S extends string = any, P = any> extends Layout { }
+export function selectHidden(state: IContainer): boolean {
+    return state.hidden;
+}
 
-// @dynamic
-export class Container<F extends string = any, A = any, S extends string = any, P = any> extends Abstract<TContainer, F, A, S> {
+export interface Container<
+    A = any,
+    S extends string = any,
+    > extends Abstract<TContainer, A, S, IContainer<A, S>>, Layout<IContainer<A, S>> { }
 
-    private _container$: State<IContainerState>;
+export class Container<
+    A = any,
+    S extends string = any,
+    > extends Abstract<TContainer, A, S, IContainer<A, S>> {
 
-    get hidden$(): Observable<boolean> {
-        return this._container$.select('hidden');
-    }
+    protected _state$: State<IContainer<A, S>>;
 
     get hidden(): boolean {
-        return this._container$.getValue().hidden;
+        return this._state$.get(selectHidden);
     }
 
-    get children$(): Observable<Abstract[]> {
-        return this._container$.select('children');
+    get hidden$(): Observable<boolean> {
+        return this._state$.get$(selectHidden);
     }
 
-    @use(Layout) public this: Container<F, A, S, P> | undefined;
+    @use(Layout) public this: Container | undefined;
 
-    constructor(container: IContainerParams<F, A, S>) {
-        super(container);
-        this._initLayout(container.layout);
-        this._setParents(container.children);
-        this._container$ = new State<IContainerState>({
-            children: container.children,
-            hidden: this._analyzeHidden(container.children)
-        });
+    constructor(property: IContainerProperty<string, A, S>) {
+        super(property);
+        this._init = {
+            ...this._init,
+            ...this._initLayout(property),
+            children: property.children
+        };
+        this._state$ = new State<IContainer<A, S>>(<any>this._init);
+        this._setParentOfChildren();
     }
 
-    protected _forEachChild(cb: (child: Abstract) => void): void {
-        this._container$.getValue().children.forEach(cb);
-    }
-
-    protected _run(checklist: CheckList): Observable<void> {
-        return of().pipe(startWith(<any>undefined));
+    protected _run(checklist: Abstract[]): Observable<void> {
+        return of(undefined);
     }
 
     protected _update(): void {
-        const hiddenCalc: boolean = this._analyzeHidden(this.getChildren());
-        if (this._container$.getValue().hidden !== hiddenCalc) {
-            this._container$.updateKey('hidden', hiddenCalc);
+        const hiddenCalc: boolean = this._analyzeHidden(this.children);
+        if (this.hidden !== hiddenCalc) {
+            this._state$.updateKey('hidden', hiddenCalc);
         }
     }
 
     private _analyzeHidden(children: Abstract[]): boolean {
         return children.every((child: Abstract) => {
-            if (child.isContainer) {
+            if (child instanceof Container) {
                 return (<Container>child).hidden;
             } else {
-                return (<Field>child).hidden;
+                return (<AbstractField>child).hidden;
             }
         });
     }

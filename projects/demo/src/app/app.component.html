@@ -1,27 +1,5 @@
-<performular [form]="c">
-    <ng-template performularTemplate field="input" let-field position="after">
-        <div *ngIf="field?.invalid$ | async">
-            <div *ngFor="let err of field?.errors$ | async">
-                {{err}}
-            </div>
-        </div>
-    </ng-template>
-    <ng-template performularTemplate field="list" let-field>
-        <button (click)="field.pushField(true)">ADD</button>
-    </ng-template>
-    <ng-template performularTemplate id="listitem" position="after" let-field>
-        <button (click)="field.parent.removeFieldAtIndex(field.parent.getIndex(field))">REMOVE</button>
-    </ng-template>
-    <ng-template performularTemplate id="listitemcontrol" position="after" let-field>
-        <div *ngIf="field?.invalid$ | async">
-            <div *ngFor="let err of field?.errors$ | async">
-                {{err}}
-            </div>
-        </div>
+<performular [form]="form">
+    <ng-template performularTemplate id="test" let-field position="after">
+        <h1>TEST {{field.value}}</h1>
     </ng-template>
 </performular>
-<button (click)="reset()">RESET</button>
-<button (click)="patch()">PATCH</button>
-<button (click)="hide()">HIDE</button>
-<button (click)="rem()">REM</button>
-<button (click)="add()">ADD</button>

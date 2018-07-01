@@ -1,0 +1,11 @@
+{
+    "name": "@performular/ui-material",
+    "version": "1.0.0",
+    "peerDependencies": {
+        "@angular/cdk": "^6.0.0",
+        "@angular/common": "^6.0.0",
+        "@angular/core": "^6.0.0",
+        "@angular/material": "^6.0.0",
+        "rxjs": "^6.0.0"
+    }
+}
