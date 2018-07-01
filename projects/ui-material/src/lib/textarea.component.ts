@@ -73,7 +73,6 @@ export class PerformularMatTextareaComponent extends MatFormField<MatTextarea> i
         this.textareaValueHandler = new InputValueHandler('text', field.attrs.debounce || 0);
         this._textareaSub = this.textareaValueHandler.valueChanges
             .subscribe((value: any) => {
-                console.log(value);
                 if (this.field) {
                     this.field.setValue(value);
                 }

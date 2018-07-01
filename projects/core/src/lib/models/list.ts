@@ -97,7 +97,7 @@ export class List<
     public pushField(emitUpdate: boolean = true): void {
         this._updateChildren([
             ...this.children,
-            Performular.build({ form: this.childDef })
+            Performular.build({ form: this.childDef, options: this.options })
         ], emitUpdate);
     }
 

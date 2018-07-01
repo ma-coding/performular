@@ -1,5 +1,5 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import {
     MatCheckboxModule,
     MatDatepickerModule,
@@ -45,7 +45,7 @@ export const buildInFormComponents: any[] = [
         ...buildInFormComponents,
     ],
     imports: [
-        FormsModule,
+        CommonModule,
         MatInputModule,
         MatFormFieldModule,
         MatCheckboxModule,

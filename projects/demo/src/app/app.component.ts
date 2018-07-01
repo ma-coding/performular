@@ -221,14 +221,6 @@ export class AppComponent {
     });
 
     constructor() {
-        console.log(this.form);
-        this.form.value$.subscribe(console.log);
-
-        setTimeout(() => {
-            this.form.setValue({
-                test: 50
-            });
-        }, 2000);
     }
 
 }
