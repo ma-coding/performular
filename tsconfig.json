@@ -19,13 +19,6 @@
             "es2017",
             "dom"
         ],
-        "paths": {
-            "@performular/core": [
-                "projects/core/src"
-            ],
-            "@performular/ui-material": [
-                "projects/ui-material/src"
-            ]
-        }
+        "paths": {}
     }
 }

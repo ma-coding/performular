@@ -55,7 +55,7 @@ export function MatFormFieldTemplate(content: string): string {
 
         <mat-error
             [ngStyle]="(field?.styles$ | async)?.error"
-            *ngFor="let error of field.errors$ | async; let i = index">
+            *ngFor="let error of field?.errors$ | async; let i = index">
             <ng-container *ngIf="i === 0">
                 {{error}}
             </ng-container>
