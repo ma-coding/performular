@@ -5,8 +5,6 @@ import { Subscription } from 'rxjs';
 
 import { Control, IPerformularOnInit } from '@performular/core';
 
-export const PERFORMULAR_FORMCOMPONENT_MATCHECKBOX: 'matCheckbox' = 'matCheckbox';
-
 export interface MatFormFieldAttrs {
     appearance?: MatFormFieldAppearance;
     color?: ThemePalette;
