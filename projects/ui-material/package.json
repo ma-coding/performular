@@ -11,7 +11,10 @@
     "engines": {
         "node": ">= 5.4.1"
     },
-    "version": "1.0.0-beta.2",
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "version": "1.0.0-beta.3",
     "private": false,
     "peerDependencies": {
         "@angular/cdk": "^6.0.0",
