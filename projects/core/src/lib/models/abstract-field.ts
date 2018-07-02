@@ -81,6 +81,28 @@ export abstract class AbstractField<
         });
     }
 
+    public find<F extends AbstractField = AbstractField>(path: Array<string | number>): F | undefined {
+        if (path instanceof Array && (path.length === 0)) {
+            return undefined;
+        }
+
+        return (<Array<string | number>>path).reduce((v: AbstractField | undefined, name: string | number) => {
+            if (!v) {
+                return undefined;
+            }
+
+            if (v.type === 'group') {
+                return v.childFields.find((c: AbstractField) => c.id === name);
+            }
+
+            if (v.type === 'array') {
+                return v.childFields[name];
+            }
+
+            return undefined;
+        }, this);
+    }
+
     public abstract setValue(value: any, emitUpdate: boolean): void;
     public abstract patchValue(value: any, emitUpdate: boolean): void;
     public abstract resetValue(emitUpdate: boolean): void;

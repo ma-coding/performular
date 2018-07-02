@@ -170,7 +170,7 @@ export class RendererDirective implements OnDestroy {
                     return;
                 }
 
-                this._flexHandler = new FlexDirective(this._monitor, field.elementRef, renderer._layoutHandler, this._styleUtils, null);
+                this._flexHandler = new FlexDirective(this._monitor, field.elementRef, renderer._layoutHandler, this._styleUtils, {});
                 this._flexHandler = Object.assign(this._flexHandler, field.flex);
 
                 this._flexOrderHandler = new FlexOrderDirective(this._monitor, field.elementRef, this._styleUtils);

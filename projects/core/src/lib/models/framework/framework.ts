@@ -188,6 +188,14 @@ export abstract class Framework<A = any, S extends string = 'host', ST extends I
 
     protected abstract _state$: State<ST>;
 
+    public findOneWithId(id: string): Abstract | undefined {
+        return this.all.find((c: Abstract) => c.id === id);
+    }
+
+    public findAllWithId(id: string): Abstract[] {
+        return this.all.filter((c: Abstract) => c.id === id);
+    }
+
     public setRenderer(renderer: RendererDirective | undefined): void {
         this._state$.updateKey('renderer', renderer);
     }
@@ -206,6 +214,22 @@ export abstract class Framework<A = any, S extends string = 'host', ST extends I
 
     public setInstance(instance: IPerformularOnInit | undefined): void {
         this._state$.updateKey('instance', instance);
+    }
+
+    public setAttrs(attrs: A): void {
+        this._state$.updateKey('attrs', attrs);
+    }
+
+    public patchAttrs(attrs: Partial<A>): void {
+        this._state$.updateKey('attrs', Object.assign(this._state$.get(selectAttrs), attrs));
+    }
+
+    public setStyles(styles: IStyle<S>): void {
+        this._state$.updateKey('styles', styles);
+    }
+
+    public patchStyles(styles: Partial<IStyle<S>>): void {
+        this._state$.updateKey('styles', Object.assign(this._state$.get(selectStyles), styles));
     }
 
     protected _setParent(parent: Abstract): void {
