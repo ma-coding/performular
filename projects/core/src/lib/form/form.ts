@@ -30,7 +30,8 @@ export class Performular {
         const property: IAbstractProperty = this._buildProperty(form, value, options);
         const metadata: IFormComponentDecoration<any> = Store.getFormComponent(property.field).metadata;
         const builder: BuildFunction<any> = metadata.builder;
-        return builder({ params: property });
+        const ctrl: Abstract = builder({ params: property });
+        return ctrl;
     }
 
     private static _buildProperty(
@@ -46,7 +47,7 @@ export class Performular {
                         if (c.type === 'container') {
                             return this._build(c, value, options);
                         }
-                        return this._build(c, value && value[c.id] !== undefined ? value[c.id] : value, options);
+                        return this._build(c, value && value[c.id] !== undefined ? value[c.id] : null, options);
                     })
                 };
             }

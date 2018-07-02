@@ -13,19 +13,6 @@ export class AppComponent {
         options: {
             errorStateWhen: (field: AbstractField): boolean => field.invalid && field.dirty
         },
-        value: {
-            test: 10,
-            testDate: new Date(),
-            textarea: 'abc',
-            testt: false,
-            testt3: false,
-            test9: '123',
-            test10: null,
-            testt2: 0,
-            test2: 90,
-            test3: 490,
-            lst: [15, 20, 30]
-        },
         form: {
             id: 'g',
             attrs: undefined,
@@ -39,7 +26,7 @@ export class AppComponent {
             },
             children: [
                 {
-                    id: 'test',
+                    id: 'input',
                     validators: [
                         {
                             errorMsg: 'testtt',
@@ -58,7 +45,7 @@ export class AppComponent {
                     focus: true
                 },
                 {
-                    id: 'testDate',
+                    id: 'date',
                     validators: [
                         {
                             errorMsg: 'testtt',
@@ -98,7 +85,7 @@ export class AppComponent {
                     focus: true
                 },
                 {
-                    id: 'test9',
+                    id: 'radio',
                     attrs: {
                         options: {
                             datasource: 'test',
@@ -111,7 +98,7 @@ export class AppComponent {
                     type: 'control'
                 },
                 {
-                    id: 'test10',
+                    id: 'select',
                     validators: [
                         {
                             errorMsg: 'testtt',
@@ -129,10 +116,11 @@ export class AppComponent {
                         }
                     },
                     field: 'matSelect',
-                    type: 'control'
+                    type: 'control',
+                    focus: true
                 },
                 {
-                    id: 'testt',
+                    id: 'checkbox',
                     attrs: {
                         placeholder: 'ABC'
                     },
@@ -140,7 +128,7 @@ export class AppComponent {
                     type: 'control'
                 },
                 {
-                    id: 'testt3',
+                    id: 'toggle',
                     attrs: {
                         placeholder: 'ABC'
                     },
@@ -148,7 +136,7 @@ export class AppComponent {
                     type: 'control'
                 },
                 {
-                    id: 'testt2',
+                    id: 'slider',
                     attrs: {
                         min: 0,
                         max: 100
@@ -221,7 +209,7 @@ export class AppComponent {
     });
 
     constructor() {
-        console.log(this.form.findOneWithId('test10'));
+        console.log(this.form);
     }
 
 }

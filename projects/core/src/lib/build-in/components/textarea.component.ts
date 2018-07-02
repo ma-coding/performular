@@ -30,6 +30,7 @@ export function TextareaBuilder(context: BuildContext<TControl>): Abstract {
 @Component({
     selector: 'performular-textarea',
     template: `<textarea
+        [performularAutoFocus]="field?.focus$ | async"
         [id]="field?.uuid"
         [rows]="(field?.attrs$ | async)?.rows"
         [cols]="(field?.attrs$ | async)?.cols"

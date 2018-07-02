@@ -152,16 +152,20 @@ export class Visibility<ST extends IAbstractField = IAbstractField> {
     }
 
     protected _updateVisibility(): void {
+        const parent: AbstractField | undefined = this._visibilityField.parentField;
+        if (parent) {
+            parent._updateVisibility();
+        }
         this._visibilityState$.updateKey('disabled', this._isDisabled());
         this._visibilityState$.updateKey('hidden', this._isHidden());
     }
 
     private _isDisabled(): boolean {
-        return this.forcedDisabled || this.disables.some((d: VisibleHandler) => d.result);
+        return this.forcedDisabled || this.disables.some((d: VisibleHandler) => d.result) || this._isParentDisabled();
     }
 
     private _isHidden(): boolean {
-        return this.forcedHidden || this.hides.some((d: VisibleHandler) => d.result);
+        return this.forcedHidden || this.hides.some((d: VisibleHandler) => d.result) || this._isParentHidden();
     }
 
     private _isParentDisabled(): boolean {

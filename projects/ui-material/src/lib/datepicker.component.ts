@@ -57,6 +57,7 @@ export function MatDatepickerBuilder(context: BuildContext<TControl>): Abstract 
     selector: 'performular-mat-datepicker',
     template: MatFormFieldTemplate(`
         <input matInput
+        [performularAutoFocus]="field?.focus$ | async"
         [matDatepicker]="picker"
         [ngStyle]="(field?.styles$ | async)?.control"
         (dateChange)="datepickerValueHandler?.setValue($event.value)"
