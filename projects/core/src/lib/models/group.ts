@@ -1,3 +1,4 @@
+import { ParamType } from '../form/form';
 import { use } from '../utils/mixin';
 import { State } from '../utils/state';
 import { Abstract, TGroup } from './abstract';
@@ -9,7 +10,7 @@ export interface IGroupParams<
     A = any,
     S extends string = any,
     > extends IAbstractFieldParams<TGroup, F, A, S>, ILayoutProperty {
-    children: any[];
+    children: ParamType[];
 }
 
 export interface IGroupProperty<

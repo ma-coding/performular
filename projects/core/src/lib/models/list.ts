@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { Performular } from '../form/form';
+import { ParamType, Performular } from '../form/form';
 import { use } from '../utils/mixin';
 import { State } from '../utils/state';
 import { Abstract, IAbstractParams, TList } from './abstract';
@@ -13,7 +13,7 @@ export interface IListParams<
     A = any,
     S extends string = any
     > extends IAbstractFieldParams<TList, F, A, S>, ILayoutProperty {
-    childDef: any;
+    childDef: ParamType;
 }
 
 export interface IListProperty<

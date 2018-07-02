@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 
-import { FormComponentTypes, Property } from '../utils/misc';
+import { ParamType } from '../form/form';
 import { use } from '../utils/mixin';
 import { State } from '../utils/state';
 import { Abstract, IAbstract, IAbstractParams, IAbstractProperty, TContainer } from './abstract';
@@ -11,9 +11,8 @@ export interface IContainerParams<
     F extends string = any,
     A = any,
     S extends string = any,
-    P extends FormComponentTypes = any
     > extends IAbstractParams<TContainer, F, A, S>, ILayoutProperty {
-    children: Property<P>[];
+    children: ParamType[];
 }
 
 export interface IContainerProperty<
