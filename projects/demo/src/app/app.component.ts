@@ -221,6 +221,7 @@ export class AppComponent {
     });
 
     constructor() {
+        console.log(this.form.findOneWithId('test10'));
     }
 
 }

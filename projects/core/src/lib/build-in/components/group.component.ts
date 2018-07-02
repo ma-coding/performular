@@ -6,7 +6,7 @@ import { Group } from '../../models/group';
 
 export const PERFORMULAR_FORMCOMPONENT_GROUP: 'group' = 'group';
 
-export type CoreGroup = Group<undefined, ''>;
+export type CoreGroup = Group<any, ''>;
 
 export function GroupBuilder(context: BuildContext<TGroup>): Abstract {
     return new Group(context.params);

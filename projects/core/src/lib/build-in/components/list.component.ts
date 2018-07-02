@@ -6,7 +6,7 @@ import { List } from '../../models/list';
 
 export const PERFORMULAR_FORMCOMPONENT_LIST: 'list' = 'list';
 
-export type CoreList = List<undefined, ''>;
+export type CoreList = List<any, ''>;
 
 export function ListBuilder(context: BuildContext<TList>): Abstract {
     return new List(context.params);

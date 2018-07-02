@@ -1,11 +1,24 @@
 {
     "name": "@performular/ui-material",
-    "version": "1.0.0",
+    "description": "Performular UI-Material",
+    "homepage": "https://github.com/ma-coding/performular",
+    "bugs": "https://github.com/ma-coding/performular/issues",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ma-coding/performular.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">= 5.4.1"
+    },
+    "version": "1.0.0-beta.2",
+    "private": false,
     "peerDependencies": {
         "@angular/cdk": "^6.0.0",
         "@angular/common": "^6.0.0",
         "@angular/core": "^6.0.0",
         "@angular/material": "^6.0.0",
+        "@performular/core": "^1.0.0-beta.2",
         "rxjs": "^6.0.0"
     }
 }
