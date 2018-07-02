@@ -38,6 +38,7 @@ export function InputBuilder(context: BuildContext<TControl>): Abstract {
 @Component({
     selector: 'performular-input',
     template: `<input
+        [performularAutoFocus]="field?.focus$ | async"
         [id]="field?.uuid"
         [value]="field?.value$ | async"
         (input)="inputValueHandler?.setValue($event.target.value)"

@@ -40,6 +40,7 @@ export function MatTextareaBuilder(context: BuildContext<TControl>): Abstract {
     selector: 'performular-mat-textarea',
     template: MatFormFieldTemplate(`
         <textarea matInput
+        [performularAutoFocus]="field?.focus$ | async"
         [ngStyle]="(field?.styles$ | async)?.control"
         (input)="textareaValueHandler?.setValue($event.target.value)"
         [value]="field?.value"

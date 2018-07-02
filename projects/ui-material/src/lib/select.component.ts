@@ -53,6 +53,7 @@ export function MatSelectBuilder(context: BuildContext<TControl>): Abstract {
     selector: 'performular-mat-select',
     template: MatFormFieldTemplate(`
             <mat-select
+                [performularAutoFocus]="field?.focus$ | async"
                 (selectionChange)="change($event)"
                 [ngStyle]="(field?.styles$ | async)?.control"
                 [disabled]="(field?.disabled$ | async)"

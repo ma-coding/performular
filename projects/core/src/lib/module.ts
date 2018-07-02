@@ -15,6 +15,7 @@ import { MaxValidator } from './build-in/validators/max.validator';
 import { MinLengthValidator } from './build-in/validators/min-length.validator';
 import { MinValidator } from './build-in/validators/min.validator';
 import { RequiredValidator } from './build-in/validators/required.validator';
+import { AutoFocusDirective } from './form/auto-focus';
 import { FormComponent } from './form/component';
 import { RendererDirective } from './form/renderer';
 import { Store } from './form/store';
@@ -34,6 +35,7 @@ export interface IPerformularModuleConfig {
 export const declarations: any[] = [
     RendererDirective,
     TemplateDirective,
+    AutoFocusDirective,
     FormComponent
 ];
 

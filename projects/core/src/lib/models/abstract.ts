@@ -135,7 +135,7 @@ export abstract class Abstract<
         });
     }
 
-    public update(checklist: Abstract[]): void {
+    public update(checklist: Abstract[] = [this]): void {
         this.root._updateSubject.next(checklist);
     }
 

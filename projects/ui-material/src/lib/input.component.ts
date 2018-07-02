@@ -46,6 +46,7 @@ export function MatInputBuilder(context: BuildContext<TControl>): Abstract {
     selector: 'performular-mat-input',
     template: MatFormFieldTemplate(`
         <input matInput
+        [performularAutoFocus]="field?.focus$ | async"
         [ngStyle]="(field?.styles$ | async)?.control"
         (input)="inputValueHandler?.setValue($event.target.value)"
         [value]="field?.value"
