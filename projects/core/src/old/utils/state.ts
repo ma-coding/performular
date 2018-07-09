@@ -6,13 +6,13 @@ export class State<T extends {}> extends BehaviorSubject<T> {
         super(state);
     }
 
-    public select<K extends keyof T>(key: K): T[K] {
-        return this.getValue()[key];
+    public get<K>(selector: (state: T) => K): K {
+        return selector(this.getValue());
     }
 
-    public select$<K extends keyof T>(key: K): Observable<T[K]> {
+    public get$<K>(selector: (state: T) => K): Observable<K> {
         return this.pipe(
-            map((state: T) => state[key]),
+            map((state: T) => selector(state)),
             distinctUntilChanged()
         );
     }
