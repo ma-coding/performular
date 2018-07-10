@@ -19,7 +19,7 @@ export class MetadataStore {
     public static setItem<
         K extends keyof MetadataArgs,
         I extends keyof MetadataArgs[K]
-    >(key: K, value: MetadataArgs[K][I]): void {
+        >(key: K, value: MetadataArgs[K][I]): void {
         // Todo: Refactor this as any
         this._store[key] = Object.assign(this._store[key], {
             [value.name as any]: value
@@ -29,7 +29,7 @@ export class MetadataStore {
     public static getItem<
         K extends keyof MetadataArgs,
         I extends keyof MetadataArgs[K]
-    >(key: K, name: I): MetadataArgs[K][I] {
+        >(key: K, name: I): MetadataArgs[K][I] {
         return this._store[key][name];
     }
 
@@ -37,7 +37,8 @@ export class MetadataStore {
         return {
             runDetectors: {},
             validators: {},
-            visibles: {}
+            visibles: {},
+            transforms: {}
         };
     }
 }
