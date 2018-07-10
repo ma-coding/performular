@@ -30,7 +30,7 @@ export class Validation {
             const metadata: MergeTarget<
                 ValidatorOptions,
                 InstanceDef<ValidatorExecuter>
-            > = MetadataStore.getItem('validators', options.target);
+                > = MetadataStore.getItem('validators', options.target);
 
             this.runDetection = new RunDetection(
                 options.runDetection || {
@@ -74,9 +74,9 @@ export class Validation {
 
     private _runValidator(context: RunContext): ValidatorResult {
         if (isValidatorExecuter(this.target)) {
-            return this.target.executeValidator(context);
+            return this.target.executeValidator(context, this.params);
         } else if (isFunction<ValidatorFunction>(this.target)) {
-            return this.target(context);
+            return this.target(context, this.params);
         }
         throw new Error('');
     }

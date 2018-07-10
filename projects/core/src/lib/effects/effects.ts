@@ -1,5 +1,4 @@
-import { forkJoin, merge, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
 
 import { State } from '../utils/state';
 import { ObjectType } from '../utils/types/object-type';
@@ -12,6 +11,7 @@ import { EffectsOptions } from './types/effects-options';
 import { EffectsState } from './types/effects-state';
 
 export class Effects extends State<EffectsState> {
+
     constructor(options: EffectsOptions) {
         super({
             validations: Object.keys(options.validations || {}).reduce(
@@ -19,7 +19,7 @@ export class Effects extends State<EffectsState> {
                     prev[curr] = new Validation(
                         // Todo: set right type
                         (options.validations as ObjectType<ValidationOptions>)[
-                            curr
+                        curr
                         ]
                     );
                     return prev;
@@ -31,7 +31,7 @@ export class Effects extends State<EffectsState> {
                     prev[curr] = new Visibility(
                         // Todo: set right type
                         (options.visibilities as ObjectType<VisibilityOptions>)[
-                            curr
+                        curr
                         ]
                     );
                     return prev;
@@ -46,16 +46,6 @@ export class Effects extends State<EffectsState> {
             invalid: !!options.forcedError,
             errors: !!options.forcedError ? [options.forcedError] : []
         });
-    }
-
-    public updated(): Observable<void> {
-        return merge(
-            this.select$('validations'),
-            this.select$('visibilities'),
-            this.select$('forcedDisable'),
-            this.select$('forcedHidden'),
-            this.select$('forcedError')
-        ).pipe(map(() => {}));
     }
 
     public addValidation(id: string, options: ValidationOptions): void {
@@ -122,5 +112,9 @@ export class Effects extends State<EffectsState> {
             ),
             of(undefined)
         );
+    }
+
+    public updateFlags(): void {
+        // Todo: Add Implementation
     }
 }

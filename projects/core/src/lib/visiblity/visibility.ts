@@ -30,7 +30,7 @@ export class Visibility {
             const metadata: MergeTarget<
                 VisibleOptions,
                 InstanceDef<VisibleExecuter>
-            > = MetadataStore.getItem('visibles', options.target);
+                > = MetadataStore.getItem('visibles', options.target);
             this.runDetection = new RunDetection(
                 options.runDetection || DefaultRunDetectionOptions
             );
@@ -79,9 +79,9 @@ export class Visibility {
 
     private _runVisible(context: RunContext): VisibleResult {
         if (isVisibleExecuter(this.target)) {
-            return this.target.executeVisible(context);
+            return this.target.executeVisible(context, this.params);
         } else if (isFunction<VisibleFunction>(this.target)) {
-            return this.target(context);
+            return this.target(context, this.params);
         }
         throw new Error('');
     }

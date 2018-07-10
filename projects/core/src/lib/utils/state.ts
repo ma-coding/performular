@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-export class State<T extends {}> extends BehaviorSubject<T> {
+export abstract class State<T extends {}> extends BehaviorSubject<T> {
     constructor(state: T) {
         super(state);
     }

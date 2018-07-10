@@ -1,6 +1,7 @@
+import { AbstractField } from '../../abstract-field/abstract-field';
+
 export interface RunContext {
     checked: boolean;
-    checkedFields: any[]; // Todo: Add right Field Type
-    field: any;
-    params?: any;
+    checkedFields: AbstractField[]; // Todo: Add right Field Type
+    field: AbstractField;
 }

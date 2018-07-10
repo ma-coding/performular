@@ -18,7 +18,7 @@ export class RunDetection {
         if (isString(options.target)) {
             const runDetectorInstanceDef: InstanceDef<
                 RunDetectorStrategy
-            > = MetadataStore.getItem('runDetectors', options.target).target;
+                > = MetadataStore.getItem('runDetectors', options.target).target;
             this.target = MetadataStore.getInjector().createInstance(
                 runDetectorInstanceDef
             );
@@ -34,9 +34,9 @@ export class RunDetection {
 
     public evaluate(context: RunContext): boolean {
         if (isRunDetectorStrategy(this.target)) {
-            return this.target.strategy(context);
+            return this.target.strategy(context, this.params);
         } else if (isFunction<RunDetectorFunction>(this.target)) {
-            return this.target(context);
+            return this.target(context, this.params);
         }
         throw new Error('');
     }
