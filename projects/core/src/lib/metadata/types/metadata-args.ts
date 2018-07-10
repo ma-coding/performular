@@ -1,5 +1,7 @@
 import { RunDetectorOptions } from '../../run-detector/types/run-detector-options';
 import { RunDetectorStrategy } from '../../run-detector/types/run-detector-strategy';
+import { TransformOptions } from '../../transform/types/transform-options';
+import { Transformation } from '../../transform/types/transformation';
 import { InstanceDef } from '../../utils/types/instance-def';
 import { ObjectType } from '../../utils/types/object-type';
 import { ValidatorExecuter } from '../../validator/types/validator-executer';
@@ -17,5 +19,8 @@ export interface MetadataArgs {
     >;
     visibles: ObjectType<
         MergeTarget<VisibleOptions, InstanceDef<VisibleExecuter>>
+    >;
+    transforms: ObjectType<
+        MergeTarget<TransformOptions, InstanceDef<Transformation>>
     >;
 }

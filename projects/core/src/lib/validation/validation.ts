@@ -74,7 +74,7 @@ export class Validation {
 
     private _runValidator(context: RunContext): ValidatorResult {
         if (isValidatorExecuter(this.target)) {
-            return this.target.execute(context);
+            return this.target.executeValidator(context);
         } else if (isFunction<ValidatorFunction>(this.target)) {
             return this.target(context);
         }

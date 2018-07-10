@@ -79,7 +79,7 @@ export class Visibility {
 
     private _runVisible(context: RunContext): VisibleResult {
         if (isVisibleExecuter(this.target)) {
-            return this.target.execute(context);
+            return this.target.executeVisible(context);
         } else if (isFunction<VisibleFunction>(this.target)) {
             return this.target(context);
         }

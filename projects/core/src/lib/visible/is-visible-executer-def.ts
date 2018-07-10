@@ -4,5 +4,5 @@ import { VisibleExecuter } from './types/visible-executer';
 export function isVisibleExecuterDef(
     value: any
 ): value is InstanceDef<VisibleExecuter> {
-    return value && value.prototype && 'execute' in value.prototype;
+    return value && value.prototype && 'executeVisible' in value.prototype;
 }
