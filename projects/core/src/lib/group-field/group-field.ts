@@ -1,20 +1,22 @@
 import { merge, Observable } from 'rxjs';
 
 import { AbstractField } from '../abstract-field/abstract-field';
+import { State } from '../utils/state';
 import { Value } from '../value/value';
 import { GroupFieldOptions } from './types/group-field-options';
 import { GroupFieldState } from './types/group-field-state';
 
 export class GroupField extends AbstractField<GroupFieldState> {
+    protected _fieldApi: State<GroupFieldState>;
 
     protected _valueApi: Value;
 
     get children(): AbstractField[] {
-        return this._select('children');
+        return this._fieldApi._select('children');
     }
 
     get children$(): Observable<AbstractField[]> {
-        return this._select$('children');
+        return this._fieldApi._select$('children');
     }
 
     constructor(options: GroupFieldOptions) {
@@ -23,6 +25,10 @@ export class GroupField extends AbstractField<GroupFieldState> {
         this._valueApi = new Value({
             initialValue: this._buildValue(options.children),
             transformer: this._transformer
+        });
+        this._fieldApi = new State<GroupFieldState>({
+            ...this._initAbstract(options),
+            children: options.children
         });
     }
 

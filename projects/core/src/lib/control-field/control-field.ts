@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { AbstractField } from '../abstract-field/abstract-field';
+import { State } from '../utils/state';
 import { ValueMode } from '../value/types/value-mode';
 import { Value } from '../value/value';
 import { ControlFieldOptions } from './types/control-field-options';
@@ -8,6 +9,7 @@ import { ControlFieldState } from './types/control-field-state';
 
 export class ControlField extends AbstractField<ControlFieldState> {
 
+    protected _fieldApi: State<ControlFieldState>;
     protected _valueApi: Value;
 
     constructor(options: ControlFieldOptions) {
@@ -15,6 +17,11 @@ export class ControlField extends AbstractField<ControlFieldState> {
         this._valueApi = new Value({
             initialValue: options.value || options.defaultValue || null,
             transformer: this._transformer
+        });
+        this._fieldApi = new State<ControlFieldState>({
+            ...this._initAbstract(options),
+            defaultValue: options.defaultValue,
+            value: options.value || options.defaultValue || null
         });
     }
 

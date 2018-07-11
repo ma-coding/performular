@@ -1,31 +1,36 @@
 import { merge, Observable } from 'rxjs';
 
 import { AbstractField } from '../abstract-field/abstract-field';
+import { State } from '../utils/state';
 import { Value } from '../value/value';
 import { ListFieldOptions } from './types/list-field-options';
 import { ListFieldState } from './types/list-field-state';
 
 export class ListField extends AbstractField<ListFieldState> {
+    protected _fieldApi: State<ListFieldState>;
 
     protected _valueApi: Value;
 
     get children(): AbstractField[] {
-        return this._select('children');
+        return this._fieldApi._select('children');
     }
 
     get children$(): Observable<AbstractField[]> {
-        return this._select$('children');
+        return this._fieldApi._select$('children');
     }
 
     constructor(options: ListFieldOptions) {
+        super(options);
         const children: AbstractField[] = options.values.map(options.childGenerator);
         children.forEach((child: AbstractField) => child.setParent(this));
-        super(options);
-        // TODO ADD CHILDREN OTHERWISE
-        this._updateKey('children', children);
         this._valueApi = new Value({
             initialValue: this._buildValue(children),
             transformer: this._transformer
+        });
+        this._fieldApi = new State<ListFieldState>({
+            ...this._initAbstract(options),
+            childGenerator: options.childGenerator,
+            children: children
         });
     }
 

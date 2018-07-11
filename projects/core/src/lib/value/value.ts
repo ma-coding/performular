@@ -1,9 +1,9 @@
 import { merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { isEqual } from '../../old/utils/misc';
 import { Transformer } from '../transformer/transformer';
 import { cloneDeep } from '../utils/clone-deep';
+import { isEqual } from '../utils/is-equal';
 import { State } from '../utils/state';
 import { ValueMode } from './types/value-mode';
 import { ValueOptions } from './types/value-options';

@@ -11,23 +11,28 @@ import { Value } from '../value/value';
 import { AbstractFieldOptions } from './types/abstract-field-options';
 import { AbstractFieldState } from './types/abstract-field-state';
 
-export abstract class AbstractField<T extends AbstractFieldState = any> extends State<T> {
+export abstract class AbstractField<T extends AbstractFieldState = any> {
 
     private _manualUpdates$: Subject<AbstractField[]> = new Subject();
     protected _transformer: Transformer | undefined;
+    protected abstract _fieldApi: State<T>;
     protected abstract _valueApi: Value;
     public effectsApi: Effects;
 
     get id(): string {
-        return this._select('id');
+        return this._fieldApi._select('id');
     }
 
     get parent(): AbstractField | undefined {
-        return this._select('parent');
+        return this._fieldApi._select('parent');
     }
 
     get parent$(): Observable<AbstractField | undefined> {
-        return this._select$('parent');
+        return this._fieldApi._select$('parent');
+    }
+
+    get value(): any {
+        return this._valueApi.value;
     }
 
     get root(): AbstractField {
@@ -48,25 +53,29 @@ export abstract class AbstractField<T extends AbstractFieldState = any> extends 
     }
 
     constructor(options: AbstractFieldOptions) {
-        super(<T>{
-            id: options.id,
-            uuid: generateUUID(),
-            parent: undefined
-        });
         this._transformer = options.transformer ? new Transformer(options.transformer) : undefined;
         this.effectsApi = new Effects(options.effects || {});
     }
 
     public setParent(parent: AbstractField): void {
-        this._updateKey('parent', parent);
+        this._fieldApi._updateKey('parent', parent);
     }
 
+    public abstract getUpdates$(): Observable<void>;
     public abstract setValue(value: any): void;
     public abstract patchValue(value: any): void;
     public abstract resetValue(): void;
 
     protected abstract _buildValue(children?: AbstractField[]): any;
     protected abstract _forEachChildren(cb: (child: AbstractField) => void): any;
+
+    protected _initAbstract(options: AbstractFieldOptions): AbstractFieldState {
+        return {
+            id: options.id,
+            uuid: generateUUID(),
+            parent: undefined
+        };
+    }
 
     protected _updateParentValue(checklist: AbstractField[] = [this], mode: ValueMode): void {
         const parent: AbstractField | undefined = this.parent;
