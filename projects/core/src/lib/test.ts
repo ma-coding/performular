@@ -9,9 +9,7 @@ import { GroupField } from './group-field/group-field';
 })
 export class Item {
 
-    @Control({
-        defaultValue: 2
-    })
+    @Control({})
     public l1?: number;
 }
 
@@ -20,14 +18,10 @@ export class Item {
 })
 export class TestForm {
 
-    @Control({
-        defaultValue: '1'
-    })
+    @Control({})
     public test?: string;
 
-    @Control({
-        defaultValue: 1
-    })
+    @Control({})
     public test2?: number;
 
     @List({
@@ -47,4 +41,4 @@ const k: GroupField = Builder.fromType(TestForm, {
         },
     ]
 });
-console.log(k.children.map(d => d.id));
+console.log(k.value);
