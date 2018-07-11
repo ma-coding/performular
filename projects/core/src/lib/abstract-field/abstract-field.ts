@@ -18,6 +18,10 @@ export abstract class AbstractField<T extends AbstractFieldState = any> extends 
     protected abstract _valueApi: Value;
     public effectsApi: Effects;
 
+    get id(): string {
+        return this._select('id');
+    }
+
     get parent(): AbstractField | undefined {
         return this._select('parent');
     }
@@ -45,12 +49,16 @@ export abstract class AbstractField<T extends AbstractFieldState = any> extends 
 
     constructor(options: AbstractFieldOptions) {
         super(<T>{
-            name: options.name,
+            id: options.id,
             uuid: generateUUID(),
             parent: undefined
         });
         this._transformer = options.transformer ? new Transformer(options.transformer) : undefined;
         this.effectsApi = new Effects(options.effects || {});
+    }
+
+    public setParent(parent: AbstractField): void {
+        this._updateKey('parent', parent);
     }
 
     public abstract setValue(value: any): void;

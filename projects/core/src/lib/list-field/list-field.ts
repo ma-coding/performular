@@ -2,10 +2,10 @@ import { merge, Observable } from 'rxjs';
 
 import { AbstractField } from '../abstract-field/abstract-field';
 import { Value } from '../value/value';
-import { GroupFieldOptions } from './types/group-field-options';
-import { GroupFieldState } from './types/group-field-state';
+import { ListFieldOptions } from './types/list-field-options';
+import { ListFieldState } from './types/list-field-state';
 
-export class GroupField extends AbstractField<GroupFieldState> {
+export class ListField extends AbstractField<ListFieldState> {
 
     protected _valueApi: Value;
 
@@ -17,11 +17,14 @@ export class GroupField extends AbstractField<GroupFieldState> {
         return this._select$('children');
     }
 
-    constructor(options: GroupFieldOptions) {
+    constructor(options: ListFieldOptions) {
+        const children: AbstractField[] = options.values.map(options.childGenerator);
+        children.forEach((child: AbstractField) => child.setParent(this));
         super(options);
-        options.children.forEach((child: AbstractField) => child.setParent(this));
+        // TODO ADD CHILDREN OTHERWISE
+        this._updateKey('children', children);
         this._valueApi = new Value({
-            initialValue: this._buildValue(options.children),
+            initialValue: this._buildValue(children),
             transformer: this._transformer
         });
     }
@@ -35,17 +38,15 @@ export class GroupField extends AbstractField<GroupFieldState> {
 
     public setValue(value: any): void {
         this.children
-            .filter((child: AbstractField) => child.id in value)
-            .forEach((child: AbstractField) => {
-                child.setValue(value[child.id]);
+            .forEach((child: AbstractField, index: number) => {
+                child.setValue(value[index]);
             });
     }
 
     public patchValue(value: any): void {
         this.children
-            .filter((child: AbstractField) => child.id in value)
-            .forEach((child: AbstractField) => {
-                child.patchValue(value[child.id]);
+            .forEach((child: AbstractField, index: number) => {
+                child.patchValue(value[index]);
             });
     }
 
@@ -60,10 +61,7 @@ export class GroupField extends AbstractField<GroupFieldState> {
     }
 
     protected _buildValue(children: AbstractField[]): any {
-        return children.reduce((prev: any, child: AbstractField) => {
-            prev[child.id] = child.value;
-            return prev;
-        }, {});
+        return children.map((child: AbstractField) => child.value);
     }
 
 }

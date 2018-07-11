@@ -1,7 +1,7 @@
 import { AbstractField } from '../abstract-field';
 
 export interface AbstractFieldState {
-    name: string;
+    id: string;
     uuid: string;
     parent: AbstractField | undefined;
 }

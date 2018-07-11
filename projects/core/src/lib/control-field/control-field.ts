@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AbstractField } from '../abstract-field/abstract-field';
 import { ValueMode } from '../value/types/value-mode';
@@ -19,7 +19,7 @@ export class ControlField extends AbstractField<ControlFieldState> {
     }
 
     public getUpdates$(): Observable<void> {
-        return of(undefined);
+        return this.effectsApi.getUpdates$();
     }
 
     public setValue(value: any): void {
