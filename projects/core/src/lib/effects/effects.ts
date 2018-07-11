@@ -1,4 +1,5 @@
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, merge, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { State } from '../utils/state';
 import { ObjectType } from '../utils/types/object-type';
@@ -11,6 +12,78 @@ import { EffectsOptions } from './types/effects-options';
 import { EffectsState } from './types/effects-state';
 
 export class Effects extends State<EffectsState> {
+
+    get validations(): ObjectType<Validation> {
+        return this._select('validations');
+    }
+
+    get validations$(): Observable<ObjectType<Validation>> {
+        return this._select$('validations');
+    }
+
+    get visibilities(): ObjectType<Visibility> {
+        return this._select('visibilities');
+    }
+
+    get visibilities$(): Observable<ObjectType<Visibility>> {
+        return this._select$('visibilities');
+    }
+
+    get forcedDisable(): boolean {
+        return this._select('forcedDisable');
+    }
+
+    get forcedDisable$(): Observable<boolean> {
+        return this._select$('forcedDisable');
+    }
+
+    get disabled(): boolean {
+        return this._select('disabled');
+    }
+
+    get disabled$(): Observable<boolean> {
+        return this._select$('disabled');
+    }
+
+    get forcedHidden(): boolean {
+        return this._select('forcedHidden');
+    }
+
+    get forcedHidden$(): Observable<boolean> {
+        return this._select$('forcedHidden');
+    }
+
+    get hidden(): boolean {
+        return this._select('hidden');
+    }
+
+    get hidden$(): Observable<boolean> {
+        return this._select$('hidden');
+    }
+
+    get forcedError(): string | undefined {
+        return this._select('forcedError');
+    }
+
+    get forcedError$(): Observable<string | undefined> {
+        return this._select$('forcedError');
+    }
+
+    get invalid(): boolean {
+        return this._select('invalid');
+    }
+
+    get invalid$(): Observable<boolean> {
+        return this._select$('invalid');
+    }
+
+    get errors(): string[] {
+        return this._select('errors');
+    }
+
+    get errors$(): Observable<string[]> {
+        return this._select$('errors');
+    }
 
     constructor(options: EffectsOptions) {
         super({
@@ -48,15 +121,25 @@ export class Effects extends State<EffectsState> {
         });
     }
 
+    public getUpdates$(): Observable<void> {
+        return merge(
+            this._select$('validations'),
+            this._select$('visibilities'),
+            this._select$('forcedDisable'),
+            this._select$('forcedHidden'),
+            this._select$('forcedError')
+        ).pipe(map(() => { }));
+    }
+
     public addValidation(id: string, options: ValidationOptions): void {
-        this.updateKey('validations', {
+        this._updateKey('validations', {
             [id]: new Validation(options)
         });
     }
 
     public removeValidation(id: string): void {
-        const validations: ObjectType<Validation> = this.select('validations');
-        this.updateKey('validations', {
+        const validations: ObjectType<Validation> = this._select('validations');
+        this._updateKey('validations', {
             ...Object.keys(validations).reduce((prev: any, curr: string) => {
                 if (curr === id) {
                     return prev;
@@ -68,16 +151,16 @@ export class Effects extends State<EffectsState> {
     }
 
     public addVisiblity(id: string, options: VisibilityOptions): void {
-        this.updateKey('visibilities', {
+        this._updateKey('visibilities', {
             [id]: new Visibility(options)
         });
     }
 
     public removeVisibility(id: string): void {
-        const visibilities: ObjectType<Visibility> = this.select(
+        const visibilities: ObjectType<Visibility> = this._select(
             'visibilities'
         );
-        this.updateKey('validations', {
+        this._updateKey('validations', {
             ...Object.keys(visibilities).reduce((prev: any, curr: string) => {
                 if (curr === id) {
                     return prev;
@@ -89,20 +172,20 @@ export class Effects extends State<EffectsState> {
     }
 
     public setForcedDisabled(disabled: boolean): void {
-        this.updateKey('forcedDisable', disabled);
+        this._updateKey('forcedDisable', disabled);
     }
 
     public setForcedHidden(hidden: boolean): void {
-        this.updateKey('forcedHidden', hidden);
+        this._updateKey('forcedHidden', hidden);
     }
 
     public setForcedError(error: string | undefined): void {
-        this.updateKey('forcedError', error);
+        this._updateKey('forcedError', error);
     }
 
     public evaluate(context: RunContext): Observable<void> {
-        const validations: ObjectType<Validation> = this.select('validations');
-        const visibles: ObjectType<Visibility> = this.select('visibilities');
+        const validations: ObjectType<Validation> = this._select('validations');
+        const visibles: ObjectType<Visibility> = this._select('visibilities');
         return forkJoin(
             ...Object.keys(validations).map((key: string) =>
                 validations[key].evaluate(context)

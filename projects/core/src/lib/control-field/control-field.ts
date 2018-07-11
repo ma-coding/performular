@@ -1,3 +1,5 @@
+import { Observable, of } from 'rxjs';
+
 import { AbstractField } from '../abstract-field/abstract-field';
 import { ValueMode } from '../value/types/value-mode';
 import { Value } from '../value/value';
@@ -6,28 +8,33 @@ import { ControlFieldState } from './types/control-field-state';
 
 export class ControlField extends AbstractField<ControlFieldState> {
 
-    protected _valueState: Value;
+    protected _valueApi: Value;
 
     constructor(options: ControlFieldOptions) {
         super(options);
-        this._valueState = new Value({
-            initialValue: this.select('transformer').executeTo(options.value || options.defaultValue || null)
+        this._valueApi = new Value({
+            initialValue: options.value || options.defaultValue || null,
+            transformer: this._transformer
         });
     }
 
-    public forEachChildren(cb: (child: AbstractField<any>) => void): void { }
+    public getUpdates$(): Observable<void> {
+        return of(undefined);
+    }
 
     public setValue(value: any): void {
-        this._valueState.updateValue(ValueMode.SET, value);
+        this._valueApi.updateValue(ValueMode.SET, value);
     }
 
     public patchValue(value: any): void {
-        this._valueState.updateValue(ValueMode.PATCH, value);
+        this._valueApi.updateValue(ValueMode.PATCH, value);
     }
 
     public resetValue(): void {
-        this._valueState.updateValue(ValueMode.RESET, undefined);
+        this._valueApi.updateValue(ValueMode.RESET, undefined);
     }
+
+    protected _forEachChildren(cb: (child: AbstractField<any>) => void): void { }
 
     protected _buildValue(children?: AbstractField<any>[] | undefined): any {
         return null;

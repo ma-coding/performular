@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { AbstractField } from '../abstract-field/abstract-field';
 import { Value } from '../value/value';
@@ -7,27 +7,26 @@ import { GroupFieldState } from './types/group-field-state';
 
 export class GroupField extends AbstractField<GroupFieldState> {
 
-    protected _valueState: Value;
+    protected _valueApi: Value;
 
     get children(): AbstractField[] {
-        return this.select('children');
+        return this._select('children');
     }
 
     get children$(): Observable<AbstractField[]> {
-        return this.select$('children');
+        return this._select$('children');
     }
 
     constructor(options: GroupFieldOptions) {
         super(options);
-        this._valueState = new Value({
-            initialValue: this.select('transformer').executeTo(this._buildValue(options.children))
+        this._valueApi = new Value({
+            initialValue: this._buildValue(options.children),
+            transformer: this._transformer
         });
     }
 
-    public forEachChildren(cb: (child: AbstractField<any>) => void): void {
-        this.children.forEach((child: AbstractField) => {
-            cb(child);
-        });
+    public updated$(): Observable<void> {
+        return of(undefined);
     }
 
     public setValue(value: any): void {
