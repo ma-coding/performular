@@ -1,5 +1,5 @@
-import { MetadataStore } from '../metadata/metadata-store';
-import { MergeTarget } from '../metadata/types/merge-target';
+import { MetadataStore } from '../factory/metadata/metadata-store';
+import { MergeTarget } from '../factory/metadata/types/merge-target';
 import { isTransformObject } from '../transform/is-transform-object';
 import { isTransformationDef } from '../transform/is-transformation-def';
 import { TransformOptions } from '../transform/types/transform-options';
@@ -12,30 +12,32 @@ export class Transformer {
     public target: Transformation;
 
     constructor(options: TransformerOptions) {
-
         if (isString(options.target)) {
             const metadata: MergeTarget<
                 TransformOptions,
                 InstanceDef<Transformation>
-                > = MetadataStore.getItem('transforms', options.target);
+            > = MetadataStore.getItem('transforms', options.target);
             this.target = MetadataStore.getInjector().createInstance(
                 metadata.target
             );
+            return;
         } else if (isTransformationDef(options.target)) {
             this.target = MetadataStore.getInjector().createInstance(
                 options.target
             );
+            return;
         } else if (isTransformObject(options.target)) {
             this.target = options.target;
+            return;
         }
         throw Error('');
     }
 
     public executeTo(value: any): any {
-        this.target.to(value);
+        return this.target.to(value);
     }
 
     public executeFrom(value: any): any {
-        this.target.from(value);
+        return this.target.from(value);
     }
 }

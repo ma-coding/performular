@@ -1,4 +1,4 @@
-import { MetadataStore } from '../metadata/metadata-store';
+import { MetadataStore } from '../factory/metadata/metadata-store';
 import { isRunDetectorStrategy } from '../run-detector/is-run-detector-strategy';
 import { isRunDetectorStrategyDef } from '../run-detector/is-run-detector-strategy-def';
 import { RunDetectorFunction } from '../run-detector/types/run-detector-function';
@@ -18,16 +18,19 @@ export class RunDetection {
         if (isString(options.target)) {
             const runDetectorInstanceDef: InstanceDef<
                 RunDetectorStrategy
-                > = MetadataStore.getItem('runDetectors', options.target).target;
+            > = MetadataStore.getItem('runDetectors', options.target).target;
             this.target = MetadataStore.getInjector().createInstance(
                 runDetectorInstanceDef
             );
+            return;
         } else if (isRunDetectorStrategyDef(options.target)) {
             this.target = MetadataStore.getInjector().createInstance(
                 options.target
             );
+            return;
         } else if (isFunction<RunDetectorFunction>(options.target)) {
             this.target = options.target;
+            return;
         }
         throw new Error('');
     }

@@ -1,15 +1,17 @@
 import { ObjectType } from '../../utils/types/object-type';
 import { Validation } from '../../validation/validation';
-import { Visibility } from '../../visiblity/visibility';
+import { Visibility } from '../../visibility/visibility';
 
 export interface EffectsState {
     visibilities: ObjectType<Visibility>;
-    validations: ObjectType<Validation>;
-    forcedDisable: boolean;
-    forcedHidden: boolean;
-    forcedError: string | undefined;
     disabled: boolean;
+    forcedDisabled: boolean;
     hidden: boolean;
+    forcedHidden: boolean;
+
+    validations: ObjectType<Validation>;
     invalid: boolean;
+    forcedError: string | undefined;
+    errorState: boolean;
     errors: string[];
 }

@@ -1,6 +1,7 @@
-import { Transformer } from '../../transformer/transformer';
+import { TransformerOptions } from '../../transformer/types/transformer-options';
 
 export interface ValueOptions {
-    initialValue: any;
-    transformer?: Transformer;
+    value: any;
+    defaultValue?: any;
+    transformer?: TransformerOptions;
 }

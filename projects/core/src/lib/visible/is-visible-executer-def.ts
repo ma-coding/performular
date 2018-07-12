@@ -1,4 +1,4 @@
-import { InstanceDef } from '../utils/types/instance-def';
+import { InstanceDef } from '../../utils/types/instance-def';
 import { VisibleExecuter } from './types/visible-executer';
 
 export function isVisibleExecuterDef(

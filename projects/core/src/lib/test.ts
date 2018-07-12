@@ -1,44 +1,33 @@
-import { Builder } from './builder/builder';
-import { Control } from './decorators/control-decorator';
-import { Group } from './decorators/group-decorator';
-import { List } from './decorators/list-decorator';
-import { GroupField } from './group-field/group-field';
+import { Container } from './fields/container/container';
+import { ControlField } from './fields/control-field/control-field';
+import { GroupField } from './fields/group-field/group-field';
+import { FrameworkType } from './framework/types/framework-type';
 
-@Group({
-    id: 'item'
-})
-export class Item {
-
-    @Control({})
-    public l1?: number;
-}
-
-@Group({
-    id: 'TestForm'
-})
-export class TestForm {
-
-    @Control({})
-    public test?: string;
-
-    @Control({})
-    public test2?: number;
-
-    @List({
-        childForm: Item
-    })
-    public items?: Item[];
-
-}
-
-const k: GroupField = Builder.fromType(TestForm, {
-    test: '', test2: 3, items: [
-        {
-            l1: 123
-        },
-        {
-            l1: 12345
-        },
+const k: GroupField = new GroupField({
+    id: 'test',
+    attrs: undefined,
+    field: '',
+    item: {},
+    type: FrameworkType.GROUP,
+    children: [
+        new Container({
+            id: 'cont',
+            attrs: undefined,
+            children: [
+                new ControlField({
+                    id: 'cc',
+                    attrs: undefined,
+                    field: '',
+                    item: {},
+                    type: FrameworkType.CONTROL,
+                    value: null,
+                    defaultValue: 5
+                })
+            ],
+            field: '',
+            item: {},
+            type: FrameworkType.CONTAINER
+        })
     ]
 });
 console.log(k.value);
