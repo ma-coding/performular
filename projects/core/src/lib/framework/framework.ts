@@ -3,6 +3,7 @@ import { FrameworkOptions } from './types/framework-options';
 import { FrameworkState } from './types/framework-state';
 import { FrameworkType } from './types/framework-type';
 
+// Todo: add full implementation
 export abstract class Framework<T extends FrameworkState> {
     protected abstract _state$: State<T>;
 

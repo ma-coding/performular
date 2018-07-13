@@ -10,6 +10,7 @@ import { Visibility } from '../visibility/visibility';
 import { EffectsOptions } from './types/effects-options';
 import { EffectsState } from './types/effects-state';
 
+// Todo: add full implementation
 export abstract class Effects<T extends EffectsState> {
     protected abstract _state$: State<T>;
 

@@ -8,6 +8,7 @@ import { RunContext } from '../utils/types/run-context';
 import { StructurOptions } from './types/structur-options';
 import { StructurState } from './types/structur-state';
 
+// Todo: add full implementation
 export abstract class Structur<T extends StructurState> {
     protected abstract _state$: State<T>;
 

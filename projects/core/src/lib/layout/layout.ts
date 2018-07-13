@@ -2,6 +2,7 @@ import { State } from '../utils/state';
 import { LayoutOptions } from './types/layout-options';
 import { LayoutState } from './types/layout-state';
 
+// Todo: add full implementation
 export abstract class Layout<T extends LayoutState> {
     protected abstract _state$: State<T>;
 

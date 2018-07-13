@@ -34,7 +34,7 @@ export class GroupField extends AbstractField<GroupFieldState> {
     }
 
     protected _getUpdateWhen(): Observable<Abstract[]> {
-        return of([]);
+        return of([]); // Todo: add right actions
     }
 
     protected _buildValue(children: AbstractField[]): any {

@@ -51,10 +51,12 @@ export abstract class AbstractField<
     protected abstract _buildValue(children: AbstractField[]): any;
 
     protected _onTreeDown(context: RunContext): Observable<void> {
-        return of();
+        return of(); // Todo: add right actions
     }
 
-    protected _onTreeUp(): void {}
+    protected _onTreeUp(): void {
+        // Todo: add right actions
+    }
 
     protected _getRecursiveChildFields(
         children: Abstract[] = this.children
