@@ -12,8 +12,7 @@ export class ControlField extends AbstractField {
                 ...options,
                 children: [],
                 childDef: undefined
-            },
-            this
+            }
         );
     }
 

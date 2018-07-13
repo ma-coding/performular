@@ -11,8 +11,7 @@ export class ListField extends AbstractField {
             {
                 ...options,
                 children: []
-            },
-            this
+            }
         );
     }
 

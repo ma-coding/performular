@@ -14,11 +14,18 @@ export abstract class Abstract {
     }
 
     get all(): Abstract[] {
-        return this._facade.all;
+        return [
+            this,
+            ...flatten(this.children.map((c: Abstract) => c.all))
+        ];
     }
 
     get root(): Abstract {
-        return this._facade.root;
+        let field: Abstract | undefined = this;
+        while (field.parent) {
+            field = field.parent;
+        }
+        return field;
     }
 
     get parent(): Abstract | undefined {

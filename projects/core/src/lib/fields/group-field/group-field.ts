@@ -18,8 +18,7 @@ export class GroupField extends AbstractField {
                     this._getRecursiveChildFields(options.children)
                 ),
                 childDef: undefined
-            },
-            this
+            }
         );
     }
 

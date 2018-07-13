@@ -8,21 +8,6 @@ import { StructurState } from './types/structur-state';
 export abstract class Structur {
     protected abstract _structurFacade: Facade;
 
-    get all(): Abstract[] {
-        return [
-            this._structurFacade.abstractField,
-            ...flatten(this.children.map((c: Abstract) => (<any>c)._facade.all))
-        ];
-    }
-
-    get root(): Abstract {
-        let field: Abstract | undefined = this._structurFacade.abstractField;
-        while (field.parent) {
-            field = field.parent;
-        }
-        return field;
-    }
-
     get parent(): Abstract | undefined {
         return this._structurFacade.select('parent');
     }

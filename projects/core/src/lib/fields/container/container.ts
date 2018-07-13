@@ -18,8 +18,7 @@ export class Container extends Abstract {
                 ...options,
                 value: undefined,
                 childDef: undefined
-            },
-            this
+            }
         );
     }
 

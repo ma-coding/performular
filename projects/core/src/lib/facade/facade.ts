@@ -26,7 +26,7 @@ export class Facade extends State<FacadeState> {
     @use(Identification, Effects, Value, Structur, Framework, Positioning)
     public this?: Facade;
 
-    constructor(options: FacadeOptions, public abstractField: Abstract) {
+    constructor(options: FacadeOptions) {
         super();
         this._state$ = new BehaviorSubject({
             ...this._initIdentification(options),
