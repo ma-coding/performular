@@ -6,7 +6,6 @@ import { IdentificationOptions } from './types/identification-options';
 import { IdentificationState } from './types/identification-state';
 
 export abstract class Identification<T extends IdentificationState> {
-
     protected abstract _state$: State<T>;
 
     get id(): string {

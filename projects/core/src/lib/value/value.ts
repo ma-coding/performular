@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Abstract } from '../fields/abstract/abstract';
 import { Transformer } from '../transformer/transformer';
 import { cloneDeep } from '../utils/clone-deep';
 import { isEqual } from '../utils/is-equal';
@@ -13,7 +12,6 @@ import { ValueState } from './types/value-state';
 export abstract class Value<T extends ValueState> {
     private _transformer: Transformer | undefined;
     protected abstract _state$: State<T>;
-    protected abstract _field: Abstract;
 
     get value(): any {
         return this._transformTo(this._state$.select('value'));
@@ -94,10 +92,7 @@ export abstract class Value<T extends ValueState> {
 
     private _setValue(value: any): void {
         this._state$.updateKey('value', value);
-        this._state$.updateKey(
-            'changed',
-            !isEqual(value, this.initialValue$)
-        );
+        this._state$.updateKey('changed', !isEqual(value, this.initialValue$));
         this._state$.updateKey('dirty', true);
     }
 

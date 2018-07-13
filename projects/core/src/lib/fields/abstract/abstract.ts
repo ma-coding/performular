@@ -5,22 +5,26 @@ import { Framework } from '../../framework/framework';
 import { Identification } from '../../identification/identification';
 import { Item } from '../../item/item';
 import { Structur } from '../../structur/structur';
+import { StructurState } from '../../structur/types/structur-state';
 import { flatten } from '../../utils/flatten';
 import { use } from '../../utils/mixin';
 import { State } from '../../utils/state';
 import { AbstractOptions } from './types/abstract-options';
 import { AbstractState } from './types/abstract-state';
 
-export interface Abstract<T extends AbstractState = any> extends Framework<T>, Identification<T>, Structur<T>, Item<T> { }
+export interface Abstract<T extends AbstractState = any>
+    extends Framework<T>,
+        Identification<T>,
+        Structur<T>,
+        Item<T> {}
 
 export abstract class Abstract<T extends AbstractState = any> {
-
     protected abstract _state$: State<T>;
-    protected abstract _field: Abstract;
 
     protected _manualUpdates$: Subject<Abstract[]> = new Subject();
 
-    @use(Framework, Identification, Structur, Item) public this?: Abstract<T>;
+    @use(Structur, Identification, Item, Framework)
+    public this?: Abstract<T>;
 
     get updates$(): Observable<void> {
         return this._getUpdates$();
@@ -30,8 +34,8 @@ export abstract class Abstract<T extends AbstractState = any> {
         return {
             ...this._initFramework(options),
             ...this._initIdentification(options),
-            ...this._initStructur(options),
-            ...this._initItem(options)
+            ...this._initItem(options),
+            ...(<StructurState>{})
         };
     }
 

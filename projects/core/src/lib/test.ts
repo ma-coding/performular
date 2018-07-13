@@ -7,7 +7,6 @@ const k: GroupField = new GroupField({
     id: 'test',
     attrs: undefined,
     field: '',
-    item: {},
     type: FrameworkType.GROUP,
     children: [
         new Container({
@@ -17,15 +16,13 @@ const k: GroupField = new GroupField({
                 new ControlField({
                     id: 'cc',
                     attrs: undefined,
-                    field: '',
-                    item: {},
+                    field: '2',
                     type: FrameworkType.CONTROL,
-                    value: null,
+                    value: '2',
                     defaultValue: 5
                 })
             ],
             field: '',
-            item: {},
             type: FrameworkType.CONTAINER
         })
     ]

@@ -1,7 +1,6 @@
 import { forkJoin, Observable } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 
-import { AbstractField } from '../fields/abstract-field/abstract-field';
 import { Abstract } from '../fields/abstract/abstract';
 import { flatten } from '../utils/flatten';
 import { State } from '../utils/state';
@@ -11,34 +10,22 @@ import { StructurState } from './types/structur-state';
 
 export abstract class Structur<T extends StructurState> {
     protected abstract _state$: State<T>;
-    protected abstract _field: Abstract;
 
     get parent(): Abstract | undefined {
         return this._state$.select('parent');
     }
 
     get root(): Abstract {
-        let field: Abstract = this._field;
+        let field: Abstract = this as any;
         while (field.parent) {
             field = field.parent;
         }
         return field;
     }
 
-    get parentField(): AbstractField | undefined {
-        let field: Abstract | undefined = this.parent;
-        while (field) {
-            if (field instanceof AbstractField) {
-                return field;
-            }
-            field = field.parent;
-        }
-        return undefined;
-    }
-
     get all(): Abstract[] {
         return [
-            this._field,
+            this as any,
             ...flatten(this.children.map((child: Abstract) => child.all))
         ];
     }
@@ -47,26 +34,8 @@ export abstract class Structur<T extends StructurState> {
         return this._state$.select('children');
     }
 
-    get childFields(): AbstractField[] {
-        return this._getRecursiveChildFields();
-    }
-
     public setParent(parent: Abstract): void {
         this._state$.updateKey('parent', parent);
-    }
-
-    protected _getRecursiveChildFields(
-        children: Abstract[] = this.children
-    ): AbstractField[] {
-        const erg: AbstractField[] = [];
-        children.forEach((child: Abstract) => {
-            if (child instanceof AbstractField) {
-                erg.push(child);
-            } else {
-                erg.push(...this._getRecursiveChildFields(child.children));
-            }
-        });
-        return erg;
     }
 
     protected _initStructur(options: StructurOptions): StructurState {
@@ -105,8 +74,8 @@ export abstract class Structur<T extends StructurState> {
     private _buildRunContext(checkedFields: Abstract[]): RunContext {
         return {
             checkedFields: checkedFields,
-            checked: checkedFields.indexOf(this._field) >= 0,
-            field: this._field
+            checked: checkedFields.indexOf(this as any) >= 0,
+            field: this as any
         };
     }
 }

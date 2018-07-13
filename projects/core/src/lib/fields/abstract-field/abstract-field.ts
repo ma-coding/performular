@@ -5,25 +5,46 @@ import { use } from '../../utils/mixin';
 import { State } from '../../utils/state';
 import { RunContext } from '../../utils/types/run-context';
 import { ValueMode } from '../../value/types/value-mode';
+import { ValueState } from '../../value/types/value-state';
 import { Value } from '../../value/value';
 import { Abstract } from '../abstract/abstract';
 import { AbstractFieldOptions } from './types/abstract-field-options';
 import { AbstractFieldState } from './types/abstract-field-state';
 
-export interface AbstractField<T extends AbstractFieldState = any> extends Value<T>, Effects<T> { }
+export interface AbstractField<T extends AbstractFieldState = any>
+    extends Value<T>,
+        Effects<T> {}
 
-export abstract class AbstractField<T extends AbstractFieldState = any> extends Abstract<T> {
-
+export abstract class AbstractField<
+    T extends AbstractFieldState = any
+> extends Abstract<T> {
     protected abstract _state$: State<T>;
-    protected abstract _field: AbstractField;
 
-    @use(Value, Effects) public this?: AbstractField<T>;
+    @use(Value, Effects)
+    public this?: AbstractField<T>;
 
-    protected _initAbstractField(options: AbstractFieldOptions): AbstractFieldState {
+    get childFields(): AbstractField[] {
+        return this._getRecursiveChildFields();
+    }
+
+    get parentField(): AbstractField | undefined {
+        let field: Abstract | undefined = this.parent;
+        while (field) {
+            if (field instanceof AbstractField) {
+                return field;
+            }
+            field = field.parent;
+        }
+        return undefined;
+    }
+
+    protected _initAbstractField(
+        options: AbstractFieldOptions
+    ): AbstractFieldState {
         return {
             ...this._initAbstract(options),
             ...this._initEffects(options),
-            ...this._initValue(options)
+            ...(<ValueState>{})
         };
     }
 
@@ -33,7 +54,21 @@ export abstract class AbstractField<T extends AbstractFieldState = any> extends 
         return of();
     }
 
-    protected _onTreeUp(): void { }
+    protected _onTreeUp(): void {}
+
+    protected _getRecursiveChildFields(
+        children: Abstract[] = this.children
+    ): AbstractField[] {
+        const erg: AbstractField[] = [];
+        children.forEach((child: Abstract) => {
+            if (child instanceof AbstractField) {
+                erg.push(child);
+            } else {
+                erg.push(...this._getRecursiveChildFields(child.children));
+            }
+        });
+        return erg;
+    }
 
     protected _updateParentValue(
         checklist: AbstractField[] = [this],
@@ -47,5 +82,4 @@ export abstract class AbstractField<T extends AbstractFieldState = any> extends 
             (<any>this.root)._manualUpdates$.next(checklist);
         }
     }
-
 }

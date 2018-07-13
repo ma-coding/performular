@@ -1,25 +1,40 @@
-import { Facade } from '../../facade/facade';
+import { Observable, of } from 'rxjs';
+
+import { Layout } from '../../layout/layout';
+import { use } from '../../utils/mixin';
+import { State } from '../../utils/state';
 import { AbstractField } from '../abstract-field/abstract-field';
 import { Abstract } from '../abstract/abstract';
 import { GroupFieldOptions } from './types/group-field-options';
+import { GroupFieldState } from './types/group-field-state';
 
-export class GroupField extends AbstractField {
-    protected _facade: Facade;
+export interface GroupField
+    extends AbstractField<GroupFieldState>,
+        Layout<GroupFieldState> {}
+
+export class GroupField extends AbstractField<GroupFieldState> {
+    protected _state$: State<GroupFieldState>;
+
+    @use(Layout) public this?: GroupField;
 
     constructor(options: GroupFieldOptions) {
         super();
         options.children.forEach(
             (child: Abstract): void => child.setParent(this)
         );
-        this._facade = new Facade(
-            {
-                ...options,
-                value: this._buildValue(
-                    this._getRecursiveChildFields(options.children)
-                ),
-                childDef: undefined
-            }
-        );
+        this._state$ = new State(<GroupFieldState>{
+            ...this._initAbstractField(options),
+            ...this._initLayout(options),
+            children: options.children,
+            transformer: options.transformer,
+            value: this._buildValue(
+                this._getRecursiveChildFields(options.children)
+            )
+        });
+    }
+
+    protected _getUpdateWhen(): Observable<Abstract[]> {
+        return of([]);
     }
 
     protected _buildValue(children: AbstractField[]): any {

@@ -1,6 +1,5 @@
 import { forkJoin, Observable, of } from 'rxjs';
 
-import { Abstract } from '../fields/abstract/abstract';
 import { State } from '../utils/state';
 import { ObjectType } from '../utils/types/object-type';
 import { RunContext } from '../utils/types/run-context';
@@ -13,7 +12,6 @@ import { EffectsState } from './types/effects-state';
 
 export abstract class Effects<T extends EffectsState> {
     protected abstract _state$: State<T>;
-    protected abstract _field: Abstract;
 
     get validations(): ObjectType<Validation> {
         return this._state$.select('validations');
@@ -170,7 +168,7 @@ export abstract class Effects<T extends EffectsState> {
                     prev[curr] = new Validation(
                         // Todo: set right type
                         (options.validations as ObjectType<ValidationOptions>)[
-                        curr
+                            curr
                         ]
                     );
                     return prev;
@@ -182,7 +180,7 @@ export abstract class Effects<T extends EffectsState> {
                     prev[curr] = new Visibility(
                         // Todo: set right type
                         (options.visibilities as ObjectType<VisibilityOptions>)[
-                        curr
+                            curr
                         ]
                     );
                     return prev;
