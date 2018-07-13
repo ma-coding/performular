@@ -1,28 +1,29 @@
 import { Observable } from 'rxjs';
 
-import { Facade } from '../facade/facade';
 import { generateUUID } from '../utils/generate-uuid';
+import { State } from '../utils/state';
 import { IdentificationOptions } from './types/identification-options';
 import { IdentificationState } from './types/identification-state';
 
-export abstract class Identification {
+export abstract class Identification<T extends IdentificationState> {
+
+    protected abstract _state$: State<T>;
+
     get id(): string {
-        return this._identficationFacade.select('id');
+        return this._state$.select('id');
     }
 
     get id$(): Observable<string> {
-        return this._identficationFacade.select$('id');
+        return this._state$.select$('id');
     }
 
     get uuid(): string {
-        return this._identficationFacade.select('uuid');
+        return this._state$.select('uuid');
     }
 
     get uuid$(): Observable<string> {
-        return this._identficationFacade.select$('uuid');
+        return this._state$.select$('uuid');
     }
-
-    protected abstract _identficationFacade: Facade;
 
     protected _initIdentification(
         options: IdentificationOptions

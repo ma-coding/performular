@@ -1,82 +1,39 @@
-import { forkJoin, merge, Observable, Subject } from 'rxjs';
+import { merge, Observable, Subject } from 'rxjs';
 import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
-import { Facade } from '../../facade/facade';
+import { Framework } from '../../framework/framework';
+import { Identification } from '../../identification/identification';
+import { Structur } from '../../structur/structur';
 import { flatten } from '../../utils/flatten';
-import { RunContext } from '../../utils/types/run-context';
+import { use } from '../../utils/mixin';
+import { State } from '../../utils/state';
+import { AbstractOptions } from './types/abstract-options';
+import { AbstractState } from './types/abstract-state';
 
-export abstract class Abstract {
-    protected abstract _facade: Facade;
+export interface Abstract<T extends AbstractState = any> extends Framework<T>, Identification<T>, Structur<T> { }
+
+export abstract class Abstract<T extends AbstractState = any> {
+
+    protected abstract _state$: State<T>;
+    protected abstract _field: Abstract;
+
     protected _manualUpdates$: Subject<Abstract[]> = new Subject();
 
-    get id(): string {
-        return this._facade.id;
-    }
-
-    get all(): Abstract[] {
-        return [
-            this,
-            ...flatten(this.children.map((c: Abstract) => c.all))
-        ];
-    }
-
-    get root(): Abstract {
-        let field: Abstract | undefined = this;
-        while (field.parent) {
-            field = field.parent;
-        }
-        return field;
-    }
-
-    get parent(): Abstract | undefined {
-        return this._facade.parent;
-    }
-
-    get children(): Abstract[] {
-        return this._facade.children;
-    }
+    @use(Framework, Identification, Structur) public this?: Abstract<T>;
 
     get updates$(): Observable<void> {
         return this._getUpdates$();
     }
 
-    public setParent(parent: Abstract): void {
-        this._facade.setParent(parent);
-    }
-
-    protected abstract _onTreeDown(context: RunContext): Observable<void>;
-    protected abstract _onTreeUp(): void;
-
-    private _treeUp(): void {
-        this._onTreeUp();
-        const p: Abstract | undefined = this._facade.parent;
-        if (p) {
-            p._treeUp();
-        }
-    }
-
-    private _treeDown(checkedFields: Abstract[]): Observable<void> {
-        const context: RunContext = this._buildRunContext(checkedFields);
-        const children: Abstract[] = this._facade.children;
-        if (children.length === 0) {
-            return this._onTreeDown(context).pipe(map(() => this._treeUp()));
-        }
-        return this._onTreeDown(context).pipe(
-            concatMap(() =>
-                forkJoin(
-                    ...children.map((c: Abstract) => c._treeDown(checkedFields))
-                )
-            )
-        );
-    }
-
-    private _buildRunContext(checkedFields: Abstract[]): RunContext {
+    protected _initAbstract(options: AbstractOptions): AbstractState {
         return {
-            checkedFields: checkedFields,
-            checked: checkedFields.indexOf(this) >= 0,
-            field: this
+            ...this._initFramework(options),
+            ...this._initIdentification(options),
+            ...this._initStructur(options)
         };
     }
+
+    protected abstract _getUpdateWhen(): Observable<Abstract[]>;
 
     private _getUpdates$(): Observable<void> {
         return this._getUpdateHandler(
@@ -85,17 +42,6 @@ export abstract class Abstract {
                 this.root._manualUpdates$
             )
         );
-    }
-
-    private _getUpdateWhen(): Observable<Abstract[]> {
-        return merge(
-            this._facade.validations$,
-            this._facade.visibilities$,
-            this._facade.forcedDisable$,
-            this._facade.forcedError$,
-            this._facade.forcedHidden$
-            // Todo: Maybe add more at the end
-        ).pipe(map(() => [this]));
     }
 
     private _getUpdateHandler(obs: Observable<Abstract[]>): Observable<void> {

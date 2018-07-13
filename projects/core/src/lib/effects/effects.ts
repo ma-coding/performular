@@ -1,6 +1,7 @@
 import { forkJoin, Observable, of } from 'rxjs';
 
-import { Facade } from '../facade/facade';
+import { Abstract } from '../fields/abstract/abstract';
+import { State } from '../utils/state';
 import { ObjectType } from '../utils/types/object-type';
 import { RunContext } from '../utils/types/run-context';
 import { ValidationOptions } from '../validation/types/validation-options';
@@ -10,92 +11,93 @@ import { Visibility } from '../visibility/visibility';
 import { EffectsOptions } from './types/effects-options';
 import { EffectsState } from './types/effects-state';
 
-export abstract class Effects {
-    protected abstract _effectsFacade: Facade;
+export abstract class Effects<T extends EffectsState> {
+    protected abstract _state$: State<T>;
+    protected abstract _field: Abstract;
 
     get validations(): ObjectType<Validation> {
-        return this._effectsFacade.select('validations');
+        return this._state$.select('validations');
     }
 
     get validations$(): Observable<ObjectType<Validation>> {
-        return this._effectsFacade.select$('validations');
+        return this._state$.select$('validations');
     }
 
     get visibilities(): ObjectType<Visibility> {
-        return this._effectsFacade.select('visibilities');
+        return this._state$.select('visibilities');
     }
 
     get visibilities$(): Observable<ObjectType<Visibility>> {
-        return this._effectsFacade.select$('visibilities');
+        return this._state$.select$('visibilities');
     }
 
     get forcedDisable(): boolean {
-        return this._effectsFacade.select('forcedDisabled');
+        return this._state$.select('forcedDisabled');
     }
 
     get forcedDisable$(): Observable<boolean> {
-        return this._effectsFacade.select$('forcedDisabled');
+        return this._state$.select$('forcedDisabled');
     }
 
     get disabled(): boolean {
-        return this._effectsFacade.select('disabled');
+        return this._state$.select('disabled');
     }
 
     get disabled$(): Observable<boolean> {
-        return this._effectsFacade.select$('disabled');
+        return this._state$.select$('disabled');
     }
 
     get forcedHidden(): boolean {
-        return this._effectsFacade.select('forcedHidden');
+        return this._state$.select('forcedHidden');
     }
 
     get forcedHidden$(): Observable<boolean> {
-        return this._effectsFacade.select$('forcedHidden');
+        return this._state$.select$('forcedHidden');
     }
 
     get hidden(): boolean {
-        return this._effectsFacade.select('hidden');
+        return this._state$.select('hidden');
     }
 
     get hidden$(): Observable<boolean> {
-        return this._effectsFacade.select$('hidden');
+        return this._state$.select$('hidden');
     }
 
     get forcedError(): string | undefined {
-        return this._effectsFacade.select('forcedError');
+        return this._state$.select('forcedError');
     }
 
     get forcedError$(): Observable<string | undefined> {
-        return this._effectsFacade.select$('forcedError');
+        return this._state$.select$('forcedError');
     }
 
     get invalid(): boolean {
-        return this._effectsFacade.select('invalid');
+        return this._state$.select('invalid');
     }
 
     get invalid$(): Observable<boolean> {
-        return this._effectsFacade.select$('invalid');
+        return this._state$.select$('invalid');
     }
 
     get errors(): string[] {
-        return this._effectsFacade.select('errors');
+        return this._state$.select('errors');
     }
 
     get errors$(): Observable<string[]> {
-        return this._effectsFacade.select$('errors');
+        return this._state$.select$('errors');
     }
 
     public addValidation(id: string, options: ValidationOptions): void {
-        this._effectsFacade.updateKey('validations', {
+        this._state$.updateKey('validations', {
             [id]: new Validation(options)
         });
     }
 
     public removeValidation(id: string): void {
-        const validations: ObjectType<Validation> = this._effectsFacade.select(
+        const validations: ObjectType<Validation> = this._state$.select(
             'validations'
         );
-        this._effectsFacade.updateKey('validations', {
+        this._state$.updateKey('validations', {
             ...Object.keys(validations).reduce((prev: any, curr: string) => {
                 if (curr === id) {
                     return prev;
@@ -107,16 +109,16 @@ export abstract class Effects {
     }
 
     public addVisiblity(id: string, options: VisibilityOptions): void {
-        this._effectsFacade.updateKey('visibilities', {
+        this._state$.updateKey('visibilities', {
             [id]: new Visibility(options)
         });
     }
 
     public removeVisibility(id: string): void {
-        const visibilities: ObjectType<Visibility> = this._effectsFacade.select(
+        const visibilities: ObjectType<Visibility> = this._state$.select(
             'visibilities'
         );
-        this._effectsFacade.updateKey('validations', {
+        this._state$.updateKey('validations', {
             ...Object.keys(visibilities).reduce((prev: any, curr: string) => {
                 if (curr === id) {
                     return prev;
@@ -128,22 +130,22 @@ export abstract class Effects {
     }
 
     public setForcedDisabled(disabled: boolean): void {
-        this._effectsFacade.updateKey('forcedDisabled', disabled);
+        this._state$.updateKey('forcedDisabled', disabled);
     }
 
     public setForcedHidden(hidden: boolean): void {
-        this._effectsFacade.updateKey('forcedHidden', hidden);
+        this._state$.updateKey('forcedHidden', hidden);
     }
 
     public setForcedError(error: string | undefined): void {
-        this._effectsFacade.updateKey('forcedError', error);
+        this._state$.updateKey('forcedError', error);
     }
 
     public evaluate(context: RunContext): Observable<void> {
-        const validations: ObjectType<Validation> = this._effectsFacade.select(
+        const validations: ObjectType<Validation> = this._state$.select(
             'validations'
         );
-        const visibles: ObjectType<Visibility> = this._effectsFacade.select(
+        const visibles: ObjectType<Visibility> = this._state$.select(
             'visibilities'
         );
         return forkJoin(
@@ -168,7 +170,7 @@ export abstract class Effects {
                     prev[curr] = new Validation(
                         // Todo: set right type
                         (options.validations as ObjectType<ValidationOptions>)[
-                            curr
+                        curr
                         ]
                     );
                     return prev;
@@ -180,7 +182,7 @@ export abstract class Effects {
                     prev[curr] = new Visibility(
                         // Todo: set right type
                         (options.visibilities as ObjectType<VisibilityOptions>)[
-                            curr
+                        curr
                         ]
                     );
                     return prev;

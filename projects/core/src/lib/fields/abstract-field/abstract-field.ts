@@ -1,28 +1,30 @@
 import { Observable, of } from 'rxjs';
 
+import { Effects } from '../../effects/effects';
+import { use } from '../../utils/mixin';
+import { State } from '../../utils/state';
 import { RunContext } from '../../utils/types/run-context';
 import { ValueMode } from '../../value/types/value-mode';
+import { Value } from '../../value/value';
 import { Abstract } from '../abstract/abstract';
+import { AbstractFieldOptions } from './types/abstract-field-options';
+import { AbstractFieldState } from './types/abstract-field-state';
 
-export abstract class AbstractField extends Abstract {
-    get childFields(): AbstractField[] {
-        return this._getRecursiveChildFields();
-    }
+export interface AbstractField<T extends AbstractFieldState = any> extends Value<T>, Effects<T> { }
 
-    get parentField(): AbstractField | undefined {
-        return this._facade.parentField;
-    }
+export abstract class AbstractField<T extends AbstractFieldState = any> extends Abstract<T> {
 
-    get value(): any {
-        return this._facade.value;
-    }
+    protected abstract _state$: State<T>;
+    protected abstract _field: AbstractField;
 
-    get initialValue(): any {
-        return this._facade.initialValue;
-    }
+    @use(Value, Effects) public this?: AbstractField<T>;
 
-    public updateValue(mode: ValueMode, value: any): void {
-        this._facade.updateValue(mode, value);
+    protected _initAbstractField(options: AbstractFieldOptions): AbstractFieldState {
+        return {
+            ...this._initAbstract(options),
+            ...this._initEffects(options),
+            ...this._initValue(options)
+        };
     }
 
     protected abstract _buildValue(children: AbstractField[]): any;
@@ -31,7 +33,7 @@ export abstract class AbstractField extends Abstract {
         return of();
     }
 
-    protected _onTreeUp(): void {}
+    protected _onTreeUp(): void { }
 
     protected _updateParentValue(
         checklist: AbstractField[] = [this],
@@ -42,21 +44,8 @@ export abstract class AbstractField extends Abstract {
             parent.updateValue(mode, parent._buildValue(parent.childFields));
             parent._updateParentValue([...checklist, parent], mode);
         } else {
-            (<any>this._facade.root)._manualUpdates$.next(checklist);
+            (<any>this.root)._manualUpdates$.next(checklist);
         }
     }
 
-    protected _getRecursiveChildFields(
-        children: Abstract[] = this.children
-    ): AbstractField[] {
-        const erg: AbstractField[] = [];
-        children.forEach((child: Abstract) => {
-            if (child instanceof AbstractField) {
-                erg.push(child);
-            } else {
-                erg.push(...this._getRecursiveChildFields(child.children));
-            }
-        });
-        return erg;
-    }
 }
