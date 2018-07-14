@@ -1,10 +1,12 @@
 import { Observable, of } from 'rxjs';
 
+import { FrameworkType } from '../../framework/types/framework-type';
 import { Layout } from '../../layout/layout';
 import { use } from '../../utils/mixin';
 import { State } from '../../utils/state';
 import { RunContext } from '../../utils/types/run-context';
 import { Abstract } from '../abstract/abstract';
+import { AbstractOptions } from '../abstract/types/abstract-options';
 import { ContainerOptions } from './types/container-options';
 import { ContainerState } from './types/container-state';
 
@@ -20,7 +22,10 @@ export class Container extends Abstract<ContainerState> {
     constructor(options: ContainerOptions) {
         super();
         this._state$ = new State({
-            ...this._initAbstract(options),
+            ...this._initAbstract(<AbstractOptions>{
+                ...options,
+                type: FrameworkType.CONTAINER
+            }),
             ...this._initLayout(options),
             ...this._initStructur(options)
         });

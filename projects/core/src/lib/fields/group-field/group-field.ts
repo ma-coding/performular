@@ -1,9 +1,11 @@
 import { Observable, of } from 'rxjs';
 
+import { FrameworkType } from '../../framework/types/framework-type';
 import { Layout } from '../../layout/layout';
 import { use } from '../../utils/mixin';
 import { State } from '../../utils/state';
 import { AbstractField } from '../abstract-field/abstract-field';
+import { AbstractFieldOptions } from '../abstract-field/types/abstract-field-options';
 import { Abstract } from '../abstract/abstract';
 import { GroupFieldOptions } from './types/group-field-options';
 import { GroupFieldState } from './types/group-field-state';
@@ -23,7 +25,10 @@ export class GroupField extends AbstractField<GroupFieldState> {
             (child: Abstract): void => child.setParent(this)
         );
         this._state$ = new State(<GroupFieldState>{
-            ...this._initAbstractField(options),
+            ...this._initAbstractField(<AbstractFieldOptions>{
+                ...options,
+                type: FrameworkType.GROUP
+            }),
             ...this._initLayout(options),
             children: options.children,
             transformer: options.transformer,

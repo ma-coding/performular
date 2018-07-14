@@ -1,6 +1,6 @@
 export enum FrameworkType {
-    CONTROL,
-    GROUP,
-    LIST,
-    CONTAINER
+    CONTROL = 'CONTROL',
+    GROUP = 'GROUP',
+    LIST = 'LIST',
+    CONTAINER = 'CONTAINER'
 }

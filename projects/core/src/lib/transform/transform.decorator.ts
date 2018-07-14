@@ -1,7 +1,7 @@
 import { MetadataStore } from '../factory/metadata/metadata-store';
-import { TransformOptions } from '../transform/types/transform-options';
 import { CDecorator } from '../utils/types/c-decorator';
 import { InstanceDef } from '../utils/types/instance-def';
+import { TransformOptions } from './types/transform-options';
 import { Transformation } from './types/transformation';
 
 export function Transform(
