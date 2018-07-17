@@ -11,6 +11,7 @@ import { JsonList } from './types/json-list';
 import { JsonSchemaOptions } from './types/json-schema-options';
 import { JsonUnions } from './types/json-unions';
 
+// Todo: Fix issue with value binding when container is present
 export class JsonSchema {
     public static create<T extends Abstract>(
         options: JsonSchemaOptions
