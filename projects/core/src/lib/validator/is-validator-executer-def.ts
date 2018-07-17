@@ -1,4 +1,4 @@
-import { InstanceDef } from '../../utils/types/instance-def';
+import { InstanceDef } from '../utils/types/instance-def';
 import { ValidatorExecuter } from './types/validator-executer';
 
 export function isValidatorExecuterDef(

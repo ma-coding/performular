@@ -1,13 +1,16 @@
-import { RunDetectorOptions } from '../../../effects/run-detection/types/run-detector-options';
-import { RunDetectorStrategy } from '../../../effects/run-detection/types/run-detector-strategy';
-import { ValidatorExecuter } from '../../../effects/validation/types/validator-executer';
-import { ValidatorOptions } from '../../../effects/validation/types/validator-options';
-import { VisibleExecuter } from '../../../effects/visiblity/types/visible-executer';
-import { VisibleOptions } from '../../../effects/visiblity/types/visible-options';
+import { TransformOptions } from 'stream';
+
+import { ComponentInit } from '../../../component/types/component-init';
+import { ComponentOptions } from '../../../component/types/component.options';
+import { RunDetectorOptions } from '../../../run-detector/types/run-detector-options';
+import { RunDetectorStrategy } from '../../../run-detector/types/run-detector-strategy';
+import { Transformation } from '../../../transform/types/transformation';
 import { InstanceDef } from '../../../utils/types/instance-def';
 import { ObjectType } from '../../../utils/types/object-type';
-import { TransformOptions } from '../../../value/transformer/types/transform-options';
-import { Transformation } from '../../../value/transformer/types/transformation';
+import { ValidatorExecuter } from '../../../validator/types/validator-executer';
+import { ValidatorOptions } from '../../../validator/types/validator-options';
+import { VisibleExecuter } from '../../../visible/types/visible-executer';
+import { VisibleOptions } from '../../../visible/types/visible-options';
 import { MergeTarget } from './merge-target';
 
 export interface MetadataArgs {
@@ -22,5 +25,8 @@ export interface MetadataArgs {
     >;
     transforms: ObjectType<
         MergeTarget<TransformOptions, InstanceDef<Transformation>>
+    >;
+    components: ObjectType<
+        MergeTarget<ComponentOptions, InstanceDef<ComponentInit>>
     >;
 }
