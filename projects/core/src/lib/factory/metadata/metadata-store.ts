@@ -1,6 +1,7 @@
 import { AbstractInjector } from '../abstract-injector';
 import { MetadataArgs } from './types/metadata-args';
 
+// @dynamic
 export class MetadataStore {
     private static _injector: AbstractInjector | undefined;
     private static _store: MetadataArgs = MetadataStore._initStore();
@@ -22,7 +23,7 @@ export class MetadataStore {
     >(key: K, value: MetadataArgs[K][I]): void {
         // Todo: Refactor this as any
         this._store[key] = Object.assign(this._store[key], {
-            [value.name as any]: value
+            [(<any>value).name as any]: value
         });
     }
 
@@ -38,7 +39,8 @@ export class MetadataStore {
             runDetectors: {},
             validators: {},
             visibles: {},
-            transforms: {}
+            transforms: {},
+            components: {}
         };
     }
 }

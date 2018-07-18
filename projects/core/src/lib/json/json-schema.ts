@@ -6,12 +6,13 @@ import { ListField } from '../fields/list-field/list-field';
 import { FrameworkType } from '../framework/types/framework-type';
 import { JsonContainer } from './types/json-container';
 import { JsonControl } from './types/json-control';
-import { JsonGroup } from './types/json-grouo';
+import { JsonGroup } from './types/json-group';
 import { JsonList } from './types/json-list';
 import { JsonSchemaOptions } from './types/json-schema-options';
 import { JsonUnions } from './types/json-unions';
 
 // Todo: Fix issue with value binding when container is present
+// @dynamic
 export class JsonSchema {
     public static create<T extends Abstract>(
         options: JsonSchemaOptions

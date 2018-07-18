@@ -1,6 +1,6 @@
-import { MetadataStore } from '../../factory/metadata/metadata-store';
-import { CDecorator } from '../../utils/types/c-decorator';
-import { InstanceDef } from '../../utils/types/instance-def';
+import { MetadataStore } from '../factory/metadata/metadata-store';
+import { CDecorator } from '../utils/types/c-decorator';
+import { InstanceDef } from '../utils/types/instance-def';
 import { VisibleExecuter } from './types/visible-executer';
 import { VisibleOptions } from './types/visible-options';
 

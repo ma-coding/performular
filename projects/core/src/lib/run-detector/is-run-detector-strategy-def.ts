@@ -1,4 +1,4 @@
-import { InstanceDef } from '../../utils/types/instance-def';
+import { InstanceDef } from '../utils/types/instance-def';
 import { RunDetectorStrategy } from './types/run-detector-strategy';
 
 export function isRunDetectorStrategyDef(

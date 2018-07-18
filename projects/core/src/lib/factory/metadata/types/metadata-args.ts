@@ -1,9 +1,7 @@
-import { TransformOptions } from 'stream';
-
-import { ComponentInit } from '../../../component/types/component-init';
 import { ComponentOptions } from '../../../component/types/component.options';
 import { RunDetectorOptions } from '../../../run-detector/types/run-detector-options';
 import { RunDetectorStrategy } from '../../../run-detector/types/run-detector-strategy';
+import { TransformOptions } from '../../../transform/types/transform-options';
 import { Transformation } from '../../../transform/types/transformation';
 import { InstanceDef } from '../../../utils/types/instance-def';
 import { ObjectType } from '../../../utils/types/object-type';
@@ -26,7 +24,5 @@ export interface MetadataArgs {
     transforms: ObjectType<
         MergeTarget<TransformOptions, InstanceDef<Transformation>>
     >;
-    components: ObjectType<
-        MergeTarget<ComponentOptions, InstanceDef<ComponentInit>>
-    >;
+    components: ObjectType<MergeTarget<ComponentOptions, InstanceDef<any>>>;
 }

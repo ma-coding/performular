@@ -1,4 +1,4 @@
-import { ViewScales } from '../../../utils/types/view-scales';
+import { ViewScales } from '../../utils/types/view-scales';
 import { LayoutAlign } from './layout-align';
 import { LayoutValues } from './layout-values';
 
