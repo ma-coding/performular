@@ -1,6 +1,5 @@
 import { Observable, of } from 'rxjs';
 
-import { Layout } from '../handler/layout/layout';
 import { State } from '../util/state';
 import { RunContext } from '../util/types/run-context';
 import { AbstractModel } from './abstract-model';
@@ -17,8 +16,7 @@ export class ContainerModel extends AbstractModel<ContainerModelState> {
         );
         this._state$ = new State<ContainerModelState>({
             ...this._initAbstractModel(options),
-            children: options.children || [],
-            layout: new Layout(options)
+            children: options.children || []
         });
     }
 

@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 
 import { Builder } from '../builder/builder';
-import { Layout } from '../handler/layout';
 import { cloneDeep } from '../util/clone-deep';
 import { State } from '../util/state';
 import { ValueMode } from '../util/types/value-mode';
@@ -35,8 +34,7 @@ export class ListFieldModel extends AbstractFieldModel<ListFieldModelState> {
             childModel: options.childModel,
             children: children,
             initialValue: initialValue,
-            value: cloneDeep(initialValue),
-            layout: new Layout(options)
+            value: cloneDeep(initialValue)
         });
     }
 

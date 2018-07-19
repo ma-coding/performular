@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 
 import { Builder } from '../../../core/src/lib/builder/builder';
 import { ModelType } from '../../../core/src/lib/builder/types/model-type';
+import { Control } from '../../../core/src/lib/decorator/target/control';
+import { Group } from '../../../core/src/lib/decorator/target/group';
+import { List } from '../../../core/src/lib/decorator/target/list';
+import { SubGroup } from '../../../core/src/lib/decorator/target/sub-group';
 import { Metadata } from '../../../core/src/lib/metadata/metadata';
 import { ContainerModel } from '../../../core/src/lib/model/container-model';
 import { ControlFieldModel } from '../../../core/src/lib/model/control-field-model';
@@ -37,6 +41,64 @@ Metadata.addItem('models', {
         new ListFieldModel(options)
 });
 
+@Group({
+    attrs: null,
+    id: 'SUBFORM',
+    model: 'test',
+    layout: {
+        layout: {
+            main: 'row'
+        },
+        children: ['name']
+    }
+})
+export class SubForm {
+    @Control({
+        attrs: null,
+        model: 'input',
+        defaultValue: 5
+    })
+    public name?: string;
+}
+
+@Group<keyof Form>({
+    attrs: null,
+    id: 'FORM',
+    model: 'test',
+    layout: {
+        layout: {
+            main: 'column'
+        },
+        children: [
+            {
+                flex: {
+                    main: 100
+                },
+                child: 'input'
+            }
+        ]
+    }
+})
+export class Form {
+    @SubGroup({
+        childModel: SubForm
+    })
+    public grp?: SubForm;
+
+    @List({
+        attrs: undefined,
+        childTarget: SubForm,
+        model: 'list'
+    })
+    public grpArr?: SubForm[];
+
+    @Control({
+        attrs: null,
+        model: 'input'
+    })
+    public input?: number;
+}
+console.log(Metadata.getFormItem(Form));
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',

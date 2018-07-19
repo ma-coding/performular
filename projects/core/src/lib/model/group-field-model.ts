@@ -1,4 +1,3 @@
-import { Layout } from '../handler/layout';
 import { cloneDeep } from '../util/clone-deep';
 import { State } from '../util/state';
 import { AbstractFieldModel } from './abstract-field-model';
@@ -21,8 +20,7 @@ export class GroupFieldModel extends AbstractFieldModel<GroupFieldModelState> {
             ...this._initAbstractFieldModel(options),
             children: options.children,
             initialValue: initialValue,
-            value: cloneDeep(initialValue),
-            layout: new Layout(options)
+            value: cloneDeep(initialValue)
         });
     }
 

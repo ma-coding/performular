@@ -1,14 +1,20 @@
+import { Framework } from '../framework/framework';
 import { Modeler } from '../handler/modeler/modeler';
 import { AbstractModel } from '../model/abstract-model';
 import { ContainerModelOptions } from '../model/types/container-model-options';
 import { ControlFieldModelOptions } from '../model/types/control-field-model-options';
 import { GroupFieldModelOptions } from '../model/types/group-field-model-options';
+import { ItemModelOptions } from '../model/types/item-model-options';
+import { LayoutModelOptions } from '../model/types/layout-model-options';
 import { ListFieldModelOptions } from '../model/types/list-field-model-options';
 import { cloneDeep } from '../util/clone-deep';
+import { InstanceDef } from '../util/types/instance-def';
 import { RemoveKey } from '../util/types/remove-key';
 import { JsonContainerOptions } from './types/json-container-options';
 import { JsonControlOptions } from './types/json-control-options';
 import { JsonGroupOptions } from './types/json-group-options';
+import { JsonItemOptions } from './types/json-item-options';
+import { JsonLayoutOptions } from './types/json-layout-options';
 import { JsonListOptions } from './types/json-list-options';
 import { JsonUnionOptions } from './types/json-unions-options';
 import { ModelType } from './types/model-type';
@@ -16,7 +22,13 @@ import { ModelType } from './types/model-type';
 export class JsonBuilder {
     public static build(options: JsonUnionOptions, value: any): AbstractModel {
         const opt: any = cloneDeep(options);
-        const modeler: Modeler = new Modeler(options.model);
+        const model: string | InstanceDef<any> =
+            options.type === ModelType.LAYOUT
+                ? Framework.getLayoutModel()
+                : options.type === ModelType.ITEM
+                    ? Framework.getItemModel()
+                    : (<any>options).model;
+        const modeler: Modeler = new Modeler(model);
         switch (options.type) {
             case ModelType.CONTROL: {
                 return modeler.build(this._buildControlOptions(opt, value));
@@ -29,6 +41,12 @@ export class JsonBuilder {
             }
             case ModelType.LIST: {
                 return modeler.build(this._buildListOptions(opt, value));
+            }
+            case ModelType.LAYOUT: {
+                return modeler.build(<any>this._buildLayoutOptions(opt, value));
+            }
+            case ModelType.ITEM: {
+                return modeler.build(<any>this._buildItemOptions(opt, value));
             }
         }
     }
@@ -51,7 +69,7 @@ export class JsonBuilder {
             ...this._removeType(options),
             children: Object.keys(options.children).map((id: string) => {
                 return this.build(
-                    {
+                    <any>{
                         id,
                         ...options.children[id]
                     },
@@ -86,6 +104,30 @@ export class JsonBuilder {
                     return this.build(childOptions, value);
                 }
             )
+        };
+    }
+
+    private static _buildLayoutOptions(
+        options: JsonLayoutOptions,
+        value: any
+    ): LayoutModelOptions {
+        return {
+            ...this._removeType(options),
+            children: (options.children || []).map(
+                (childOptions: JsonUnionOptions) => {
+                    return this.build(childOptions, value);
+                }
+            )
+        };
+    }
+
+    private static _buildItemOptions(
+        options: JsonItemOptions,
+        value: any
+    ): ItemModelOptions {
+        return {
+            ...this._removeType(options),
+            child: this.build(options.child, value)
         };
     }
 

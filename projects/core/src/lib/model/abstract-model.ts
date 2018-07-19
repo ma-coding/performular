@@ -1,7 +1,6 @@
 import { forkJoin, merge, Observable, Subject } from 'rxjs';
 import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
-import { Item } from '../handler/item';
 import { Modeler } from '../handler/modeler/modeler';
 import { flatten } from '../util/flatten';
 import { generateUUID } from '../util/generate-uuid';
@@ -132,7 +131,6 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
             children: [],
             uuid: generateUUID(),
             model: new Modeler(options.model),
-            item: new Item(options),
             attrs: options.attrs,
             id: options.id
         };

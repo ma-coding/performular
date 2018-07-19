@@ -1,9 +1,35 @@
 import { InstanceDef } from '../util/types/instance-def';
+import { MetadataFormstate } from './types/metadata-formstate';
 import { MetadataState } from './types/metadata-state';
 
 // @dynamic
 export class Metadata {
     private static _state: MetadataState = Metadata._initStore();
+    private static _formstate: MetadataFormstate = Metadata._initFormstate();
+
+    public static addFormItem<K extends keyof MetadataFormstate>(
+        key: K,
+        item: any
+    ): void {
+        this._formstate[key] = [...this._formstate[key], item];
+    }
+
+    public static getFormItem(target: any): MetadataFormstate {
+        return {
+            groups: this._formstate.groups.filter(
+                (g: any) => g.target === target
+            ),
+            controls: this._formstate.controls.filter(
+                (g: any) => g.target === target
+            ),
+            lists: this._formstate.lists.filter(
+                (g: any) => g.target === target
+            ),
+            subGroups: this._formstate.subGroups.filter(
+                (g: any) => g.target === target
+            )
+        };
+    }
 
     public static addItem<
         K extends keyof MetadataState,
@@ -41,6 +67,15 @@ export class Metadata {
             validators: {},
             visibles: {},
             models: {}
+        };
+    }
+
+    private static _initFormstate(): MetadataFormstate {
+        return {
+            controls: [],
+            groups: [],
+            lists: [],
+            subGroups: []
         };
     }
 }
