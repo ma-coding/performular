@@ -1,6 +1,41 @@
 import { Component } from '@angular/core';
 
-import { AbstractField, CoreGroup, Performular } from '@performular/core';
+import { Builder } from '../../../core/src/lib/builder/builder';
+import { ModelType } from '../../../core/src/lib/builder/types/model-type';
+import { Metadata } from '../../../core/src/lib/metadata/metadata';
+import { ContainerModel } from '../../../core/src/lib/model/container-model';
+import { ControlFieldModel } from '../../../core/src/lib/model/control-field-model';
+import { GroupFieldModel } from '../../../core/src/lib/model/group-field-model';
+import { ListFieldModel } from '../../../core/src/lib/model/list-field-model';
+import { ContainerModelOptions } from '../../../core/src/lib/model/types/container-model-options';
+import { ControlFieldModelOptions } from '../../../core/src/lib/model/types/control-field-model-options';
+import { GroupFieldModelOptions } from '../../../core/src/lib/model/types/group-field-model-options';
+import { ListFieldModelOptions } from '../../../core/src/lib/model/types/list-field-model-options';
+
+Metadata.addItem('models', {
+    name: 'test',
+    target: class A {},
+    builder: (options: GroupFieldModelOptions): GroupFieldModel =>
+        new GroupFieldModel(options)
+});
+Metadata.addItem('models', {
+    name: 'input',
+    target: class A {},
+    builder: (options: ControlFieldModelOptions): ControlFieldModel =>
+        new ControlFieldModel(options)
+});
+Metadata.addItem('models', {
+    name: 'fieldset',
+    target: class A {},
+    builder: (options: ContainerModelOptions): ContainerModel =>
+        new ContainerModel(options)
+});
+Metadata.addItem('models', {
+    name: 'list',
+    target: class A {},
+    builder: (options: ListFieldModelOptions): ListFieldModel =>
+        new ListFieldModel(options)
+});
 
 @Component({
     selector: 'app-root',
@@ -8,208 +43,61 @@ import { AbstractField, CoreGroup, Performular } from '@performular/core';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
-    public form: CoreGroup = <CoreGroup>Performular.build({
-        options: {
-            errorStateWhen: (field: AbstractField): boolean => field.invalid && field.dirty
-        },
-        form: {
-            id: 'g',
-            attrs: undefined,
-            field: 'group',
-            type: 'group',
-            layout: {
-                main: 'column'
-            },
-            layoutGap: {
-                main: '18px'
-            },
-            children: [
-                {
-                    id: 'input',
-                    validators: [
-                        {
-                            errorMsg: 'testtt',
-                            params: null,
-                            name: 'required'
-                        }
-                    ],
-                    attrs: {
-                        type: 'number',
-                        label: 'Zahl',
-                        placeholder: 'test'
-                        // appearance: 'outline'
-                    },
-                    field: 'matInput',
-                    type: 'control',
-                    focus: true
-                },
-                {
-                    id: 'date',
-                    validators: [
-                        {
-                            errorMsg: 'testtt',
-                            params: null,
-                            name: 'required'
-                        }
-                    ],
-                    attrs: {
-                        label: 'Date',
-                        placeholder: 'test',
-                        debounce: 200,
-                        // appearance: 'outline'
-                    },
-                    field: 'matDatepicker',
-                    type: 'control',
-                    focus: true
-                },
-                {
-                    id: 'textarea',
-                    validators: [
-                        {
-                            errorMsg: 'testtt',
-                            params: null,
-                            name: 'required'
-                        }
-                    ],
-                    attrs: {
-                        label: 'Test',
-                        placeholder: 'test',
-                        appearance: 'outline',
-                        autoResize: false,
-                        maxRows: 5,
-                        minRows: 1
-                    },
-                    field: 'matTextarea',
-                    type: 'control',
-                    focus: true
-                },
-                {
-                    id: 'radio',
-                    attrs: {
-                        options: {
-                            datasource: 'test',
-                            resetInvisibleValue: true
-                        },
-                        name: 'test9',
-                        buttonDirection: 'horizontal'
-                    },
-                    field: 'matRadio',
-                    type: 'control'
-                },
-                {
-                    id: 'select',
-                    validators: [
-                        {
-                            errorMsg: 'testtt',
-                            params: null,
-                            name: 'required'
-                        }
-                    ],
-                    attrs: {
-                        addNoneValue: true,
-                        label: 'Select',
-                        multiple: false,
-                        options: {
-                            datasource: 'test',
-                            resetInvisibleValue: true
-                        }
-                    },
-                    field: 'matSelect',
-                    type: 'control',
-                    focus: true
-                },
-                {
-                    id: 'checkbox',
-                    attrs: {
-                        placeholder: 'ABC'
-                    },
-                    field: 'matCheckbox',
-                    type: 'control'
-                },
-                {
-                    id: 'toggle',
-                    attrs: {
-                        placeholder: 'ABC'
-                    },
-                    field: 'matToggle',
-                    type: 'control'
-                },
-                {
-                    id: 'slider',
-                    attrs: {
-                        min: 0,
-                        max: 100
-                    },
-                    field: 'matSlider',
-                    type: 'control'
-                },
-                // {
-                //     id: 'fieldg',
-                //     attrs: {
-                //         legend: 'test'
-                //     },
-                //     layout: {
-                //         main: 'row'
-                //     },
-                //     field: 'fieldset',
-                //     type: 'container',
-                //     children: [
-                //         {
-                //             id: 'test2',
-                //             attrs: {
-                //                 type: 'number'
-                //             },
-                //             field: 'input',
-                //             type: 'control'
-                //         }, {
-                //             id: 'fieldg2',
-                //             attrs: {
-                //                 legend: 'test'
-                //             },
-                //             field: 'fieldset',
-                //             type: 'container',
-                //             children: [
-                //                 {
-                //                     id: 'test3',
-                //                     attrs: {
-                //                         type: 'text'
-                //                     },
-                //                     field: 'input',
-                //                     type: 'control'
-                //                 },
-                //                 {
-                //                     id: 'lst',
-                //                     type: 'list',
-                //                     field: 'list',
-                //                     attrs: undefined,
-                //                     childDef: {
-                //                         id: 'fieldg2',
-                //                         attrs: {
-                //                             legend: 'test'
-                //                         },
-                //                         field: 'fieldset',
-                //                         type: 'container',
-                //                         children: [{
-                //                             id: 'test4',
-                //                             attrs: {
-                //                                 type: 'number'
-                //                             },
-                //                             field: 'input',
-                //                             type: 'control'
-                //                         }]
-                //                     }
-                //                 }
-                //             ]
-                //         }
-                //     ]
-                // }
-            ]
-        }
-    });
-
     constructor() {
-        console.log(this.form);
+        const group: GroupFieldModel = Builder.build<GroupFieldModel, any>(
+            {
+                id: '1234',
+                type: ModelType.GROUP,
+                attrs: '',
+                model: 'test',
+                children: {
+                    t5: {
+                        type: ModelType.CONTROL,
+                        attrs: null,
+                        model: 'input',
+                        defaultValue: 10
+                    },
+                    t9: {
+                        type: ModelType.CONTAINER,
+                        attrs: null,
+                        model: 'fieldset',
+                        children: [
+                            {
+                                id: 't6',
+                                type: ModelType.CONTROL,
+                                attrs: null,
+                                model: 'input',
+                                defaultValue: 10
+                            }
+                        ]
+                    },
+                    t10: {
+                        type: ModelType.LIST,
+                        attrs: null,
+                        model: 'list',
+                        childModel: {
+                            id: 't11',
+                            type: ModelType.CONTAINER,
+                            attrs: null,
+                            model: 'fieldset',
+                            children: [
+                                {
+                                    id: 't66',
+                                    type: ModelType.CONTROL,
+                                    attrs: null,
+                                    model: 'input',
+                                    defaultValue: 10
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                t5: 8,
+                t6: 109,
+                t10: [8, 20]
+            }
+        );
     }
-
 }

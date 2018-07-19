@@ -23,7 +23,6 @@ export class State<T extends {}> extends BehaviorSubject<T> {
     }
 
     public updateKey<K extends keyof T>(key: K, value: T[K]): void {
-        // Todo: Better Type
         this.update(<any>{
             [key]: value
         });

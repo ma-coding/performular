@@ -12,13 +12,10 @@
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
         "target": "es5",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "lib": [
-            "es2017",
-            "dom"
-        ],
-        "paths": {}
+        "typeRoots": ["node_modules/@types"],
+        "lib": ["es2017", "dom"],
+        "paths": {
+            "@performular/core": ["./projects/core/src/lib/*"]
+        }
     }
 }
