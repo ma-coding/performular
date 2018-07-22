@@ -1,0 +1,25 @@
+{
+    "name": "@performular/ng-common",
+    "description": "Performular Core Angular Connector",
+    "homepage": "https://github.com/ma-coding/performular",
+    "bugs": "https://github.com/ma-coding/performular/issues",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ma-coding/performular.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">= 5.4.1"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "version": "1.0.0-beta.4",
+    "private": false,
+    "peerDependencies": {
+        "@angular/common": "^6.0.0",
+        "@angular/core": "^6.0.0",
+        "@angular/flex-layout": "^6.0.0-beta.16",
+        "rxjs": "^6.0.0"
+    }
+}

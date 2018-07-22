@@ -9,7 +9,7 @@ export abstract class AbstractForm {
         return subscription;
     }
 
-    protected _destory(subscription: Subscription): void {
+    protected _destory(subscription: Subscription | undefined): void {
         if (subscription) {
             subscription.unsubscribe();
         }

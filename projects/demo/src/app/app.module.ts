@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import 'hammerjs';
 
+import { PerformularModule } from '@performular/ng-common';
+
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -14,7 +16,8 @@ import { AppComponent } from './app.component';
         BrowserAnimationsModule,
         FlexLayoutModule,
         MatNativeDateModule,
-        BrowserModule
+        BrowserModule,
+        PerformularModule
     ],
     bootstrap: [AppComponent]
 })

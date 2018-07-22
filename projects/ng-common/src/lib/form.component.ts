@@ -1,0 +1,31 @@
+import { Component, Input, OnDestroy } from '@angular/core';
+
+import { Subscription } from 'rxjs';
+
+import { AbstractForm, AbstractModel } from '@performular/core';
+
+@Component({
+    selector: 'performular-form',
+    template: `<ng-container [performularRenderer]="form"></ng-container>`,
+    styles: [``]
+})
+export class PerformularComponent extends AbstractForm implements OnDestroy {
+    private _subscription: Subscription | undefined;
+    private _form: AbstractModel | undefined;
+
+    @Input()
+    set form(form: AbstractModel | undefined) {
+        this._form = form;
+        if (this._form) {
+            this._subscription = this._init(this._form);
+        }
+    }
+
+    get form(): AbstractModel | undefined {
+        return this._form;
+    }
+
+    public ngOnDestroy(): void {
+        this._destory(this._subscription);
+    }
+}

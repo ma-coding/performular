@@ -14,6 +14,9 @@
         "target": "es5",
         "typeRoots": ["node_modules/@types"],
         "lib": ["es2017", "dom"],
-        "paths": {}
+        "paths": {
+            "@performular/ng-common": ["projects/ng-common/src/index.ts"],
+            "@performular/core": ["projects/core/src/index.ts"]
+        }
     }
 }

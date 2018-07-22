@@ -50,6 +50,7 @@ export class ItemModel extends AbstractModel<ItemModelState> {
 
     constructor(options: ItemModelOptions) {
         super();
+        options.child.setParent(this);
         this._state$ = new State<ItemModelState>({
             ...this._initAbstractModel({
                 id: ItemModel._cnt + '-Item',

@@ -9,4 +9,6 @@ export interface AbstractModelState {
     parent?: AbstractModel | undefined;
     children: AbstractModel[];
     hidden: boolean;
+    instance?: any;
+    elementRef?: HTMLElement;
 }

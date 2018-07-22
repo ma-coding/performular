@@ -72,6 +72,22 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
         return this._state$.select$('parent');
     }
 
+    get instance(): AbstractModelState['instance'] {
+        return this._state$.select('instance');
+    }
+
+    get instance$(): Observable<AbstractModelState['instance']> {
+        return this._state$.select$('instance');
+    }
+
+    get elementRef(): AbstractModelState['elementRef'] {
+        return this._state$.select('elementRef');
+    }
+
+    get elementRef$(): Observable<AbstractModelState['elementRef']> {
+        return this._state$.select$('elementRef');
+    }
+
     get root(): AbstractModel {
         let field: AbstractModel = this;
         while (field.parent) {
@@ -93,6 +109,11 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
 
     public setParent(parent: AbstractModel): void {
         this._state$.updateKey('parent', parent);
+    }
+
+    public setInstance(instance: any, elementRef: HTMLElement): void {
+        this._state$.updateKey('elementRef', elementRef);
+        this._state$.updateKey('instance', instance);
     }
 
     public runUpdate(models: AbstractModel[]): void {
@@ -145,7 +166,9 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
             model: new Modeler(options.model),
             attrs: options.attrs,
             id: options.id,
-            hidden: false
+            hidden: false,
+            elementRef: undefined,
+            instance: undefined
         };
     }
 

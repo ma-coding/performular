@@ -41,6 +41,7 @@ export class LayoutModel extends AbstractModel<LayoutModelState> {
 
     constructor(options: LayoutModelOptions) {
         super();
+        options.children.forEach((c: AbstractModel) => c.setParent(this));
         this._state$ = new State<LayoutModelState>({
             ...this._initAbstractModel({
                 id: LayoutModel._cnt + '-Layout',

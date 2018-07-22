@@ -22,7 +22,7 @@ export abstract class AbstractFieldRenderer {
             .subscribe();
     }
 
-    protected _destroy(subscription: Subscription): void {
+    protected _destroy(subscription: Subscription | undefined): void {
         if (subscription) {
             subscription.unsubscribe();
         }
