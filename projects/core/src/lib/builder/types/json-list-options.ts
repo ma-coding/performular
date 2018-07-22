@@ -5,6 +5,6 @@ import { JsonUnionOptions } from './json-unions-options';
 
 export interface JsonListOptions
     extends JsonAbstractModelOptions,
-        RemoveKey<ListFieldModelOptions, 'childModel' | 'values'> {
+        RemoveKey<ListFieldModelOptions, 'childGenerator' | 'values'> {
     childModel: JsonUnionOptions;
 }

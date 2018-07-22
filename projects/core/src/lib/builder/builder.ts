@@ -1,17 +1,23 @@
 import { AbstractModel } from '../model/abstract-model';
+import { GroupFieldModel } from '../model/group-field-model';
 import { InstanceDef } from '../util/types/instance-def';
 import { JsonBuilder } from './json-builder';
+import { TypeBuilder } from './type-builder';
 import { JsonUnionOptions } from './types/json-unions-options';
 
 export class Builder {
-    public static build<T extends AbstractModel, K = any>(
-        targetOrJson: JsonUnionOptions | InstanceDef<K>,
+
+    public static buildFromJson<T extends AbstractModel, K = any>(
+        json: JsonUnionOptions,
         value: K
     ): T {
-        if ('type' in targetOrJson) {
-            return <T>JsonBuilder.build(targetOrJson, value);
-        } else {
-            return <T>{}; // Todo: add Type builder
-        }
+        return <T>JsonBuilder.build(json, value);
+    }
+
+    public static buildFromTarget<K>(
+        target: InstanceDef<K>,
+        value: K
+    ): GroupFieldModel {
+        return TypeBuilder.build<K>(target, value);
     }
 }

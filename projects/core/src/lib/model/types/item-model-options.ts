@@ -4,9 +4,9 @@ import { ViewScales } from '../../util/types/view-scales';
 import { AbstractModel } from '../abstract-model';
 
 export interface ItemModelOptions {
-    flex?: ViewScales<ItemValues>;
-    flexOrder?: ViewScales<number>;
-    flexOffset?: ViewScales<string>;
-    flexAlign?: ViewScales<ItemAlignValues>;
+    flex?: ViewScales<ItemValues> | ItemValues;
+    flexOrder?: ViewScales<number> | number;
+    flexOffset?: ViewScales<string> | string;
+    flexAlign?: ViewScales<ItemAlignValues> | ItemAlignValues;
     child: AbstractModel;
 }

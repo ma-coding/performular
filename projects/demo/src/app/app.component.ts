@@ -1,19 +1,23 @@
 import { Component } from '@angular/core';
 
-import { Builder } from '../../../core/src/lib/builder/builder';
-import { ModelType } from '../../../core/src/lib/builder/types/model-type';
+import { TypeBuilder } from '../../../core/src/lib/builder/type-builder';
 import { Control } from '../../../core/src/lib/decorator/target/control';
 import { Group } from '../../../core/src/lib/decorator/target/group';
 import { List } from '../../../core/src/lib/decorator/target/list';
 import { SubGroup } from '../../../core/src/lib/decorator/target/sub-group';
+import { Framework } from '../../../core/src/lib/framework/framework';
 import { Metadata } from '../../../core/src/lib/metadata/metadata';
 import { ContainerModel } from '../../../core/src/lib/model/container-model';
 import { ControlFieldModel } from '../../../core/src/lib/model/control-field-model';
 import { GroupFieldModel } from '../../../core/src/lib/model/group-field-model';
+import { ItemModel } from '../../../core/src/lib/model/item-model';
+import { LayoutModel } from '../../../core/src/lib/model/layout-model';
 import { ListFieldModel } from '../../../core/src/lib/model/list-field-model';
 import { ContainerModelOptions } from '../../../core/src/lib/model/types/container-model-options';
 import { ControlFieldModelOptions } from '../../../core/src/lib/model/types/control-field-model-options';
 import { GroupFieldModelOptions } from '../../../core/src/lib/model/types/group-field-model-options';
+import { ItemModelOptions } from '../../../core/src/lib/model/types/item-model-options';
+import { LayoutModelOptions } from '../../../core/src/lib/model/types/layout-model-options';
 import { ListFieldModelOptions } from '../../../core/src/lib/model/types/list-field-model-options';
 
 Metadata.addItem('models', {
@@ -40,17 +44,27 @@ Metadata.addItem('models', {
     builder: (options: ListFieldModelOptions): ListFieldModel =>
         new ListFieldModel(options)
 });
+Metadata.addItem('models', {
+    name: 'item',
+    target: class A {},
+    builder: (options: ItemModelOptions): ItemModel => new ItemModel(options)
+});
+Metadata.addItem('models', {
+    name: 'layout',
+    target: class A {},
+    builder: (options: LayoutModelOptions): LayoutModel =>
+        new LayoutModel(options)
+});
 
-@Group({
+Framework.setItemModel('item');
+Framework.setLayoutModel('layout');
+
+@Group<keyof SubForm>({
     attrs: null,
     id: 'SUBFORM',
     model: 'test',
-    layout: {
-        layout: {
-            main: 'row'
-        },
-        children: ['name']
-    }
+    layout: 'row',
+    children: ['name']
 })
 export class SubForm {
     @Control({
@@ -65,23 +79,19 @@ export class SubForm {
     attrs: null,
     id: 'FORM',
     model: 'test',
-    layout: {
-        layout: {
-            main: 'column'
+    layout: 'column',
+    children: [
+        {
+            flex: 100,
+            child: 'input'
         },
-        children: [
-            {
-                flex: {
-                    main: 100
-                },
-                child: 'input'
-            }
-        ]
-    }
+        'grp',
+        'grpArr'
+    ]
 })
 export class Form {
     @SubGroup({
-        childModel: SubForm
+        childTarget: SubForm
     })
     public grp?: SubForm;
 
@@ -99,6 +109,14 @@ export class Form {
     public input?: number;
 }
 console.log(Metadata.getFormItem(Form));
+
+console.log(
+    TypeBuilder.build(Form, {
+        grp: { name: 'wolf' },
+        grpArr: [{ name: 'abc' }, { name: 'def' }],
+        input: 5
+    })
+);
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -106,7 +124,7 @@ console.log(Metadata.getFormItem(Form));
 })
 export class AppComponent {
     constructor() {
-        const group: GroupFieldModel = Builder.build<GroupFieldModel, any>(
+        /* const group: GroupFieldModel = Builder.build<GroupFieldModel, any>(
             {
                 id: '1234',
                 type: ModelType.GROUP,
@@ -160,6 +178,6 @@ export class AppComponent {
                 t6: 109,
                 t10: [8, 20]
             }
-        );
+        ); */
     }
 }

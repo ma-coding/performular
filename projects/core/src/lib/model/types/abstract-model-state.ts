@@ -8,4 +8,5 @@ export interface AbstractModelState {
     attrs: any;
     parent?: AbstractModel | undefined;
     children: AbstractModel[];
+    hidden: boolean;
 }

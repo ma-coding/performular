@@ -88,7 +88,9 @@ export class JsonBuilder {
         value: any
     ): ListFieldModelOptions {
         return {
-            ...this._removeType(options),
+            ...(<RemoveKey<JsonListOptions, 'childModel' | 'type'>>options),
+            childGenerator: (val: any): AbstractModel =>
+                JsonBuilder.build(options.childModel, val),
             values: value || []
         };
     }
@@ -137,5 +139,11 @@ export class JsonBuilder {
         delete options.type;
         const opt: RemoveKey<T, 'type'> = options;
         return opt;
+    }
+
+    private static _removeChildModel<T extends JsonUnionOptions>(
+        options: T
+    ): RemoveKey<T, 'childModel'> {
+        return <RemoveKey<T, 'childModel'>>options;
     }
 }

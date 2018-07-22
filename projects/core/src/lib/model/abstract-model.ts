@@ -48,6 +48,14 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
         return this._state$.select$('attrs');
     }
 
+    get hidden(): AbstractModelState['hidden'] {
+        return this._state$.select('hidden');
+    }
+
+    get hidden$(): Observable<AbstractModelState['hidden']> {
+        return this._state$.select$('hidden');
+    }
+
     get children(): AbstractModelState['children'] {
         return this._state$.select('children');
     }
@@ -85,6 +93,10 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
 
     public setParent(parent: AbstractModel): void {
         this._state$.updateKey('parent', parent);
+    }
+
+    public runUpdate(models: AbstractModel[]): void {
+        this._manualUpdates$.next(models);
     }
 
     protected abstract _getUpdateWhen(): Observable<AbstractModel[]>;
@@ -132,7 +144,8 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
             uuid: generateUUID(),
             model: new Modeler(options.model),
             attrs: options.attrs,
-            id: options.id
+            id: options.id,
+            hidden: false
         };
     }
 

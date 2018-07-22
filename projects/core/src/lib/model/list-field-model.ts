@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 
-import { Builder } from '../builder/builder';
 import { cloneDeep } from '../util/clone-deep';
 import { State } from '../util/state';
 import { ValueMode } from '../util/types/value-mode';
@@ -12,18 +11,18 @@ import { ListFieldModelState } from './types/list-field-model-state';
 export class ListFieldModel extends AbstractFieldModel<ListFieldModelState> {
     protected _state$: State<ListFieldModelState>;
 
-    get childModel(): ListFieldModelState['childModel'] {
-        return this._state$.select('childModel');
+    get childGenerator(): ListFieldModelState['childGenerator'] {
+        return this._state$.select('childGenerator');
     }
 
-    get childModel$(): Observable<ListFieldModelState['childModel']> {
-        return this._state$.select$('childModel');
+    get childGenerator$(): Observable<ListFieldModelState['childGenerator']> {
+        return this._state$.select$('childGenerator');
     }
 
     constructor(options: ListFieldModelOptions) {
         super();
         const children: AbstractModel[] = options.values.map((val: any) => {
-            return Builder.build(options.childModel, val);
+            return options.childGenerator(val);
         });
         children.forEach((child: AbstractModel) => child.setParent(this));
         const initialValue: any = this._buildValue(
@@ -31,7 +30,7 @@ export class ListFieldModel extends AbstractFieldModel<ListFieldModelState> {
         );
         this._state$ = new State<ListFieldModelState>({
             ...this._initAbstractFieldModel(options),
-            childModel: options.childModel,
+            childGenerator: options.childGenerator,
             children: children,
             initialValue: initialValue,
             value: cloneDeep(initialValue)
@@ -80,7 +79,7 @@ export class ListFieldModel extends AbstractFieldModel<ListFieldModelState> {
 
     public pushField(emitUpdate: boolean = true): void {
         this._updateChildren(
-            [...this.children, Builder.build(this.childModel, null)],
+            [...this.children, this.childGenerator(null)],
             emitUpdate
         );
     }

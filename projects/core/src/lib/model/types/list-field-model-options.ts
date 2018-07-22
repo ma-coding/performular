@@ -1,7 +1,7 @@
-import { JsonUnionOptions } from '../../builder/types/json-unions-options';
+import { AbstractModel } from '../abstract-model';
 import { AbstractFieldModelOptions } from './abstract-field-model-options';
 
 export interface ListFieldModelOptions extends AbstractFieldModelOptions {
-    childModel: JsonUnionOptions;
+    childGenerator: (value: any) => AbstractModel;
     values: any[];
 }

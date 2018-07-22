@@ -7,7 +7,6 @@ export interface AbstractFieldModelState extends AbstractModelState {
     visibilities: ObjectType<Visibility>;
     disabled: boolean;
     forcedDisabled: boolean;
-    hidden: boolean;
     forcedHidden: boolean;
 
     validations: ObjectType<Validation>;
