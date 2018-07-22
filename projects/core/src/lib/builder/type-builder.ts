@@ -22,6 +22,7 @@ import { ListFieldModelOptions } from '../model/types/list-field-model-options';
 import { isString } from '../util/is-string';
 import { InstanceDef } from '../util/types/instance-def';
 
+// @dynamic
 export class TypeBuilder {
     public static build<K>(
         target: InstanceDef<K>,

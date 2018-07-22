@@ -19,6 +19,7 @@ import { JsonListOptions } from './types/json-list-options';
 import { JsonUnionOptions } from './types/json-unions-options';
 import { ModelType } from './types/model-type';
 
+// @dynamic
 export class JsonBuilder {
     public static build(options: JsonUnionOptions, value: any): AbstractModel {
         const opt: any = cloneDeep(options);
