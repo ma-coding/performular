@@ -11,7 +11,7 @@ import { ItemModelOptions } from './types/item-model-options';
 import { ItemModelState } from './types/item-model-state';
 
 // Todo: add full implementation
-export class ItemModel extends AbstractModel<ItemModelState> {
+export class ItemModel extends AbstractModel<ItemModelState, any> {
     private static _cnt: number = 0;
 
     protected _state$: State<ItemModelState>;

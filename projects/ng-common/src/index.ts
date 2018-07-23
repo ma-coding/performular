@@ -10,3 +10,7 @@ export * from './lib/performular.model';
 
 export * from './lib/build-in/item.component';
 export * from './lib/build-in/layout.component';
+export * from './lib/build-in/fieldset.component';
+export * from './lib/build-in/group.component';
+export * from './lib/build-in/list.component';
+export * from './lib/build-in/input.component';

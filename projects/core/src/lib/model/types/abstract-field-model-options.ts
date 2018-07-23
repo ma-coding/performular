@@ -3,7 +3,8 @@ import { VisibilityOptions } from '../../handler/visibility/types/visibility-opt
 import { ObjectType } from '../../util/types/object-type';
 import { AbstractModelOptions } from './abstract-model-options';
 
-export interface AbstractFieldModelOptions extends AbstractModelOptions {
+export interface AbstractFieldModelOptions<ATTRS = any>
+    extends AbstractModelOptions<ATTRS> {
     forcedDisabled?: boolean;
     forcedHidden?: boolean;
     forcedError?: string;

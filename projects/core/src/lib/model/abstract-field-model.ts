@@ -16,8 +16,9 @@ import { AbstractFieldModelOptions } from './types/abstract-field-model-options'
 import { AbstractFieldModelState } from './types/abstract-field-model-state';
 
 export abstract class AbstractFieldModel<
-    STATE extends AbstractFieldModelState = any
-> extends AbstractModel<STATE> {
+    STATE extends AbstractFieldModelState<ATTRS> = any,
+    ATTRS = any
+> extends AbstractModel<STATE, ATTRS> {
     get visibilities(): AbstractFieldModelState['visibilities'] {
         return this._state$.select('visibilities');
     }
@@ -133,7 +134,7 @@ export abstract class AbstractFieldModel<
     }
 
     get childFields(): AbstractFieldModel[] {
-        return this._getRecursiveChildFields();
+        return this._getRecursiveChildFields(this.children);
     }
 
     get parentField(): AbstractFieldModel | undefined {
@@ -227,7 +228,7 @@ export abstract class AbstractFieldModel<
     ): void {
         const parent: AbstractFieldModel | undefined = this.parentField;
         if (parent) {
-            parent._createValue(mode, parent._buildValue(this.childFields));
+            parent._createValue(mode, parent._buildValue(parent.childFields));
             parent._updateParentValue([...checklist, parent], mode);
         } else {
             this._manualUpdates$.next(checklist);

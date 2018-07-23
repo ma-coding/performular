@@ -7,10 +7,11 @@ import { AbstractFieldModel } from './abstract-field-model';
 import { ControlFieldModelOptions } from './types/control-field-model-options';
 import { ControlFieldModelState } from './types/control-field-model-state';
 
-export class ControlFieldModel extends AbstractFieldModel<
-    ControlFieldModelState
+export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
+    ControlFieldModelState<ATTRS>,
+    ATTRS
 > {
-    protected _state$: State<ControlFieldModelState>;
+    protected _state$: State<ControlFieldModelState<ATTRS>>;
 
     get defaultValue(): ControlFieldModelState['defaultValue'] {
         return this._state$.select('defaultValue');
@@ -20,7 +21,7 @@ export class ControlFieldModel extends AbstractFieldModel<
         return this._state$.select$('defaultValue');
     }
 
-    constructor(options: ControlFieldModelOptions) {
+    constructor(options: ControlFieldModelOptions<ATTRS>) {
         super();
         const value: any = options.value || options.defaultValue || null;
         this._state$ = new State<ControlFieldModelState>({

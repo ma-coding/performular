@@ -1,5 +1,5 @@
 import { Directionality } from '@angular/cdk/bidi';
-import { Component, ElementRef, Inject, NgZone, OnDestroy, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy, Optional } from '@angular/core';
 import {
     FlexAlignDirective,
     FlexDirective,
@@ -22,15 +22,18 @@ export function ItemBuilder(options: any): ItemModel {
     return new ItemModel(options);
 }
 
+export const PERFORMULAR_MODEL_ITEM: string = 'PERFORMULAR_MODEL_ITEM';
+
 @Model({
-    name: 'PERFORMULAR_ITEM',
+    name: PERFORMULAR_MODEL_ITEM,
     builder: ItemBuilder
 })
 @Component({
     selector: 'performular-item',
     template:
         '<ng-container *ngFor="let c of field?.children$ | async" [performularRenderer]="c"></ng-container>',
-    styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemComponent implements OnDestroy {
     private _subscription: Subscription;
@@ -46,7 +49,6 @@ export class ItemComponent implements OnDestroy {
         private _monitor: MediaMonitor,
         private _elementRef: ElementRef,
         private _styleUtils: StyleUtils,
-        private _zone: NgZone,
         private _directionality: Directionality
     ) {
         this._subscription = combineLatest(

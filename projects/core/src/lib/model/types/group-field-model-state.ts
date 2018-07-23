@@ -1,3 +1,3 @@
 import { AbstractFieldModelState } from './abstract-field-model-state';
 
-export type GroupFieldModelState = AbstractFieldModelState;
+export type GroupFieldModelState<ATTRS = any> = AbstractFieldModelState<ATTRS>;

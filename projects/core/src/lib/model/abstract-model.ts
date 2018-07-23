@@ -9,7 +9,10 @@ import { RunContext } from '../util/types/run-context';
 import { AbstractModelOptions } from './types/abstract-model-options';
 import { AbstractModelState } from './types/abstract-model-state';
 
-export abstract class AbstractModel<STATE extends AbstractModelState = any> {
+export abstract class AbstractModel<
+    STATE extends AbstractModelState<ATTRS> = any,
+    ATTRS = any
+> {
     protected abstract _state$: State<STATE>;
 
     protected _manualUpdates$: Subject<AbstractModel[]> = new Subject();
@@ -40,11 +43,11 @@ export abstract class AbstractModel<STATE extends AbstractModelState = any> {
             .pipe(map((modeler: Modeler) => modeler.target));
     }
 
-    get attrs(): AbstractModelState['attrs'] {
+    get attrs(): AbstractModelState<ATTRS>['attrs'] {
         return this._state$.select('attrs');
     }
 
-    get attrs$(): Observable<AbstractModelState['attrs']> {
+    get attrs$(): Observable<AbstractModelState<ATTRS>['attrs']> {
         return this._state$.select$('attrs');
     }
 

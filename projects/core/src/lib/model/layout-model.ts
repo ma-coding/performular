@@ -10,7 +10,7 @@ import { AbstractModel } from './abstract-model';
 import { LayoutModelOptions } from './types/layout-model-options';
 import { LayoutModelState } from './types/layout-model-state';
 
-export class LayoutModel extends AbstractModel<LayoutModelState> {
+export class LayoutModel extends AbstractModel<LayoutModelState, any> {
     private static _cnt: number = 0;
 
     protected _state$: State<LayoutModelState>;

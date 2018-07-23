@@ -2,9 +2,9 @@ import { ListFieldModelOptions } from '../../model/types/list-field-model-option
 import { InstanceDef } from '../../util/types/instance-def';
 import { RemoveKey } from '../../util/types/remove-key';
 
-export interface ListOptions
+export interface ListOptions<ATTRS = any>
     extends RemoveKey<
-            ListFieldModelOptions,
+            ListFieldModelOptions<ATTRS>,
             'childGenerator' | 'values' | 'id'
         > {
     childTarget: InstanceDef<any>;

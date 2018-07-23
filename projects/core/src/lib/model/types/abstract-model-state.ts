@@ -1,11 +1,11 @@
 import { Modeler } from '../../handler/modeler/modeler';
 import { AbstractModel } from '../abstract-model';
 
-export interface AbstractModelState {
+export interface AbstractModelState<ATTRS = any> {
     id: string;
     uuid: string;
     model: Modeler;
-    attrs: any;
+    attrs: ATTRS;
     parent?: AbstractModel | undefined;
     children: AbstractModel[];
     hidden: boolean;

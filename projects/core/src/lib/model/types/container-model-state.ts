@@ -1,3 +1,3 @@
 import { AbstractModelState } from './abstract-model-state';
 
-export type ContainerModelState = AbstractModelState;
+export type ContainerModelState<ATTRS = any> = AbstractModelState<ATTRS>;

@@ -3,7 +3,7 @@ import { ItemValues } from '../../util/types/item-values';
 import { ViewScales } from '../../util/types/view-scales';
 import { AbstractModelState } from './abstract-model-state';
 
-export interface ItemModelState extends AbstractModelState {
+export interface ItemModelState extends AbstractModelState<undefined> {
     flex?: ViewScales<ItemValues>;
     flexOrder?: ViewScales<number>;
     flexOffset?: ViewScales<string>;

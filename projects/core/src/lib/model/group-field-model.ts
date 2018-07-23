@@ -5,10 +5,13 @@ import { AbstractModel } from './abstract-model';
 import { GroupFieldModelOptions } from './types/group-field-model-options';
 import { GroupFieldModelState } from './types/group-field-model-state';
 
-export class GroupFieldModel extends AbstractFieldModel<GroupFieldModelState> {
-    protected _state$: State<GroupFieldModelState>;
+export class GroupFieldModel<ATTRS = any> extends AbstractFieldModel<
+    GroupFieldModelState<ATTRS>,
+    ATTRS
+> {
+    protected _state$: State<GroupFieldModelState<ATTRS>>;
 
-    constructor(options: GroupFieldModelOptions) {
+    constructor(options: GroupFieldModelOptions<ATTRS>) {
         super();
         options.children.forEach((child: AbstractModel) =>
             child.setParent(this)

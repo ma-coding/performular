@@ -1,7 +1,9 @@
 import { Metadata } from '../../metadata/metadata';
 import { ControlOptions } from '../types/control-options';
 
-export function Control(options: ControlOptions): PropertyDecorator {
+export function Control<ATTRS = any>(
+    options: ControlOptions<ATTRS>
+): PropertyDecorator {
     return (target: any, propertyKey: string | symbol): void => {
         Metadata.addFormItem('controls', {
             ...options,

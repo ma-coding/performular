@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
-import { ItemModel, LayoutModel } from '@performular/core';
+import { ContainerModel, GroupFieldModel, ItemModel, LayoutModel } from '@performular/core';
+import { CoreGroupComponent, FieldsetComponent, Input, InputComponent } from '@performular/ng-common';
 
 @Component({
     selector: 'app-root',
@@ -8,23 +9,40 @@ import { ItemModel, LayoutModel } from '@performular/core';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    public form: LayoutModel = new LayoutModel({
-        layout: 'row',
-        layoutGap: '18px',
+    public form: GroupFieldModel = new GroupFieldModel({
+        id: 'G',
+        model: CoreGroupComponent,
+        attrs: undefined,
         children: [
-            new ItemModel({
-                child: new LayoutModel({
-                    layout: 'column',
-                    children: []
-                })
-            }),
-            new ItemModel({
-                child: new LayoutModel({
-                    layout: 'column',
-                    children: []
-                })
+            new ContainerModel({
+                id: 'fieldset',
+                model: FieldsetComponent,
+                attrs: {
+                    legend: 'ter'
+                },
+                children: [
+                    new LayoutModel({
+                        layout: 'column',
+                        layoutGap: '18px',
+                        children: [
+                            new ItemModel({
+                                child: new Input({
+                                    id: 'test',
+                                    attrs: {
+                                        type: 'number',
+                                        debounce: 1000
+                                    },
+                                    model: InputComponent,
+                                    defaultValue: 5
+                                })
+                            })
+                        ]
+                    })
+                ]
             })
         ]
     });
-    constructor() {}
+    constructor() {
+        this.form.value$.subscribe(console.log);
+    }
 }

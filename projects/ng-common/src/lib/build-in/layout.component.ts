@@ -1,5 +1,5 @@
 import { Directionality } from '@angular/cdk/bidi';
-import { Component, ElementRef, Inject, NgZone, OnDestroy, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Inject, NgZone, OnDestroy, Renderer2 } from '@angular/core';
 import {
     Layout,
     LayoutAlignDirective,
@@ -21,14 +21,17 @@ export function LayoutBuilder(options: any): LayoutModel {
     return new LayoutModel(options);
 }
 
+export const PERFORMULAR_MODEL_LAYOUT: string = 'PERFORMULAR_MODEL_LAYOUT';
+
 @Model({
-    name: 'PERFORMULAR_LAYOUT',
+    name: PERFORMULAR_MODEL_LAYOUT,
     builder: LayoutBuilder
 })
 @Component({
     selector: 'performular-layout',
     template: `<ng-container *ngFor="let c of field?.children$ | async" [performularRenderer]="c"></ng-container>`,
-    styles: []
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent implements OnDestroy {
     private _subscription: Subscription;

@@ -8,8 +8,11 @@ import { AbstractModel } from './abstract-model';
 import { ListFieldModelOptions } from './types/list-field-model-options';
 import { ListFieldModelState } from './types/list-field-model-state';
 
-export class ListFieldModel extends AbstractFieldModel<ListFieldModelState> {
-    protected _state$: State<ListFieldModelState>;
+export class ListFieldModel<ATTRS = any> extends AbstractFieldModel<
+    ListFieldModelState<ATTRS>,
+    ATTRS
+> {
+    protected _state$: State<ListFieldModelState<ATTRS>>;
 
     get childGenerator(): ListFieldModelState['childGenerator'] {
         return this._state$.select('childGenerator');
@@ -19,7 +22,7 @@ export class ListFieldModel extends AbstractFieldModel<ListFieldModelState> {
         return this._state$.select$('childGenerator');
     }
 
-    constructor(options: ListFieldModelOptions) {
+    constructor(options: ListFieldModelOptions<ATTRS>) {
         super();
         const children: AbstractModel[] = options.values.map((val: any) => {
             return options.childGenerator(val);

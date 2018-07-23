@@ -3,7 +3,8 @@ import { Visibility } from '../../handler/visibility/visibility';
 import { ObjectType } from '../../util/types/object-type';
 import { AbstractModelState } from './abstract-model-state';
 
-export interface AbstractFieldModelState extends AbstractModelState {
+export interface AbstractFieldModelState<ATTRS = any>
+    extends AbstractModelState<ATTRS> {
     visibilities: ObjectType<Visibility>;
     disabled: boolean;
     forcedDisabled: boolean;

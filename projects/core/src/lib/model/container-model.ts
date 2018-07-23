@@ -6,10 +6,13 @@ import { AbstractModel } from './abstract-model';
 import { ContainerModelOptions } from './types/container-model-options';
 import { ContainerModelState } from './types/container-model-state';
 
-export class ContainerModel extends AbstractModel<ContainerModelState> {
-    protected _state$: State<ContainerModelState>;
+export class ContainerModel<ATTRS = any> extends AbstractModel<
+    ContainerModelState<ATTRS>,
+    ATTRS
+> {
+    protected _state$: State<ContainerModelState<ATTRS>>;
 
-    constructor(options: ContainerModelOptions) {
+    constructor(options: ContainerModelOptions<ATTRS>) {
         super();
         (options.children || []).forEach((child: AbstractModel) =>
             child.setParent(this)

@@ -4,7 +4,7 @@ import { ViewScales } from '../../util/types/view-scales';
 import { AbstractModel } from '../abstract-model';
 import { AbstractModelState } from './abstract-model-state';
 
-export interface LayoutModelState extends AbstractModelState {
+export interface LayoutModelState extends AbstractModelState<undefined> {
     layout?: ViewScales<LayoutValues>;
     layoutAlign?: ViewScales<LayoutAlign>;
     layoutGap?: ViewScales<string>;
