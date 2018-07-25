@@ -8,28 +8,26 @@ import {
     MatRadioModule,
     MatSelectModule,
     MatSliderModule,
-    MatSlideToggleModule,
+    MatSlideToggleModule
 } from '@angular/material';
-
-import { PerformularCoreModule } from '@performular/core';
-
-import { PerformularMatCheckboxComponent } from './checkbox.component';
-import { PerformularMatDatepickerComponent } from './datepicker.component';
-import { PerformularMatInputComponent } from './input.component';
+import { PerformularModule } from '@performular/ng-common';
+import { MaterialCheckboxComponent } from './checkbox.component';
+import { MaterialDatepickerComponent } from './datepicker.component';
+import { MaterialInputComponent } from './input.component';
 import { PerformularMatRadioComponent } from './radio.component';
 import { PerformularMatSelectComponent } from './select.component';
-import { PerformularMatSliderComponent } from './slider.component';
-import { PerformularMatTextareaComponent } from './textarea.component';
-import { PerformularMatToggleComponent } from './toggle.component';
+import { MaterialSliderComponent } from './slider.component';
+import { MaterialTextareaComponent } from './textarea.component';
+import { MaterialToggleComponent } from './toggle.component';
 
 export const buildInFormComponents: any[] = [
-    PerformularMatCheckboxComponent,
-    PerformularMatSliderComponent,
-    PerformularMatToggleComponent,
+    MaterialCheckboxComponent,
+    MaterialSliderComponent,
+    MaterialToggleComponent,
+    MaterialInputComponent,
+    MaterialTextareaComponent,
+    MaterialDatepickerComponent,
     PerformularMatRadioComponent,
-    PerformularMatInputComponent,
-    PerformularMatTextareaComponent,
-    PerformularMatDatepickerComponent,
     PerformularMatSelectComponent
 ];
 
@@ -38,12 +36,8 @@ export const buildInFormComponents: any[] = [
  * @export
  */
 @NgModule({
-    declarations: [
-        ...buildInFormComponents
-    ],
-    entryComponents: [
-        ...buildInFormComponents,
-    ],
+    declarations: [...buildInFormComponents],
+    entryComponents: [...buildInFormComponents],
     imports: [
         CommonModule,
         MatInputModule,
@@ -54,9 +48,9 @@ export const buildInFormComponents: any[] = [
         MatRadioModule,
         MatDatepickerModule,
         MatSelectModule,
-        PerformularCoreModule.withConfig({
-            formComponents: buildInFormComponents
+        PerformularModule.withConfig({
+            models: buildInFormComponents
         })
     ]
 })
-export class PerformularUiMaterialModule { }
+export class PerformularUiMaterialModule {}

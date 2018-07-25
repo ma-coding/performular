@@ -1,22 +1,27 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-
-import { Subscription } from 'rxjs';
-
 import {
-    Abstract,
-    BuildContext,
-    Control,
-    ControlComponent,
-    InputValueHandler,
-    IPerformularOnInit,
-    TControl,
+    ChangeDetectionStrategy,
+    Component,
+    Inject,
+    OnDestroy
+} from '@angular/core';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    InputValueBuilder,
+    Model
 } from '@performular/core';
+import { PerformularModel } from '@performular/ng-common';
+import { Subscription } from 'rxjs';
+import {
+    MaterialFormField,
+    MaterialFormFieldAttrs,
+    MaterialFormFieldTemplate
+} from './form-field';
 
-import { MatFormField, MatFormFieldAttrs, MatFormFieldStyles, MatFormFieldTemplate } from './form-field';
+export const PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA: string =
+    'PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA';
 
-export const PERFORMULAR_FORMCOMPONENT_MATTEXTAREA: 'matTextarea' = 'matTextarea';
-
-export interface MatTextareaAttrs extends MatFormFieldAttrs {
+export interface MaterialTextareaAttrs extends MaterialFormFieldAttrs {
     readonly?: boolean;
     debounce?: number;
     autoResize?: boolean;
@@ -24,24 +29,24 @@ export interface MatTextareaAttrs extends MatFormFieldAttrs {
     minRows?: number;
 }
 
-export type MatTextareaStyles = MatFormFieldStyles;
+export class MaterialTextarea extends ControlFieldModel<
+    MaterialTextareaAttrs
+> {}
 
-export class MatTextarea extends Control<MatTextareaAttrs, MatTextareaStyles> { }
-
-export function MatTextareaBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatTextarea(context.params);
+export function MaterialTextareaBuilder(
+    options: ControlFieldModelOptions<MaterialTextareaAttrs>
+): MaterialTextarea {
+    return new MaterialTextarea(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_MATTEXTAREA,
-    builder: MatTextareaBuilder
+@Model({
+    name: PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA,
+    builder: MaterialTextareaBuilder
 })
 @Component({
-    selector: 'performular-mat-textarea',
-    template: MatFormFieldTemplate(`
+    selector: 'performular-material-textarea',
+    template: MaterialFormFieldTemplate(`
         <textarea matInput
-        [performularAutoFocus]="field?.focus$ | async"
-        [ngStyle]="(field?.styles$ | async)?.control"
         (input)="textareaValueHandler?.setValue($event.target.value)"
         [value]="field?.value"
         [matTextareaAutosize]="(field?.attrs$ | async)?.autoResize"
@@ -52,32 +57,39 @@ export function MatTextareaBuilder(context: BuildContext<TControl>): Abstract {
         [readonly]="(field?.attrs$ | async)?.readonly">
         </textarea>
         `),
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-form-field {
-            width: 100%;
-            display: block;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-form-field {
+                width: 100%;
+                display: block;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PerformularMatTextareaComponent extends MatFormField<MatTextarea> implements IPerformularOnInit<MatTextarea>, OnDestroy {
+export class MaterialTextareaComponent
+    extends MaterialFormField<MaterialTextarea>
+    implements OnDestroy {
     private _textareaSub: Subscription | undefined;
-    public textareaValueHandler: InputValueHandler = <any>undefined;
+    public textareaValueHandler: InputValueBuilder;
 
-    public performularOnInit(field: MatTextarea): void {
-        super.performularOnInit(field);
-        this.textareaValueHandler = new InputValueHandler('text', field.attrs.debounce || 0);
-        this._textareaSub = this.textareaValueHandler.valueChanges
-            .subscribe((value: any) => {
+    constructor(@Inject(PerformularModel) public field: MaterialTextarea) {
+        super(field);
+        this.textareaValueHandler = new InputValueBuilder(
+            'text',
+            field.attrs.debounce || 0
+        );
+        this._textareaSub = this.textareaValueHandler.valueChanges.subscribe(
+            (value: any) => {
                 if (this.field) {
                     this.field.setValue(value);
                 }
-            });
+            }
+        );
     }
 
     public ngOnDestroy(): void {

@@ -1,24 +1,27 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { ThemePalette } from '@angular/material';
-
-import { Subscription } from 'rxjs';
-
 import {
-    Abstract,
-    BuildContext,
-    Control,
-    ControlComponent,
-    IControlProperty,
-    InputValueHandler,
-    IPerformularOnInit,
-    TControl,
+    ChangeDetectionStrategy,
+    Component,
+    Inject,
+    OnDestroy
+} from '@angular/core';
+import { ThemePalette } from '@angular/material';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    InputValueBuilder
 } from '@performular/core';
+import { PerformularModel } from '@performular/ng-common';
+import { Subscription } from 'rxjs';
+import {
+    MaterialFormField,
+    MaterialFormFieldAttrs,
+    MaterialFormFieldTemplate
+} from './form-field';
 
-import { MatFormField, MatFormFieldAttrs, MatFormFieldStyles, MatFormFieldTemplate } from './form-field';
+export const PERFORMULAR_MODEL_MATERIALDATEPICKER: string =
+    'PERFORMULAR_MODEL_MATERIALDATEPICKER';
 
-export const PERFORMULAR_FORMCOMPONENT_MATDATEPICKER: 'matDatepicker' = 'matDatepicker';
-
-export interface MatDatepickerAttrs extends MatFormFieldAttrs {
+export interface MaterialDatepickerAttrs extends MaterialFormFieldAttrs {
     readonly?: boolean;
     debounce?: number;
     calendarColor?: ThemePalette;
@@ -31,35 +34,35 @@ export interface MatDatepickerAttrs extends MatFormFieldAttrs {
     touchUi?: boolean;
 }
 
-export type MatDatepickerStyles = MatFormFieldStyles;
-
-export class MatDatepicker extends Control<MatDatepickerAttrs, MatDatepickerStyles> {
-    constructor(params: IControlProperty<any, MatDatepickerAttrs>) {
+export class MaterialDatepicker extends ControlFieldModel<
+    MaterialDatepickerAttrs
+> {
+    constructor(options: ControlFieldModelOptions<MaterialDatepickerAttrs>) {
         super({
-            ...params,
+            ...options,
             attrs: {
-                ...params.attrs,
-                startView: params.attrs.startView || 'month'
+                ...options.attrs,
+                startView: options.attrs.startView || 'month'
             }
         });
     }
 }
 
-export function MatDatepickerBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatDatepicker(context.params);
+export function MatDatepickerBuilder(
+    options: ControlFieldModelOptions<MaterialDatepickerAttrs>
+): MaterialDatepicker {
+    return new MaterialDatepicker(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_MATDATEPICKER,
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALDATEPICKER,
     builder: MatDatepickerBuilder
 })
 @Component({
-    selector: 'performular-mat-datepicker',
-    template: MatFormFieldTemplate(`
+    selector: 'performular-material-datepicker',
+    template: MaterialFormFieldTemplate(`
         <input matInput
-        [performularAutoFocus]="field?.focus$ | async"
         [matDatepicker]="picker"
-        [ngStyle]="(field?.styles$ | async)?.control"
         (dateChange)="datepickerValueHandler?.setValue($event.value)"
         [value]="field?.value"
         [placeholder]="(field?.attrs$ | async)?.placeholder"
@@ -78,33 +81,40 @@ export function MatDatepickerBuilder(context: BuildContext<TControl>): Abstract 
                    [startAt]="(field?.attrs$ | async)?.startAt">
         </mat-datepicker>
         `),
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-form-field {
-            width: 100%;
-            display: block;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-form-field {
+                width: 100%;
+                display: block;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PerformularMatDatepickerComponent extends MatFormField<MatDatepicker> implements IPerformularOnInit<MatDatepicker>, OnDestroy {
+export class MaterialDatepickerComponent
+    extends MaterialFormField<MaterialDatepicker>
+    implements OnDestroy {
     private _datepickerSub: Subscription | undefined;
 
-    public datepickerValueHandler: InputValueHandler = <any>undefined;
+    public datepickerValueHandler: InputValueBuilder;
 
-    public performularOnInit(field: MatDatepicker): void {
-        super.performularOnInit(field);
-        this.datepickerValueHandler = new InputValueHandler('date', field.attrs.debounce || 0);
-        this._datepickerSub = this.datepickerValueHandler.valueChanges
-            .subscribe((value: any) => {
+    constructor(@Inject(PerformularModel) public field: MaterialDatepicker) {
+        super(field);
+        this.datepickerValueHandler = new InputValueBuilder(
+            'date',
+            field.attrs.debounce || 0
+        );
+        this._datepickerSub = this.datepickerValueHandler.valueChanges.subscribe(
+            (value: any) => {
                 if (this.field) {
                     this.field.setValue(value);
                 }
-            });
+            }
+        );
     }
 
     public ngOnDestroy(): void {

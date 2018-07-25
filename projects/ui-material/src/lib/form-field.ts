@@ -1,11 +1,15 @@
 import { OnDestroy, ViewChild } from '@angular/core';
-import { FloatLabelType, MatFormFieldAppearance, MatInput, MatSelect, ThemePalette } from '@angular/material';
-
+import {
+    FloatLabelType,
+    MatFormFieldAppearance,
+    MatInput,
+    MatSelect,
+    ThemePalette
+} from '@angular/material';
+import { ControlFieldModel } from '@performular/core';
 import { Subscription } from 'rxjs';
 
-import { Control, IPerformularOnInit } from '@performular/core';
-
-export interface MatFormFieldAttrs {
+export interface MaterialFormFieldAttrs {
     appearance?: MatFormFieldAppearance;
     color?: ThemePalette;
     floatLabel?: FloatLabelType;
@@ -16,9 +20,7 @@ export interface MatFormFieldAttrs {
     label?: string;
 }
 
-export type MatFormFieldStyles = 'formfield' | 'prefix' | 'suffix' | 'control' | 'hint' | 'error';
-
-export function MatFormFieldTemplate(content: string): string {
+export function MaterialFormFieldTemplate(content: string): string {
     return `
     <mat-form-field
         [color]="(field?.attrs$ | async)?.color"
@@ -64,23 +66,24 @@ export function MatFormFieldTemplate(content: string): string {
     </mat-form-field>`;
 }
 
-export abstract class MatFormField<F extends Control> implements IPerformularOnInit<F>, OnDestroy {
+export abstract class MaterialFormField<F extends ControlFieldModel>
+    implements OnDestroy {
     private _errorStateSubscription: Subscription | undefined;
-    public field: F | undefined;
 
     @ViewChild(MatInput) public matInput: MatInput | undefined;
     @ViewChild(MatSelect) public matSelect: MatSelect | undefined;
 
-    public performularOnInit(field: F): void {
-        this.field = field;
-        this._errorStateSubscription = this.field.errorState$.subscribe((errorState: boolean) => {
-            if (this.matInput) {
-                this.matInput.errorState = errorState;
+    constructor(public field: F) {
+        this._errorStateSubscription = this.field.errorState$.subscribe(
+            (errorState: boolean) => {
+                if (this.matInput) {
+                    this.matInput.errorState = errorState;
+                }
+                if (this.matSelect) {
+                    this.matSelect.errorState = errorState;
+                }
             }
-            if (this.matSelect) {
-                this.matSelect.errorState = errorState;
-            }
-        });
+        );
     }
 
     public ngOnDestroy(): void {
@@ -88,5 +91,4 @@ export abstract class MatFormField<F extends Control> implements IPerformularOnI
             this._errorStateSubscription.unsubscribe();
         }
     }
-
 }

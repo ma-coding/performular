@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatSliderChange, ThemePalette } from '@angular/material';
+import { ControlFieldModel, ControlFieldModelOptions } from '@performular/core';
+import { PerformularModel } from '@performular/ng-common';
+import { MaterialCheckbox } from './checkbox.component';
 
-import { Abstract, BuildContext, Control, ControlComponent, IPerformularOnInit, TControl } from '@performular/core';
+export const PERFORMULAR_MODEL_MATERIALSLIDER: string =
+    'PERFORMULAR_MODEL_MATERIALSLIDER';
 
-export const PERFORMULAR_FORMCOMPONENT_MATSLIDER: 'matSlider' = 'matSlider';
-
-export interface MatSliderAttrs {
+export interface MaterialSliderAttrs {
     color?: ThemePalette;
     thumbLabel?: boolean;
     invert?: boolean;
@@ -16,23 +18,22 @@ export interface MatSliderAttrs {
     min: number;
 }
 
-export type MatSliderStyles = 'slider';
+export class MaterialSlider extends ControlFieldModel<MaterialSliderAttrs> {}
 
-export class MatSlider extends Control<MatSliderAttrs, MatSliderStyles> { }
-
-export function MatSliderBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatSlider(context.params);
+export function MaterialSliderBuilder(
+    options: ControlFieldModelOptions<MaterialSliderAttrs>
+): MaterialSlider {
+    return new MaterialSlider(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_MATSLIDER,
-    builder: MatSliderBuilder
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALSLIDER,
+    builder: MaterialSliderBuilder
 })
 @Component({
-    selector: 'performular-mat-slider',
+    selector: 'performular-material-slider',
     template: `
         <mat-slider
-            [ngStyle]="(field?.styles$ | async)?.slider"
             [disabled]="(field?.disabled$ | async)"
             [invert]="(field?.attrs$ | async)?.invert"
             [max]="(field?.attrs$ | async)?.max"
@@ -45,30 +46,24 @@ export function MatSliderBuilder(context: BuildContext<TControl>): Abstract {
             (change)="change($event)">
         </mat-slider>
         `,
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-slider {
-            width: 100%;
-            display: block;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-slider {
+                width: 100%;
+                display: block;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PerformularMatSliderComponent implements IPerformularOnInit<MatSlider> {
-
-    public field: MatSlider = <any>undefined;
-
-    public performularOnInit(field: MatSlider): void {
-        this.field = field;
-    }
+export class MaterialSliderComponent {
+    constructor(@Inject(PerformularModel) public field: MaterialCheckbox) {}
 
     public change(event: MatSliderChange): void {
-        if (this.field) {
-            this.field.setValue(event.value);
-        }
+        this.field.setValue(event.value);
     }
 }

@@ -1,11 +1,17 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatSlideToggleChange, ThemePalette } from '@angular/material';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    Model
+} from '@performular/core';
+import { PerformularModel } from '@performular/ng-common';
+import { MaterialCheckbox } from './checkbox.component';
 
-import { Abstract, BuildContext, Control, ControlComponent, IPerformularOnInit, TControl } from '@performular/core';
+export const PERFORMULAR_MODEL_MATERIALTOGGLE: string =
+    'PERFORMULAR_MODEL_MATERIALTOGGLE';
 
-export const PERFORMULAR_FORMCOMPONENT_MATTOGGLE: 'matToggle' = 'matToggle';
-
-export interface MatToggleAttrs {
+export interface MaterialToggleAttrs {
     ariaLabel?: string;
     ariaLabelledby?: string;
     disableRipple?: boolean;
@@ -15,23 +21,22 @@ export interface MatToggleAttrs {
     labelPosition?: 'before' | 'after';
 }
 
-export type MatToggleStyles = 'toggle' | 'placeholder';
+export class MaterialToggle extends ControlFieldModel<MaterialToggleAttrs> {}
 
-export class MatToggle extends Control<MatToggleAttrs, MatToggleStyles> { }
-
-export function MatToggleBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatToggle(context.params);
+export function MaterialToggleBuilder(
+    options: ControlFieldModelOptions<MaterialToggleAttrs>
+): MaterialToggle {
+    return new MaterialToggle(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_MATTOGGLE,
-    builder: MatToggleBuilder
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALTOGGLE,
+    builder: MaterialToggleBuilder
 })
 @Component({
     selector: 'performular-mat-toggle',
     template: `
         <mat-slide-toggle
-        [ngStyle]="(field?.styles$ | async)?.toggle"
         [disabled]="(field?.disabled$ | async)"
         [aria-label]="(field?.attrs$ | async)?.ariaLabel"
         [aria-labelledby]="(field?.attrs$ | async)?.ariaLabelledby"
@@ -41,37 +46,31 @@ export function MatToggleBuilder(context: BuildContext<TControl>): Abstract {
         [name]="(field?.attrs$ | async)?.name"
         (change)="change($event)"
         [checked]="field?.value">
-            <span [ngStyle]="(field?.styles$ | async)?.placeholder">
+            <span>
                 {{(field?.attrs$ | async)?.placeholder}}
             </span>
         </mat-slide-toggle>
         `,
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-slide-toggle {
-            width: 100%;
-            display: block;
-            padding-top: 12px;
-            padding-bottom: 12px;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-slide-toggle {
+                width: 100%;
+                display: block;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PerformularMatToggleComponent implements IPerformularOnInit<MatToggle> {
-
-    public field: MatToggle = <any>undefined;
-
-    public performularOnInit(field: MatToggle): void {
-        this.field = field;
-    }
+export class MaterialToggleComponent {
+    constructor(@Inject(PerformularModel) public field: MaterialCheckbox) {}
 
     public change(event: MatSlideToggleChange): void {
-        if (this.field) {
-            this.field.setValue(event.checked);
-        }
+        this.field.setValue(event.checked);
     }
 }

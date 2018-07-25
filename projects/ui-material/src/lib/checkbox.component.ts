@@ -1,11 +1,16 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatCheckboxChange, ThemePalette } from '@angular/material';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    Model
+} from '@performular/core';
+import { PerformularModel } from '@performular/ng-common';
 
-import { Abstract, BuildContext, Control, ControlComponent, IPerformularOnInit, TControl } from '@performular/core';
+export const PERFORMULAR_MODEL_MATERIALCHECKBOX: string =
+    'PERFORMULAR_MODEL_MATERIALCHECKBOX';
 
-export const PERFORMULAR_FORMCOMPONENT_MATCHECKBOX: 'matCheckbox' = 'matCheckbox';
-
-export interface MatCheckboxAttrs {
+export interface MaterialCheckboxAttrs {
     ariaLabel?: string;
     ariaLabelledby?: string;
     disableRipple?: boolean;
@@ -15,22 +20,23 @@ export interface MatCheckboxAttrs {
     color?: ThemePalette;
 }
 
-export type MatCheckboxStyles = 'checkbox' | 'placeholder';
+export class MaterialCheckbox extends ControlFieldModel<
+    MaterialCheckboxAttrs
+> {}
 
-export class MatCheckbox extends Control<MatCheckboxAttrs, MatCheckboxStyles> { }
-
-export function MatCheckboxBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatCheckbox(context.params);
+export function MaterialCheckboxBuilder(
+    options: ControlFieldModelOptions<MaterialCheckboxAttrs>
+): MaterialCheckbox {
+    return new MaterialCheckbox(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_MATCHECKBOX,
-    builder: MatCheckboxBuilder
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALCHECKBOX,
+    builder: MaterialCheckboxBuilder
 })
 @Component({
-    selector: 'performular-mat-checkbox',
+    selector: 'performular-material-checkbox',
     template: `<mat-checkbox
-    [ngStyle]="(field?.styles$ | async)?.checkbox"
     [disabled]="(field?.disabled$ | async)"
     [aria-label]="(field?.attrs$ | async)?.ariaLabel"
     [aria-labelledby]="(field?.attrs$ | async)?.ariaLabelledby"
@@ -41,37 +47,30 @@ export function MatCheckboxBuilder(context: BuildContext<TControl>): Abstract {
     (change)="change($event)"
     [value]="field?.value"
     [checked]="field?.value">
-        <span
-            [ngStyle]="(field?.styles$ | async)?.placeholder">
+        <span>
             {{(field?.attrs$ | async)?.placeholder}}
         </span>
 </mat-checkbox>`,
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-checkbox {
-            width: 100%;
-            display: block;
-            padding-top: 12px;
-            padding-bottom: 12px;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-checkbox {
+                width: 100%;
+                display: block;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PerformularMatCheckboxComponent implements IPerformularOnInit<MatCheckbox> {
-
-    public field: MatCheckbox = <any>undefined;
-
-    public performularOnInit(field: MatCheckbox): void {
-        this.field = field;
-    }
+export class MaterialCheckboxComponent {
+    constructor(@Inject(PerformularModel) public field: MaterialCheckbox) {}
 
     public change(event: MatCheckboxChange): void {
-        if (this.field) {
-            this.field.setValue(event.checked);
-        }
+        this.field.setValue(event.checked);
     }
 }

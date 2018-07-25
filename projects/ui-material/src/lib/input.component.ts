@@ -1,53 +1,62 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-
-import { Subscription } from 'rxjs';
-
 import {
-    Abstract,
-    BuildContext,
-    Control,
-    ControlComponent,
-    InputValueHandler,
-    IPerformularOnInit,
-    TControl,
+    ChangeDetectionStrategy,
+    Component,
+    Inject,
+    OnDestroy
+} from '@angular/core';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    InputValueBuilder,
+    Model
 } from '@performular/core';
+import { PerformularModel } from '@performular/ng-common';
+import { Subscription } from 'rxjs';
+import {
+    MaterialFormField,
+    MaterialFormFieldAttrs,
+    MaterialFormFieldTemplate
+} from './form-field';
 
-import { MatFormField, MatFormFieldAttrs, MatFormFieldStyles, MatFormFieldTemplate } from './form-field';
+export const PERFORMULAR_MODEL_MATERIALINPUT: string =
+    'PERFORMULAR_MODEL_MATERIALINPUT';
 
-export const PERFORMULAR_FORMCOMPONENT_MATINPUT: 'matInput' = 'matInput';
-
-export interface MatInputAttrs extends MatFormFieldAttrs {
+export interface MaterialInputAttrs extends MaterialFormFieldAttrs {
     readonly?: boolean;
     type: string;
     debounce?: number;
 }
 
-export type MatInputStyles = MatFormFieldStyles;
-
-export class MatInput extends Control<MatInputAttrs, MatInputStyles> {
+export class MaterialInput extends ControlFieldModel<MaterialInputAttrs> {
     public patchValue(value: any, emitUpdate: boolean = true): void {
-        super.patchValue(InputValueHandler.validateValue(value, this.attrs.type), emitUpdate);
+        super.patchValue(
+            InputValueBuilder.validateValue(value, this.attrs.type),
+            emitUpdate
+        );
     }
 
     public setValue(value: any, emitUpdate: boolean = true): void {
-        super.setValue(InputValueHandler.validateValue(value, this.attrs.type), emitUpdate);
+        super.setValue(
+            InputValueBuilder.validateValue(value, this.attrs.type),
+            emitUpdate
+        );
     }
 }
 
-export function MatInputBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatInput(context.params);
+export function MaterialInputBuilder(
+    options: ControlFieldModelOptions<MaterialInputAttrs>
+): MaterialInput {
+    return new MaterialInput(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_MATINPUT,
-    builder: MatInputBuilder
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALINPUT,
+    builder: MaterialInputBuilder
 })
 @Component({
-    selector: 'performular-mat-input',
-    template: MatFormFieldTemplate(`
+    selector: 'performular-material-input',
+    template: MaterialFormFieldTemplate(`
         <input matInput
-        [performularAutoFocus]="field?.focus$ | async"
-        [ngStyle]="(field?.styles$ | async)?.control"
         (input)="inputValueHandler?.setValue($event.target.value)"
         [value]="field?.value"
         [type]="(field?.attrs$ | async)?.type"
@@ -55,32 +64,38 @@ export function MatInputBuilder(context: BuildContext<TControl>): Abstract {
         [disabled]="field?.disabled$ | async"
         [readonly]="(field?.attrs$ | async)?.readonly">
         `),
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-form-field {
-            width: 100%;
-            display: block;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-form-field {
+                width: 100%;
+                display: block;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PerformularMatInputComponent extends MatFormField<MatInput> implements IPerformularOnInit<MatInput>, OnDestroy {
+export class MaterialInputComponent extends MaterialFormField<MaterialInput>
+    implements OnDestroy {
     private _inputSub: Subscription | undefined;
-    public inputValueHandler: InputValueHandler = <any>undefined;
+    public inputValueHandler: InputValueBuilder;
 
-    public performularOnInit(field: MatInput): void {
-        super.performularOnInit(field);
-        this.inputValueHandler = new InputValueHandler(field.attrs.type, field.attrs.debounce || 0);
-        this._inputSub = this.inputValueHandler.valueChanges
-            .subscribe((value: any) => {
+    constructor(@Inject(PerformularModel) public field: MaterialInput) {
+        super(field);
+        this.inputValueHandler = new InputValueBuilder(
+            field.attrs.type,
+            field.attrs.debounce || 0
+        );
+        this._inputSub = this.inputValueHandler.valueChanges.subscribe(
+            (value: any) => {
                 if (this.field) {
                     this.field.setValue(value);
                 }
-            });
+            }
+        );
     }
 
     public ngOnDestroy(): void {

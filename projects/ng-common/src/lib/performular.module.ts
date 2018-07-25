@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
-import { Framework } from '@performular/core';
-
+import {
+    Framework,
+    InstanceDef,
+    RunDetectionStrategy,
+    ValidationExecuter,
+    VisibilityExecuter
+} from '@performular/core';
 import { FieldsetComponent } from './build-in/fieldset.component';
 import { CoreGroupComponent } from './build-in/group.component';
 import { InputComponent } from './build-in/input.component';
@@ -13,6 +17,13 @@ import { ListComponent } from './build-in/list.component';
 import { PerformularComponent } from './form.component';
 import { NgInjector } from './ng-injector';
 import { PerformularRendererDirective } from './render.directive';
+
+export interface PerformularOptions {
+    models?: InstanceDef<any>[];
+    runDetectors?: InstanceDef<RunDetectionStrategy>[];
+    validators?: InstanceDef<ValidationExecuter>[];
+    visibles?: InstanceDef<VisibilityExecuter>[];
+}
 
 @NgModule({
     imports: [CommonModule, FlexLayoutModule],
@@ -48,7 +59,7 @@ export class PerformularModule {
         Framework.setItemModel(ItemComponent);
     }
 
-    public static withConfig(options: any): ModuleWithProviders {
+    public static withConfig(options: PerformularOptions): ModuleWithProviders {
         return {
             providers: [],
             ngModule: PerformularModule
