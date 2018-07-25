@@ -7,7 +7,7 @@ import { ValidatorOptions } from '../types/validator.options';
 export function Validator(
     options: ValidatorOptions
 ): CDecorator<InstanceDef<ValidationExecuter>> {
-    return (target: any): void => {
+    return (target: InstanceDef<ValidationExecuter>): void => {
         Metadata.addItem('validators', {
             ...options,
             target: target

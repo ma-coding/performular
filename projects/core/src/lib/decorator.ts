@@ -2,6 +2,7 @@ export { RunDetector } from './decorator/static/run-detector';
 export { Validator } from './decorator/static/validator';
 export { Visible } from './decorator/static/visible';
 export { Model } from './decorator/static/model';
+export { Datasource } from './decorator/static/datasource';
 
 export { Control } from './decorator/target/control';
 export { Group } from './decorator/target/group';
@@ -12,6 +13,7 @@ export { RunDetectorOptions } from './decorator/types/run-detector.options';
 export { ValidatorOptions } from './decorator/types/validator.options';
 export { VisibleOptions } from './decorator/types/visible.options';
 export { ModelOptions } from './decorator/types/model.options';
+export { DatasourceOptions } from './decorator/types/datasource.options';
 
 export { ControlOptions } from './decorator/types/control-options';
 export { GroupOptions } from './decorator/types/group-options';

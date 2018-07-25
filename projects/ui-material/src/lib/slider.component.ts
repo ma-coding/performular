@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatSliderChange, ThemePalette } from '@angular/material';
-import { ControlFieldModel, ControlFieldModelOptions } from '@performular/core';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    Model,
+    RemoveKey
+} from '@performular/core';
 import { PerformularModel } from '@performular/ng-common';
 import { MaterialCheckbox } from './checkbox.component';
 
@@ -18,7 +23,19 @@ export interface MaterialSliderAttrs {
     min: number;
 }
 
-export class MaterialSlider extends ControlFieldModel<MaterialSliderAttrs> {}
+export class MaterialSlider extends ControlFieldModel<MaterialSliderAttrs> {
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialSliderAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialSliderComponent
+        });
+    }
+}
 
 export function MaterialSliderBuilder(
     options: ControlFieldModelOptions<MaterialSliderAttrs>

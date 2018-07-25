@@ -14,21 +14,23 @@ import { PerformularModule } from '@performular/ng-common';
 import { MaterialCheckboxComponent } from './checkbox.component';
 import { MaterialDatepickerComponent } from './datepicker.component';
 import { MaterialInputComponent } from './input.component';
-import { PerformularMatRadioComponent } from './radio.component';
-import { PerformularMatSelectComponent } from './select.component';
+import { MaterialRadioComponent } from './radio.component';
+import { MaterialSelectComponent } from './select.component';
 import { MaterialSliderComponent } from './slider.component';
 import { MaterialTextareaComponent } from './textarea.component';
 import { MaterialToggleComponent } from './toggle.component';
+import { FlexLayoutModule } from '../../../../node_modules/@angular/flex-layout';
 
-export const buildInFormComponents: any[] = [
+export const buildInModels: any[] = [
     MaterialCheckboxComponent,
     MaterialSliderComponent,
+    MaterialToggleComponent,
     MaterialToggleComponent,
     MaterialInputComponent,
     MaterialTextareaComponent,
     MaterialDatepickerComponent,
-    PerformularMatRadioComponent,
-    PerformularMatSelectComponent
+    MaterialRadioComponent,
+    MaterialSelectComponent
 ];
 
 /**
@@ -36,10 +38,11 @@ export const buildInFormComponents: any[] = [
  * @export
  */
 @NgModule({
-    declarations: [...buildInFormComponents],
-    entryComponents: [...buildInFormComponents],
+    declarations: [...buildInModels],
+    entryComponents: [...buildInModels],
     imports: [
         CommonModule,
+        FlexLayoutModule,
         MatInputModule,
         MatFormFieldModule,
         MatCheckboxModule,
@@ -49,7 +52,7 @@ export const buildInFormComponents: any[] = [
         MatDatepickerModule,
         MatSelectModule,
         PerformularModule.withConfig({
-            models: buildInFormComponents
+            models: buildInModels
         })
     ]
 })

@@ -47,11 +47,13 @@ export class Validation extends AbstractHandlerWithFunc<
         }
     }
 
-    private _buildError(result: any): string {
-        let errorMsg: string = this.errorMsg;
-        Object.keys(result).forEach((key: string) => {
-            errorMsg = errorMsg.split(key).join(result[key]);
-        });
-        return errorMsg;
+    private _buildError(result: any): string | undefined {
+        if (result) {
+            Object.keys(result).forEach((key: string) => {
+                errorMsg = errorMsg.split(key).join(result[key]);
+            });
+            let errorMsg: string = this.errorMsg;
+            return errorMsg;
+        }
     }
 }

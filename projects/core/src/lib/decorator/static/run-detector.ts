@@ -8,7 +8,7 @@ import { RunDetectorOptions } from '../types/run-detector.options';
 export function RunDetector(
     options: RunDetectorOptions
 ): CDecorator<InstanceDef<RunDetectionStrategy>> {
-    return (target: any): void => {
+    return (target: InstanceDef<RunDetectionStrategy>): void => {
         Metadata.addItem('runDetectors', {
             ...options,
             target: target

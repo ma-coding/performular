@@ -1,25 +1,32 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnDestroy,
+    Inject
+} from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 
 import { Observable } from 'rxjs';
-
 import {
-    Abstract,
-    BuildContext,
-    Control,
-    ControlComponent,
-    ControlDatasourceHandler,
-    IControlDatasourceParams,
-    IControlProperty,
-    IPerformularOnInit,
-    TControl,
+    MaterialFormFieldAttrs,
+    MaterialFormFieldTemplate,
+    MaterialFormField
+} from './form-field';
+import { DataConnectionOptions } from '../../../core/src/lib/handler/data-connection/types/data-connection-options';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    Model,
+    RemoveKey
 } from '@performular/core';
+import { DataConnection } from '../../../core/src/lib/handler/data-connection/data-connection';
+import { DataOption } from '../../../core/src/lib/handler/data-connection/types/data-option';
+import { PerformularModel } from '@performular/ng-common';
 
-import { MatFormField, MatFormFieldAttrs, MatFormFieldStyles, MatFormFieldTemplate } from './form-field';
+export const PERFORMULAR_MODEL_MATERIALSELECT: string =
+    'PERFORMULAR_MODEL_MATERIALSELECT';
 
-export const PERFORMULAR_FORMCOMPONENT_SELECT: 'matSelect' = 'matSelect';
-
-export interface MatSelectAttrs extends MatFormFieldAttrs {
+export interface MaterialSelectAttrs extends MaterialFormFieldAttrs {
     addNoneValue?: boolean;
     ariaLabel?: string;
     ariaLabelledby?: string;
@@ -27,35 +34,41 @@ export interface MatSelectAttrs extends MatFormFieldAttrs {
     disableRipple?: boolean;
     multiple?: boolean;
     panelClass?: string | string[] | Set<string> | { [key: string]: any };
-    options: IControlDatasourceParams;
+    options: DataConnectionOptions;
 }
 
-export type MatSelectStyles = MatFormFieldStyles | 'option';
+export class MaterialSelect extends ControlFieldModel<MaterialSelectAttrs> {
+    public dataConnection: DataConnection;
 
-export class MatSelect extends Control<MatSelectAttrs, MatSelectStyles> {
-    public datasource: ControlDatasourceHandler;
-
-    constructor(property: IControlProperty<typeof PERFORMULAR_FORMCOMPONENT_SELECT, MatSelectAttrs>) {
-        super(property);
-        this.datasource = new ControlDatasourceHandler(property.attrs.options);
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialSelectAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialSelectComponent
+        });
+        this.dataConnection = new DataConnection(options.attrs.options);
     }
 }
 
-export function MatSelectBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatSelect(context.params);
+export function MaterialSelectBuilder(
+    options: ControlFieldModelOptions<MaterialSelectAttrs>
+): MaterialSelect {
+    return new MaterialSelect(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_SELECT,
-    builder: MatSelectBuilder
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALSELECT,
+    builder: MaterialSelectBuilder
 })
 @Component({
-    selector: 'performular-mat-select',
-    template: MatFormFieldTemplate(`
+    selector: 'performular-material-select',
+    template: MaterialFormFieldTemplate(`
             <mat-select
-                [performularAutoFocus]="field?.focus$ | async"
                 (selectionChange)="change($event)"
-                [ngStyle]="(field?.styles$ | async)?.control"
                 [disabled]="(field?.disabled$ | async)"
                 [value]="field?.value"
                 [disableOptionCentering]="(field?.attrs$ | async)?.disableOptionCentering"
@@ -67,7 +80,6 @@ export function MatSelectBuilder(context: BuildContext<TControl>): Abstract {
                 <ng-container *ngFor="let option of options | async">
                     <mat-option
                         *ngIf="!(option.hidden$ | async)"
-                        [ngStyle]="(field?.styles$ | async)?.option"
                         [disabled]="option.disabled$ | async"
                         [value]="option.value">
                         <span>{{ option.viewValue }}</span>
@@ -75,37 +87,34 @@ export function MatSelectBuilder(context: BuildContext<TControl>): Abstract {
                 </ng-container>
             </mat-select>
         `),
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-form-field {
-            width: 100%;
-            display: block;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-form-field {
+                width: 100%;
+                display: block;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PerformularMatSelectComponent extends MatFormField<MatSelect> implements IPerformularOnInit<MatSelect>, OnDestroy {
+export class MaterialSelectComponent extends MaterialFormField<MaterialSelect>
+    implements OnDestroy {
+    public options: Observable<DataOption[]>;
 
-    public options: Observable<any[]> = <any>undefined;
-
-    public performularOnInit(field: MatSelect): void {
-        super.performularOnInit(field);
-        if (this.field) {
-            this.options = this.field.datasource.getData$(this.field);
-        }
+    constructor(@Inject(PerformularModel) public field: MaterialSelect) {
+        super(field);
+        this.options = this.field.dataConnection.getData$(this.field);
     }
 
     public change(event: MatSelectChange): void {
-        if (this.field) {
-            this.field.setValue(event.value);
-        }
+        this.field.setValue(event.value);
     }
 
     public ngOnDestroy(): void {
         super.ngOnDestroy();
     }
-
 }

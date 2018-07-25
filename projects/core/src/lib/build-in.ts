@@ -10,3 +10,5 @@ export { MaxValidator } from './build-in/validators/max.validator';
 export { MinLengthValidator } from './build-in/validators/min-length.validator';
 export { MinValidator } from './build-in/validators/min.validator';
 export { RequiredValidator } from './build-in/validators/required.validator';
+
+export { CORE_RUN_DETECTORS, CORE_VALIDATORS } from './build-in/build-ins';

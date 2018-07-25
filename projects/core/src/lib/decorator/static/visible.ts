@@ -7,7 +7,7 @@ import { VisibleOptions } from '../types/visible.options';
 export function Visible(
     options: VisibleOptions
 ): CDecorator<InstanceDef<VisibilityExecuter>> {
-    return (target: any): void => {
+    return (target: InstanceDef<VisibilityExecuter>): void => {
         Metadata.addItem('visibles', {
             ...options,
             target: target

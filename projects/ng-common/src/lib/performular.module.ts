@@ -6,50 +6,52 @@ import {
     InstanceDef,
     RunDetectionStrategy,
     ValidationExecuter,
-    VisibilityExecuter
+    VisibilityExecuter,
+    DataConnectionStrategy,
+    CORE_RUN_DETECTORS,
+    CORE_VALIDATORS
 } from '@performular/core';
 import { FieldsetComponent } from './build-in/fieldset.component';
 import { CoreGroupComponent } from './build-in/group.component';
 import { InputComponent } from './build-in/input.component';
 import { ItemComponent } from './build-in/item.component';
 import { LayoutComponent } from './build-in/layout.component';
-import { ListComponent } from './build-in/list.component';
+import { CoreListComponent } from './build-in/list.component';
 import { PerformularComponent } from './form.component';
 import { NgInjector } from './ng-injector';
 import { PerformularRendererDirective } from './render.directive';
 
 export interface PerformularOptions {
     models?: InstanceDef<any>[];
+    datasources?: InstanceDef<DataConnectionStrategy>[];
     runDetectors?: InstanceDef<RunDetectionStrategy>[];
     validators?: InstanceDef<ValidationExecuter>[];
     visibles?: InstanceDef<VisibilityExecuter>[];
 }
+
+export const buildInModels: any[] = [
+    LayoutComponent,
+    ItemComponent,
+    FieldsetComponent,
+    CoreGroupComponent,
+    CoreListComponent,
+    InputComponent
+];
 
 @NgModule({
     imports: [CommonModule, FlexLayoutModule],
     declarations: [
         PerformularComponent,
         PerformularRendererDirective,
-        LayoutComponent,
-        ItemComponent,
-        FieldsetComponent,
-        CoreGroupComponent,
-        ListComponent,
-        InputComponent
+        ...buildInModels
     ],
     exports: [
         FlexLayoutModule,
         PerformularComponent,
         PerformularRendererDirective
     ],
-    entryComponents: [
-        LayoutComponent,
-        ItemComponent,
-        FieldsetComponent,
-        CoreGroupComponent,
-        ListComponent,
-        InputComponent
-    ]
+    providers: [...CORE_RUN_DETECTORS, ...CORE_VALIDATORS],
+    entryComponents: [...buildInModels]
 })
 export class PerformularModule {
     constructor(private _injector: Injector) {

@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
-import { ContainerModel, ContainerModelOptions, Model } from '@performular/core';
+import {
+    ContainerModel,
+    ContainerModelOptions,
+    Model,
+    RemoveKey
+} from '@performular/core';
 
 import { PerformularModel } from '../performular.model';
 
@@ -8,7 +13,16 @@ export interface FieldsetAttrs {
     legend: string;
 }
 
-export class Fieldset extends ContainerModel<FieldsetAttrs> {}
+export class Fieldset extends ContainerModel<FieldsetAttrs> {
+    constructor(
+        options: RemoveKey<ContainerModelOptions<FieldsetAttrs>, 'model'>
+    ) {
+        super({
+            ...options,
+            model: FieldsetComponent
+        });
+    }
+}
 
 export function FieldsetBuilder(
     options: ContainerModelOptions<FieldsetAttrs>

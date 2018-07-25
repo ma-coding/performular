@@ -3,7 +3,8 @@ import { MatCheckboxChange, ThemePalette } from '@angular/material';
 import {
     ControlFieldModel,
     ControlFieldModelOptions,
-    Model
+    Model,
+    RemoveKey
 } from '@performular/core';
 import { PerformularModel } from '@performular/ng-common';
 
@@ -20,9 +21,19 @@ export interface MaterialCheckboxAttrs {
     color?: ThemePalette;
 }
 
-export class MaterialCheckbox extends ControlFieldModel<
-    MaterialCheckboxAttrs
-> {}
+export class MaterialCheckbox extends ControlFieldModel<MaterialCheckboxAttrs> {
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialCheckboxAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialCheckboxComponent
+        });
+    }
+}
 
 export function MaterialCheckboxBuilder(
     options: ControlFieldModelOptions<MaterialCheckboxAttrs>

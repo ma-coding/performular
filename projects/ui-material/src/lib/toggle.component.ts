@@ -3,7 +3,8 @@ import { MatSlideToggleChange, ThemePalette } from '@angular/material';
 import {
     ControlFieldModel,
     ControlFieldModelOptions,
-    Model
+    Model,
+    RemoveKey
 } from '@performular/core';
 import { PerformularModel } from '@performular/ng-common';
 import { MaterialCheckbox } from './checkbox.component';
@@ -21,7 +22,19 @@ export interface MaterialToggleAttrs {
     labelPosition?: 'before' | 'after';
 }
 
-export class MaterialToggle extends ControlFieldModel<MaterialToggleAttrs> {}
+export class MaterialToggle extends ControlFieldModel<MaterialToggleAttrs> {
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialToggleAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialToggleComponent
+        });
+    }
+}
 
 export function MaterialToggleBuilder(
     options: ControlFieldModelOptions<MaterialToggleAttrs>

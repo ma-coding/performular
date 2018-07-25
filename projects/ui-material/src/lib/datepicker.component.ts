@@ -8,7 +8,9 @@ import { ThemePalette } from '@angular/material';
 import {
     ControlFieldModel,
     ControlFieldModelOptions,
-    InputValueBuilder
+    InputValueBuilder,
+    Model,
+    RemoveKey
 } from '@performular/core';
 import { PerformularModel } from '@performular/ng-common';
 import { Subscription } from 'rxjs';
@@ -37,9 +39,15 @@ export interface MaterialDatepickerAttrs extends MaterialFormFieldAttrs {
 export class MaterialDatepicker extends ControlFieldModel<
     MaterialDatepickerAttrs
 > {
-    constructor(options: ControlFieldModelOptions<MaterialDatepickerAttrs>) {
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialDatepickerAttrs>,
+            'model'
+        >
+    ) {
         super({
             ...options,
+            model: MaterialDatepickerComponent,
             attrs: {
                 ...options.attrs,
                 startView: options.attrs.startView || 'month'
@@ -48,7 +56,7 @@ export class MaterialDatepicker extends ControlFieldModel<
     }
 }
 
-export function MatDatepickerBuilder(
+export function MaterialDatepickerBuilder(
     options: ControlFieldModelOptions<MaterialDatepickerAttrs>
 ): MaterialDatepicker {
     return new MaterialDatepicker(options);
@@ -56,7 +64,7 @@ export function MatDatepickerBuilder(
 
 @Model({
     name: PERFORMULAR_MODEL_MATERIALDATEPICKER,
-    builder: MatDatepickerBuilder
+    builder: MaterialDatepickerBuilder
 })
 @Component({
     selector: 'performular-material-datepicker',

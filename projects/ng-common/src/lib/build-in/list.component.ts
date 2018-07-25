@@ -1,12 +1,26 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
-import { ListFieldModel, ListFieldModelOptions, Model } from '@performular/core';
+import {
+    ListFieldModel,
+    ListFieldModelOptions,
+    Model,
+    RemoveKey
+} from '@performular/core';
 
 import { PerformularModel } from '../performular.model';
 
 export type CoreListAttrs = undefined;
 
-export class CoreList extends ListFieldModel<CoreListAttrs> {}
+export class CoreList extends ListFieldModel<CoreListAttrs> {
+    constructor(
+        options: RemoveKey<ListFieldModelOptions<CoreListAttrs>, 'model'>
+    ) {
+        super({
+            ...options,
+            model: CoreListComponent
+        });
+    }
+}
 
 export function CoreListBuilder(
     options: ListFieldModelOptions<CoreListAttrs>
@@ -28,6 +42,6 @@ export const PERFORMULAR_MODEL_LIST: string = 'PERFORMULAR_MODEL_LIST';
     styles: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ListComponent {
+export class CoreListComponent {
     constructor(@Inject(PerformularModel) public field: CoreList) {}
 }

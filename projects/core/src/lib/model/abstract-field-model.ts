@@ -148,6 +148,18 @@ export abstract class AbstractFieldModel<
         return undefined;
     }
 
+    get rootField(): AbstractFieldModel {
+        let field: AbstractFieldModel = this;
+        let jump: AbstractModel = this;
+        while (jump.parent) {
+            jump = <AbstractModel>field.parent;
+            if (jump instanceof AbstractFieldModel) {
+                field = jump;
+            }
+        }
+        return field;
+    }
+
     public abstract setValue(value: any, emitUpdate: boolean): void;
     public abstract patchValue(value: any, emitUpdate: boolean): void;
     public abstract resetValue(emitUpdate: boolean): void;

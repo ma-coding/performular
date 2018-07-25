@@ -1,51 +1,58 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatRadioChange, ThemePalette } from '@angular/material';
 
 import { Observable } from 'rxjs';
-
 import {
-    Abstract,
-    BuildContext,
-    Control,
-    ControlComponent,
-    ControlDatasourceHandler,
-    IControlDatasourceParams,
-    IControlProperty,
-    IPerformularOnInit,
-    TControl,
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    Model,
+    RemoveKey
 } from '@performular/core';
+import { DataConnection } from '../../../core/src/lib/handler/data-connection/data-connection';
+import { DataConnectionOptions } from '../../../core/src/lib/handler/data-connection/types/data-connection-options';
+import { PerformularModel } from '@performular/ng-common';
+import { DataOption } from '../../../core/src/lib/handler/data-connection/types/data-option';
 
-export const PERFORMULAR_FORMCOMPONENT_RADIO: 'matRadio' = 'matRadio';
+export const PERFORMULAR_MODEL_MATERIALRADIO: string =
+    'PERFORMULAR_MODEL_MATERIALRADIO';
 
-export interface MatRadioAttrs {
+export interface MaterialRadioAttrs {
     labelPosition?: 'before' | 'after';
     name?: string;
     color?: ThemePalette;
     buttonDirection?: 'vertical' | 'horizontal';
-    options: IControlDatasourceParams;
+    options: DataConnectionOptions;
 }
 
-export type MatRadioStyles = 'radio' | 'placeholder';
+export class MaterialRadio extends ControlFieldModel<MaterialRadioAttrs> {
+    public dataConnection: DataConnection;
 
-export class MatRadio extends Control<MatRadioAttrs, MatRadioStyles> {
-    public datasource: ControlDatasourceHandler;
-
-    constructor(property: IControlProperty<typeof PERFORMULAR_FORMCOMPONENT_RADIO, MatRadioAttrs>) {
-        super(property);
-        this.datasource = new ControlDatasourceHandler(property.attrs.options);
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialRadioAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialRadioComponent
+        });
+        this.dataConnection = new DataConnection(options.attrs.options);
     }
 }
 
-export function MatRadioBuilder(context: BuildContext<TControl>): Abstract {
-    return new MatRadio(context.params);
+export function MaterialRadioBuilder(
+    options: ControlFieldModelOptions<MaterialRadioAttrs>
+): MaterialRadio {
+    return new MaterialRadio(options);
 }
 
-@ControlComponent({
-    name: PERFORMULAR_FORMCOMPONENT_RADIO,
-    builder: MatRadioBuilder
+@Model({
+    name: PERFORMULAR_MODEL_MATERIALRADIO,
+    builder: MaterialRadioBuilder
 })
 @Component({
-    selector: 'performular-mat-radio',
+    selector: 'performular-material-radio',
     template: `
     <mat-radio-group
         (change)="change($event)"
@@ -64,40 +71,36 @@ export function MatRadioBuilder(context: BuildContext<TControl>): Abstract {
             </ng-container>
     </mat-radio-group>
     `,
-    styles: [`
-        :host {
-            width: 100%;
-            display: block;
-        }
-        mat-radio-group {
-            width: 100%;
-            display: block;
-            padding-top: 12px;
-            padding-bottom: 12px;
-        }
-        .vertical {
-            padding-bottom: 9px;
-        }
-        .horizontal {
-            padding-right: 9px;
-        }
-    `],
+    styles: [
+        `
+            :host {
+                width: 100%;
+                display: block;
+            }
+            mat-radio-group {
+                width: 100%;
+                display: block;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+            .vertical {
+                padding-bottom: 9px;
+            }
+            .horizontal {
+                padding-right: 9px;
+            }
+        `
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PerformularMatRadioComponent implements IPerformularOnInit<MatRadio> {
+export class MaterialRadioComponent {
+    public options: Observable<DataOption[]>;
 
-    public field: MatRadio = <any>undefined;
-    public options: Observable<any[]> = <any>undefined;
-
-    public performularOnInit(field: MatRadio): void {
-        this.field = field;
-        this.options = this.field.datasource.getData$(this.field);
+    constructor(@Inject(PerformularModel) public field: MaterialRadio) {
+        this.options = this.field.dataConnection.getData$(this.field);
     }
 
     public change(event: MatRadioChange): void {
-        if (this.field) {
-            this.field.setValue(event.value);
-        }
+        this.field.setValue(event.value);
     }
-
 }

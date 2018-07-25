@@ -66,7 +66,8 @@ export class Metadata {
             runDetectors: {},
             validators: {},
             visibles: {},
-            models: {}
+            models: {},
+            datasources: {}
         };
     }
 

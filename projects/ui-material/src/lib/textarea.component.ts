@@ -8,7 +8,8 @@ import {
     ControlFieldModel,
     ControlFieldModelOptions,
     InputValueBuilder,
-    Model
+    Model,
+    RemoveKey
 } from '@performular/core';
 import { PerformularModel } from '@performular/ng-common';
 import { Subscription } from 'rxjs';
@@ -29,9 +30,19 @@ export interface MaterialTextareaAttrs extends MaterialFormFieldAttrs {
     minRows?: number;
 }
 
-export class MaterialTextarea extends ControlFieldModel<
-    MaterialTextareaAttrs
-> {}
+export class MaterialTextarea extends ControlFieldModel<MaterialTextareaAttrs> {
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialTextareaAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialTextareaComponent
+        });
+    }
+}
 
 export function MaterialTextareaBuilder(
     options: ControlFieldModelOptions<MaterialTextareaAttrs>

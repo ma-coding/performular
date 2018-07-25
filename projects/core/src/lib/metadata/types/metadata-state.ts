@@ -7,6 +7,8 @@ import { ValidationExecuter } from '../../handler/validation/types/validation-ex
 import { VisibilityExecuter } from '../../handler/visibility/types/visibility-executer';
 import { InstanceDef } from '../../util/types/instance-def';
 import { MetadataObject } from './metadata-object';
+import { DataConnectionStrategy } from '../../handler/data-connection/types/data-connection-strategy';
+import { DatasourceOptions } from '../../decorator/types/datasource.options';
 
 export interface MetadataState {
     runDetectors: MetadataObject<
@@ -18,5 +20,9 @@ export interface MetadataState {
         InstanceDef<ValidationExecuter>
     >;
     visibles: MetadataObject<VisibleOptions, InstanceDef<VisibilityExecuter>>;
+    datasources: MetadataObject<
+        DatasourceOptions,
+        InstanceDef<DataConnectionStrategy>
+    >;
     models: MetadataObject<ModelOptions, any>;
 }

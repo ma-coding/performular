@@ -8,7 +8,8 @@ import {
     ControlFieldModel,
     ControlFieldModelOptions,
     InputValueBuilder,
-    Model
+    Model,
+    RemoveKey
 } from '@performular/core';
 import { PerformularModel } from '@performular/ng-common';
 import { Subscription } from 'rxjs';
@@ -28,6 +29,18 @@ export interface MaterialInputAttrs extends MaterialFormFieldAttrs {
 }
 
 export class MaterialInput extends ControlFieldModel<MaterialInputAttrs> {
+    constructor(
+        options: RemoveKey<
+            ControlFieldModelOptions<MaterialInputAttrs>,
+            'model'
+        >
+    ) {
+        super({
+            ...options,
+            model: MaterialInputComponent
+        });
+    }
+
     public patchValue(value: any, emitUpdate: boolean = true): void {
         super.patchValue(
             InputValueBuilder.validateValue(value, this.attrs.type),

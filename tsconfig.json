@@ -16,7 +16,8 @@
         "lib": ["es2017", "dom"],
         "paths": {
             "@performular/ng-common": ["projects/ng-common/src/index.ts"],
-            "@performular/core": ["projects/core/src/index.ts"]
+            "@performular/core": ["projects/core/src/index.ts"],
+            "@performular/ui-material": ["projects/ui-material/src/index.ts"]
         }
     }
 }

@@ -1,9 +1,20 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Inject,
+    OnDestroy
+} from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ControlFieldModel, ControlFieldModelOptions, InputValueBuilder, Model } from '@performular/core';
+import {
+    ControlFieldModel,
+    ControlFieldModelOptions,
+    InputValueBuilder,
+    Model,
+    RemoveKey
+} from '@performular/core';
 
 import { PerformularModel } from '../performular.model';
 
@@ -13,6 +24,15 @@ export interface InputAttrs {
 }
 
 export class Input extends ControlFieldModel<InputAttrs> {
+    constructor(
+        options: RemoveKey<ControlFieldModelOptions<InputAttrs>, 'model'>
+    ) {
+        super({
+            ...options,
+            model: InputComponent
+        });
+    }
+
     public patchValue(value: any, emitUpdate: boolean = true): void {
         super.patchValue(
             InputValueBuilder.validateValue(value, this.attrs.type),

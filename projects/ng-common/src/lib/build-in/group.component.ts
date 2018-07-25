@@ -1,12 +1,26 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 
-import { GroupFieldModel, GroupFieldModelOptions, Model } from '@performular/core';
+import {
+    GroupFieldModel,
+    GroupFieldModelOptions,
+    Model,
+    RemoveKey
+} from '@performular/core';
 
 import { PerformularModel } from '../performular.model';
 
 export type CoreGroupAttrs = undefined;
 
-export class CoreGroup extends GroupFieldModel<CoreGroupAttrs> {}
+export class CoreGroup extends GroupFieldModel<CoreGroupAttrs> {
+    constructor(
+        options: RemoveKey<GroupFieldModelOptions<CoreGroupAttrs>, 'model'>
+    ) {
+        super({
+            ...options,
+            model: CoreGroupComponent
+        });
+    }
+}
 
 export function CoreGroupBuilder(
     options: GroupFieldModelOptions<CoreGroupAttrs>

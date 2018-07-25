@@ -9,6 +9,7 @@ import 'hammerjs';
 import { PerformularModule } from '@performular/ng-common';
 
 import { AppComponent } from './app.component';
+import { PerformularUiMaterialModule } from '@performular/ui-material';
 
 @NgModule({
     declarations: [AppComponent],
@@ -17,7 +18,8 @@ import { AppComponent } from './app.component';
         FlexLayoutModule,
         MatNativeDateModule,
         BrowserModule,
-        PerformularModule
+        PerformularModule,
+        PerformularUiMaterialModule
     ],
     bootstrap: [AppComponent]
 })
