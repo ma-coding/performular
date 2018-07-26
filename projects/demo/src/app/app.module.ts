@@ -7,12 +7,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import 'hammerjs';
 
 import { PerformularModule } from '@performular/ng-common';
-
-import { AppComponent } from './app.component';
 import { PerformularUiMaterialModule } from '@performular/ui-material';
 
+import { AppComponent } from './app.component';
+import { Framework } from '@performular/core';
+
 @NgModule({
-    declarations: [AppComponent],
     imports: [
         BrowserAnimationsModule,
         FlexLayoutModule,
@@ -21,6 +21,7 @@ import { PerformularUiMaterialModule } from '@performular/ui-material';
         PerformularModule,
         PerformularUiMaterialModule
     ],
+    declarations: [AppComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

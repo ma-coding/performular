@@ -7,5 +7,5 @@ import { JsonUnionOptions } from './json-unions-options';
 export interface JsonGroupOptions
     extends JsonAbstractModelOptions,
         RemoveKey<GroupFieldModelOptions, 'children'> {
-    children: ObjectType<RemoveKey<JsonUnionOptions, 'id'>>;
+    children: JsonUnionOptions[];
 }

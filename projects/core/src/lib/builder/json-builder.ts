@@ -19,9 +19,15 @@ import { JsonListOptions } from './types/json-list-options';
 import { JsonUnionOptions } from './types/json-unions-options';
 import { ModelType } from './types/model-type';
 
+export type IndexType = number | string;
+
 // @dynamic
 export class JsonBuilder {
-    public static build(options: JsonUnionOptions, value: any): AbstractModel {
+    public static build(
+        options: JsonUnionOptions,
+        value: any,
+        paths: IndexType[] = []
+    ): AbstractModel {
         const opt: any = cloneDeep(options);
         const model: string | InstanceDef<any> =
             options.type === ModelType.LAYOUT
@@ -32,16 +38,22 @@ export class JsonBuilder {
         const modeler: Modeler = new Modeler(model);
         switch (options.type) {
             case ModelType.CONTROL: {
-                return modeler.build(this._buildControlOptions(opt, value));
+                return modeler.build(
+                    this._buildControlOptions(opt, value, paths)
+                );
             }
             case ModelType.GROUP: {
-                return modeler.build(this._buildGroupOptions(opt, value));
+                return modeler.build(
+                    this._buildGroupOptions(opt, value, paths)
+                );
             }
             case ModelType.CONTAINER: {
-                return modeler.build(this._buildContainerOptions(opt, value));
+                return modeler.build(
+                    this._buildContainerOptions(opt, value, paths)
+                );
             }
             case ModelType.LIST: {
-                return modeler.build(this._buildListOptions(opt, value));
+                return modeler.build(this._buildListOptions(opt, value, paths));
             }
             case ModelType.LAYOUT: {
                 return modeler.build(<any>this._buildLayoutOptions(opt, value));
@@ -52,59 +64,59 @@ export class JsonBuilder {
         }
     }
 
+    private static _getValue(value: any, path: IndexType[]): any {
+        return path.reduce((prev: any, current: IndexType) => {
+            return prev && prev[current] ? prev[current] : null;
+        }, value);
+    }
+
     private static _buildControlOptions(
         options: JsonControlOptions,
-        value: any
+        value: any,
+        paths: IndexType[]
     ): ControlFieldModelOptions {
         return {
             ...this._removeType(options),
-            value: value && value[options.id] ? value[options.id] : value
+            value: this._getValue(value, [...paths, options.id])
         };
     }
 
     private static _buildGroupOptions(
         options: JsonGroupOptions,
-        value: any
+        value: any,
+        paths: IndexType[]
     ): GroupFieldModelOptions {
         return {
             ...this._removeType(options),
-            children: Object.keys(options.children).map((id: string) => {
-                return this.build(
-                    <any>{
-                        id,
-                        ...options.children[id]
-                    },
-                    options.children[id].type === ModelType.CONTAINER
-                        ? value
-                        : value
-                            ? value[id]
-                            : null
-                );
+            children: options.children.map((child: JsonUnionOptions) => {
+                return this.build(child, value, [...paths, options.id]);
             })
         };
     }
 
     private static _buildListOptions(
         options: JsonListOptions,
-        value: any
+        value: any,
+        paths: IndexType[]
     ): ListFieldModelOptions {
         return {
             ...(<RemoveKey<JsonListOptions, 'childModel' | 'type'>>options),
             childGenerator: (val: any): AbstractModel =>
                 JsonBuilder.build(options.childModel, val),
-            values: value || []
+            values: this._getValue(value, [...paths, options.id]) || []
         };
     }
 
     private static _buildContainerOptions(
         options: JsonContainerOptions,
-        value: any
+        value: any,
+        paths: IndexType[]
     ): ContainerModelOptions {
         return {
             ...this._removeType(options),
             children: (options.children || []).map(
                 (childOptions: JsonUnionOptions) => {
-                    return this.build(childOptions, value);
+                    return this.build(childOptions, value, paths);
                 }
             )
         };
@@ -140,11 +152,5 @@ export class JsonBuilder {
         delete options.type;
         const opt: RemoveKey<T, 'type'> = options;
         return opt;
-    }
-
-    private static _removeChildModel<T extends JsonUnionOptions>(
-        options: T
-    ): RemoveKey<T, 'childModel'> {
-        return <RemoveKey<T, 'childModel'>>options;
     }
 }
