@@ -71,7 +71,7 @@ export function MaterialInputBuilder(
     template: MaterialFormFieldTemplate(`
         <input matInput
         (input)="inputValueHandler?.setValue($event.target.value)"
-        [value]="field?.value"
+        [value]="field?.value$ | async"
         [type]="(field?.attrs$ | async)?.type"
         [placeholder]="(field?.attrs$ | async)?.placeholder"
         [disabled]="field?.disabled$ | async"

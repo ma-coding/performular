@@ -37,7 +37,7 @@ export function getJsonForm(value: any): GroupFieldModel {
                             type: ModelType.CONTROL,
                             model: PERFORMULAR_MODEL_MATERIALCHECKBOX,
                             attrs: {
-                                placeholder: 'ABC'
+                                placeholder: 'Checkbox'
                             }
                         },
                         {
@@ -45,7 +45,7 @@ export function getJsonForm(value: any): GroupFieldModel {
                             type: ModelType.CONTROL,
                             model: PERFORMULAR_MODEL_MATERIALTOGGLE,
                             attrs: {
-                                placeholder: 'ABC'
+                                placeholder: 'Toggle'
                             }
                         }
                     ]
@@ -60,8 +60,8 @@ export function getJsonForm(value: any): GroupFieldModel {
                             type: ModelType.CONTROL,
                             model: PERFORMULAR_MODEL_MATERIALINPUT,
                             attrs: {
-                                placeholder: 'TEST',
-                                label: 'ASD',
+                                placeholder: 'Input',
+                                label: 'Input',
                                 type: 'number'
                             },
                             defaultValue: 6
@@ -71,8 +71,9 @@ export function getJsonForm(value: any): GroupFieldModel {
                             type: ModelType.CONTROL,
                             model: PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA,
                             attrs: {
-                                placeholder: 'TEST',
-                                label: 'ASD'
+                                placeholder: 'Textarea',
+                                label: 'Textarea',
+                                autoResize: true
                             },
                             defaultValue: 6
                         },
@@ -81,8 +82,8 @@ export function getJsonForm(value: any): GroupFieldModel {
                             type: ModelType.CONTROL,
                             model: PERFORMULAR_MODEL_MATERIALDATEPICKER,
                             attrs: {
-                                placeholder: 'ABC',
-                                label: '1234'
+                                placeholder: 'Datepicker',
+                                label: 'Datepicker'
                             }
                         }
                     ]

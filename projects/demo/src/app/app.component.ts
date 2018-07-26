@@ -48,5 +48,10 @@ export class AppComponent {
     public classForm: GroupFieldModel = getClassForm();
     public typedForm: GroupFieldModel = getTypedForm();
 
-    constructor() {}
+    constructor() {
+        this.jsonForm.value$.subscribe((value: any) => {
+            this.classForm.setValue(value);
+            this.typedForm.setValue(value);
+        });
+    }
 }

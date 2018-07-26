@@ -32,7 +32,7 @@ export function getClassForm(): GroupFieldModel {
                         child: new MaterialCheckbox({
                             id: 'checkbox',
                             attrs: {
-                                placeholder: 'AGB'
+                                placeholder: 'Checkbox'
                             },
                             defaultValue: false
                         })
@@ -41,7 +41,7 @@ export function getClassForm(): GroupFieldModel {
                         child: new MaterialToggle({
                             id: 'toggle',
                             attrs: {
-                                placeholder: 'TEST'
+                                placeholder: 'Toggle'
                             },
                             defaultValue: 5
                         })
@@ -57,24 +57,27 @@ export function getClassForm(): GroupFieldModel {
                         attrs: {
                             type: 'number',
                             debounce: 1000,
-                            placeholder: 'test',
-                            label: 'ABC'
+                            placeholder: 'Input',
+                            label: 'Input'
                         },
                         defaultValue: 5
                     }),
                     new MaterialTextarea({
                         id: 'textarea',
                         attrs: {
-                            debounce: 1000,
+                            placeholder: 'Textarea',
+                            label: 'Textarea',
+                            debounce: 500,
                             maxRows: 10,
-                            minRows: 5
+                            minRows: 1,
+                            autoResize: true
                         },
                         defaultValue: 5
                     }),
                     new MaterialDatepicker({
                         id: 'datepicker',
                         attrs: {
-                            label: 'AGB'
+                            label: 'Datepicker'
                         },
                         defaultValue: false
                     })

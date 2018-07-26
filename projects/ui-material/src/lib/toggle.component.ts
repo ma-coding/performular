@@ -58,7 +58,7 @@ export function MaterialToggleBuilder(
         [labelPosition]="(field?.attrs$ | async)?.labelPosition"
         [name]="(field?.attrs$ | async)?.name"
         (change)="change($event)"
-        [checked]="field?.value">
+        [checked]="field?.value$ | async">
             <span>
                 {{(field?.attrs$ | async)?.placeholder}}
             </span>

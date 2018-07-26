@@ -3,11 +3,13 @@ import {
     MaterialSliderComponent,
     MaterialCheckboxComponent,
     MaterialToggleComponent,
-    MaterialInputComponent
+    MaterialInputComponent,
+    MaterialTextareaComponent,
+    MaterialDatepickerComponent
 } from '@performular/ui-material';
 import { CoreGroupComponent } from '@performular/ng-common';
 
-@Group({
+@Group<keyof FormType>({
     id: 'GROUP',
     attrs: undefined,
     model: CoreGroupComponent,
@@ -17,7 +19,14 @@ import { CoreGroupComponent } from '@performular/ng-common';
             child: {
                 layout: 'row',
                 layoutGap: '18px',
-                children: ['slider', 'checkbox', 'toggle', 'input']
+                children: ['slider', 'checkbox', 'toggle']
+            }
+        },
+        {
+            child: {
+                layout: 'row',
+                layoutGap: '18px',
+                children: ['input', 'textarea', 'datepicker']
             }
         }
     ]
@@ -34,7 +43,7 @@ export class FormType {
 
     @Control({
         attrs: {
-            placeholder: 'test'
+            placeholder: 'Checkbox'
         },
         model: MaterialCheckboxComponent
     })
@@ -42,7 +51,7 @@ export class FormType {
 
     @Control({
         attrs: {
-            placeholder: 'test'
+            placeholder: 'Toggle'
         },
         model: MaterialToggleComponent
     })
@@ -50,12 +59,33 @@ export class FormType {
 
     @Control({
         attrs: {
-            placeholder: 'test',
-            label: 'test'
+            placeholder: 'Input',
+            label: 'Input'
         },
         model: MaterialInputComponent
     })
     public input?: number;
+
+    @Control({
+        attrs: {
+            placeholder: 'Textarea',
+            label: 'Textarea',
+            autoResize: true,
+            minRows: 1,
+            maxRows: 5
+        },
+        model: MaterialTextareaComponent
+    })
+    public textarea?: number;
+
+    @Control({
+        attrs: {
+            placeholder: 'Datepicker',
+            label: 'Datepicker'
+        },
+        model: MaterialDatepickerComponent
+    })
+    public datepicker?: Date;
 }
 
 export function getTypedForm(): GroupFieldModel {

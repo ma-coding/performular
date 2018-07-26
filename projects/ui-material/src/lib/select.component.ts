@@ -70,7 +70,7 @@ export function MaterialSelectBuilder(
             <mat-select
                 (selectionChange)="change($event)"
                 [disabled]="(field?.disabled$ | async)"
-                [value]="field?.value"
+                [value]="field?.value$ | async"
                 [disableOptionCentering]="(field?.attrs$ | async)?.disableOptionCentering"
                 [disableRipple]="(field?.attrs$ | async)?.disableRipple"
                 [multiple]="(field?.attrs$ | async)?.multiple"

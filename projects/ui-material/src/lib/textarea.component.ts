@@ -59,7 +59,7 @@ export function MaterialTextareaBuilder(
     template: MaterialFormFieldTemplate(`
         <textarea matInput
         (input)="textareaValueHandler?.setValue($event.target.value)"
-        [value]="field?.value"
+        [value]="field?.value$ | async"
         [matTextareaAutosize]="(field?.attrs$ | async)?.autoResize"
         [matAutosizeMaxRows]="(field?.attrs$ | async)?.maxRows"
         [matAutosizeMinRows]="(field?.attrs$ | async)?.minRows"

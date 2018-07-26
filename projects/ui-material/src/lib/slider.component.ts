@@ -58,7 +58,7 @@ export function MaterialSliderBuilder(
             [step]="(field?.attrs$ | async)?.step"
             [thumbLabel]="(field?.attrs$ | async)?.thumbLabel"
             [tickInterval]="(field?.attrs$ | async)?.tickInterval"
-            [value]="field.value"
+            [value]="field.value$ | async"
             [vertical]="(field?.attrs$ | async)?.vertical"
             (change)="change($event)">
         </mat-slider>

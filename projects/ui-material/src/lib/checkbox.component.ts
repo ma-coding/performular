@@ -56,7 +56,7 @@ export function MaterialCheckboxBuilder(
     [labelPosition]="(field?.attrs$ | async)?.labelPosition"
     [name]="(field?.attrs$ | async)?.name"
     (change)="change($event)"
-    [value]="field?.value"
+    [value]="field?.value$ | async"
     [checked]="field?.value">
         <span>
             {{(field?.attrs$ | async)?.placeholder}}

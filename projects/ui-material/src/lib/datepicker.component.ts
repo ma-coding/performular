@@ -72,7 +72,7 @@ export function MaterialDatepickerBuilder(
         <input matInput
         [matDatepicker]="picker"
         (dateChange)="datepickerValueHandler?.setValue($event.value)"
-        [value]="field?.value"
+        [value]="field?.value$ | async"
         [placeholder]="(field?.attrs$ | async)?.placeholder"
         [disabled]="field?.disabled$ | async"
         [readonly]="(field?.attrs$ | async)?.readonly">

@@ -57,7 +57,7 @@ export function MaterialRadioBuilder(
     <mat-radio-group
         (change)="change($event)"
         [name]="(field?.attrs$ | async)?.name"
-        [value]="field?.value"
+        [value]="field?.value$ | async"
         [disabled]="field.disabled$ | async"
         [fxLayout]="field?.attrs.buttonDirection === 'vertical' ? 'column' : 'row'">
             <ng-container *ngFor="let option of options | async">
