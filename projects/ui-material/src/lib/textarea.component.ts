@@ -19,8 +19,8 @@ import {
     MaterialFormFieldTemplate
 } from './form-field';
 
-export const PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA: string =
-    'PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA';
+export const PERFORMULAR_MODEL_MATERIALTEXTAREA: string =
+    'PERFORMULAR_MODEL_MATERIALTEXTAREA';
 
 export interface MaterialTextareaAttrs extends MaterialFormFieldAttrs {
     readonly?: boolean;
@@ -51,7 +51,7 @@ export function MaterialTextareaBuilder(
 }
 
 @Model({
-    name: PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA,
+    name: PERFORMULAR_MODEL_MATERIALTEXTAREA,
     builder: MaterialTextareaBuilder
 })
 @Component({

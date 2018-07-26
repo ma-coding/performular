@@ -1,5 +1,5 @@
 import { forkJoin, merge, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap, skip } from 'rxjs/operators';
 
 import { ValidationOptions } from '../handler/validation/types/validation-options';
 import { Validation } from '../handler/validation/validation';
@@ -14,6 +14,8 @@ import { ValueMode } from '../util/types/value-mode';
 import { AbstractModel } from './abstract-model';
 import { AbstractFieldModelOptions } from './types/abstract-field-model-options';
 import { AbstractFieldModelState } from './types/abstract-field-model-state';
+import { IndexType } from '../builder/json-builder';
+import { isString } from 'util';
 
 export abstract class AbstractFieldModel<
     STATE extends AbstractFieldModelState<ATTRS> = any,
@@ -164,6 +166,24 @@ export abstract class AbstractFieldModel<
     public abstract patchValue(value: any, emitUpdate: boolean): void;
     public abstract resetValue(emitUpdate: boolean): void;
 
+    public find(...path: IndexType[]): AbstractFieldModel | undefined {
+        return path.reduce(
+            (prev: AbstractFieldModel | undefined, current: IndexType) => {
+                if (!prev) {
+                    return;
+                }
+                if (isString(current)) {
+                    return prev.childFields.find(
+                        (c: AbstractFieldModel) => c.id === current
+                    );
+                } else {
+                    return prev.childFields[current];
+                }
+            },
+            this
+        );
+    }
+
     public addValidation(id: string, options: ValidationOptions): void {
         this._state$.updateKey('validations', {
             [id]: new Validation(options)
@@ -249,11 +269,11 @@ export abstract class AbstractFieldModel<
 
     protected _getUpdateWhen(): Observable<AbstractModel[]> {
         return merge(
-            this.visibilities$,
-            this.forcedDisabled$,
-            this.forcedHidden$,
-            this.validations$,
-            this.forcedError$
+            this.visibilities$.pipe(skip(1)),
+            this.forcedDisabled$.pipe(skip(1)),
+            this.forcedHidden$.pipe(skip(1)),
+            this.validations$.pipe(skip(1)),
+            this.forcedError$.pipe(skip(1))
         ).pipe(map(() => [this]));
     }
 

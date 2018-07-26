@@ -8,6 +8,7 @@ import { State } from '../util/state';
 import { RunContext } from '../util/types/run-context';
 import { AbstractModelOptions } from './types/abstract-model-options';
 import { AbstractModelState } from './types/abstract-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 export abstract class AbstractModel<
     STATE extends AbstractModelState<ATTRS> = any,
@@ -171,7 +172,8 @@ export abstract class AbstractModel<
             id: options.id,
             hidden: false,
             elementRef: undefined,
-            instance: undefined
+            instance: undefined,
+            type: ModelType.CONTROL
         };
     }
 

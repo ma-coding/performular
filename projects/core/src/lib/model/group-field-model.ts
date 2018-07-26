@@ -4,6 +4,7 @@ import { AbstractFieldModel } from './abstract-field-model';
 import { AbstractModel } from './abstract-model';
 import { GroupFieldModelOptions } from './types/group-field-model-options';
 import { GroupFieldModelState } from './types/group-field-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 export class GroupFieldModel<ATTRS = any> extends AbstractFieldModel<
     GroupFieldModelState<ATTRS>,
@@ -23,7 +24,8 @@ export class GroupFieldModel<ATTRS = any> extends AbstractFieldModel<
             ...this._initAbstractFieldModel(options),
             children: options.children,
             initialValue: initialValue,
-            value: cloneDeep(initialValue)
+            value: cloneDeep(initialValue),
+            type: ModelType.GROUP
         });
     }
 

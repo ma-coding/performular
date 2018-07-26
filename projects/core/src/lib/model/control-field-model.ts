@@ -6,6 +6,7 @@ import { ValueMode } from '../util/types/value-mode';
 import { AbstractFieldModel } from './abstract-field-model';
 import { ControlFieldModelOptions } from './types/control-field-model-options';
 import { ControlFieldModelState } from './types/control-field-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
     ControlFieldModelState<ATTRS>,
@@ -28,7 +29,8 @@ export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
             ...this._initAbstractFieldModel(options),
             initialValue: cloneDeep(value),
             value: cloneDeep(value),
-            defaultValue: options.defaultValue
+            defaultValue: options.defaultValue,
+            type: ModelType.CONTROL
         });
     }
 

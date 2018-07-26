@@ -5,6 +5,7 @@ import { RunContext } from '../util/types/run-context';
 import { AbstractModel } from './abstract-model';
 import { ContainerModelOptions } from './types/container-model-options';
 import { ContainerModelState } from './types/container-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 export class ContainerModel<ATTRS = any> extends AbstractModel<
     ContainerModelState<ATTRS>,
@@ -19,7 +20,8 @@ export class ContainerModel<ATTRS = any> extends AbstractModel<
         );
         this._state$ = new State<ContainerModelState>({
             ...this._initAbstractModel(options),
-            children: options.children || []
+            children: options.children || [],
+            type: ModelType.CONTAINER
         });
     }
 

@@ -9,6 +9,7 @@ import { ViewScales } from '../util/types/view-scales';
 import { AbstractModel } from './abstract-model';
 import { ItemModelOptions } from './types/item-model-options';
 import { ItemModelState } from './types/item-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 // Todo: add full implementation
 export class ItemModel extends AbstractModel<ItemModelState, any> {
@@ -61,7 +62,8 @@ export class ItemModel extends AbstractModel<ItemModelState, any> {
             flex: this._initFlex(options.flex),
             flexOrder: this._initFlexOrder(options.flexOrder),
             flexAlign: this._initFlexAlign(options.flexAlign),
-            flexOffset: this._initFlexOffset(options.flexOffset)
+            flexOffset: this._initFlexOffset(options.flexOffset),
+            type: ModelType.ITEM
         });
         ItemModel._cnt++;
     }

@@ -1,12 +1,11 @@
-import { JsonUnionOptions } from '../../../core/src/lib/builder/types/json-unions-options';
 import { ModelType, GroupFieldModel, Builder } from '@performular/core';
 import {
     PERFORMULAR_MODEL_MATERIALDATEPICKER,
-    PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA,
     PERFORMULAR_MODEL_MATERIALINPUT,
     PERFORMULAR_MODEL_MATERIALTOGGLE,
     PERFORMULAR_MODEL_MATERIALCHECKBOX,
-    PERFORMULAR_MODEL_MATERIALSLIDER
+    PERFORMULAR_MODEL_MATERIALSLIDER,
+    PERFORMULAR_MODEL_MATERIALTEXTAREA
 } from '@performular/ui-material';
 import { PERFORMULAR_MODEL_CORE_GROUP } from '@performular/ng-common';
 
@@ -69,7 +68,7 @@ export function getJsonForm(value: any): GroupFieldModel {
                         {
                             id: 'textarea',
                             type: ModelType.CONTROL,
-                            model: PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA,
+                            model: PERFORMULAR_MODEL_MATERIALTEXTAREA,
                             attrs: {
                                 placeholder: 'Textarea',
                                 label: 'Textarea',

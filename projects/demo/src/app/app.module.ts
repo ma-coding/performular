@@ -10,7 +10,6 @@ import { PerformularModule } from '@performular/ng-common';
 import { PerformularUiMaterialModule } from '@performular/ui-material';
 
 import { AppComponent } from './app.component';
-import { Framework } from '@performular/core';
 
 @NgModule({
     imports: [
@@ -18,7 +17,7 @@ import { Framework } from '@performular/core';
         FlexLayoutModule,
         MatNativeDateModule,
         BrowserModule,
-        PerformularModule,
+        PerformularModule.withConfig({}),
         PerformularUiMaterialModule
     ],
     declarations: [AppComponent],

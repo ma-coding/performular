@@ -9,6 +9,7 @@ import { ViewScales } from '../util/types/view-scales';
 import { AbstractModel } from './abstract-model';
 import { LayoutModelOptions } from './types/layout-model-options';
 import { LayoutModelState } from './types/layout-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 export class LayoutModel extends AbstractModel<LayoutModelState, any> {
     private static _cnt: number = 0;
@@ -51,7 +52,8 @@ export class LayoutModel extends AbstractModel<LayoutModelState, any> {
             layout: this._initLayout(options.layout),
             layoutAlign: this._initLayoutAlign(options.layoutAlign),
             layoutGap: this._initLayoutGap(options.layoutGap),
-            children: options.children
+            children: options.children,
+            type: ModelType.LAYOUT
         });
         LayoutModel._cnt++;
     }

@@ -7,6 +7,7 @@ import { AbstractFieldModel } from './abstract-field-model';
 import { AbstractModel } from './abstract-model';
 import { ListFieldModelOptions } from './types/list-field-model-options';
 import { ListFieldModelState } from './types/list-field-model-state';
+import { ModelType } from '../builder/types/model-type';
 
 export class ListFieldModel<ATTRS = any> extends AbstractFieldModel<
     ListFieldModelState<ATTRS>,
@@ -36,7 +37,8 @@ export class ListFieldModel<ATTRS = any> extends AbstractFieldModel<
             childGenerator: options.childGenerator,
             children: children,
             initialValue: initialValue,
-            value: cloneDeep(initialValue)
+            value: cloneDeep(initialValue),
+            type: ModelType.LIST
         });
     }
 

@@ -53,7 +53,7 @@ export {
     MaterialTextareaAttrs,
     MaterialTextareaBuilder,
     MaterialTextareaComponent,
-    PERFORMULAR_FORMCOMPONENT_MATERIALTEXTAREA
+    PERFORMULAR_MODEL_MATERIALTEXTAREA
 } from './lib/textarea.component';
 export {
     MaterialToggle,
