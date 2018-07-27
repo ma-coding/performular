@@ -48,7 +48,6 @@ export const PERFORMULAR_MODEL_FIELDSET: string = 'PERFORMULAR_MODEL_FIELDSET';
         `
             fieldset {
                 height: 100%;
-                width: 100%;
             }
         `
     ],

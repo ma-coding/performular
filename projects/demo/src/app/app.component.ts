@@ -8,6 +8,7 @@ import {
 import { getJsonForm } from './json.form';
 import { getClassForm } from './class.form';
 import { getTypedForm } from './type.form';
+import { MaterialDatepicker } from '@performular/ui-material';
 
 @Component({
     selector: 'app-root',
@@ -24,19 +25,28 @@ export class AppComponent {
     public typedForm: GroupFieldModel = getTypedForm();
 
     constructor() {
-        this.classForm.updates$.subscribe(() => console.log(this.classForm));
-        this.jsonForm.value$.subscribe((value: any) => {
-            this.classForm.setValue(value);
-            this.typedForm.setValue(value);
-            const input: AbstractFieldModel | undefined = this.classForm.find(
-                'input'
+        // this.typedForm.value$.subscribe(console.log);
+        // this.classForm.updates$.subscribe(() => console.log(this.classForm));
+        this.typedForm.value$.subscribe((value: any) => {
+            console.log('NEW VALUE', value.checkbox);
+            const array: AbstractFieldModel | undefined = this.typedForm.find(
+                'subs'
             );
-            if (input) {
-                input.addValidation('required', {
-                    target: PERFORMULAR_VALIDATOR_REQUIRED,
-                    errorMsg: 'FEHLER'
-                });
+            if (array) {
+                array.setForcedDisabled(value.checkbox);
+                console.log(array);
             }
+            // this.classForm.setValue(value);
+            // this.typedForm.setValue(value);
+            // const input: AbstractFieldModel | undefined = this.classForm.find(
+            //     'input'
+            // );
+            // if (input) {
+            //     input.addValidation('required', {
+            //         target: PERFORMULAR_VALIDATOR_REQUIRED,
+            //         errorMsg: 'FEHLER'
+            //     });
+            // }
         });
     }
 }

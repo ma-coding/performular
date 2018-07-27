@@ -1,4 +1,4 @@
-import { forkJoin, merge, Observable, of } from 'rxjs';
+import { forkJoin, merge, Observable, of, combineLatest } from 'rxjs';
 import { map, tap, skip } from 'rxjs/operators';
 
 import { ValidationOptions } from '../handler/validation/types/validation-options';
@@ -88,11 +88,13 @@ export abstract class AbstractFieldModel<
     }
 
     get errorState(): AbstractFieldModelState['errorState'] {
-        return this._state$.select('errorState');
+        return this.invalid && this.dirty;
     }
 
     get errorState$(): Observable<AbstractFieldModelState['errorState']> {
-        return this._state$.select$('errorState');
+        return combineLatest(this.invalid$, this.dirty$).pipe(
+            map((res: boolean[]) => res.every(Boolean))
+        );
     }
 
     get errors(): AbstractFieldModelState['errors'] {
@@ -185,12 +187,18 @@ export abstract class AbstractFieldModel<
     }
 
     public addValidation(id: string, options: ValidationOptions): void {
+        if (id in this.validations) {
+            return;
+        }
         this._state$.updateKey('validations', {
             [id]: new Validation(options)
         });
     }
 
     public removeValidation(id: string): void {
+        if (!(id in this.validations)) {
+            return;
+        }
         const validations: ObjectType<Validation> = this._state$.select(
             'validations'
         );
@@ -206,12 +214,18 @@ export abstract class AbstractFieldModel<
     }
 
     public addVisiblity(id: string, options: VisibilityOptions): void {
+        if (!(id in this.visibilities)) {
+            return;
+        }
         this._state$.updateKey('visibilities', {
             [id]: new Visibility(options)
         });
     }
 
     public removeVisibility(id: string): void {
+        if (!(id in this.visibilities)) {
+            return;
+        }
         const visibilities: ObjectType<Visibility> = this._state$.select(
             'visibilities'
         );

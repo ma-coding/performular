@@ -1,4 +1,11 @@
-import { Control, Group, GroupFieldModel, Builder } from '@performular/core';
+import {
+    Control,
+    Group,
+    GroupFieldModel,
+    Builder,
+    SubGroup,
+    List
+} from '@performular/core';
 import {
     MaterialSliderComponent,
     MaterialCheckboxComponent,
@@ -7,7 +14,28 @@ import {
     MaterialTextareaComponent,
     MaterialDatepickerComponent
 } from '@performular/ui-material';
-import { CoreGroupComponent } from '@performular/ng-common';
+import {
+    CoreGroupComponent,
+    CoreListComponent,
+    FieldsetComponent
+} from '@performular/ng-common';
+
+@Group<keyof SubForm>({
+    id: 'SUB',
+    attrs: undefined,
+    model: CoreGroupComponent,
+    layout: 'column',
+    children: ['checkbox']
+})
+export class SubForm {
+    @Control({
+        attrs: {
+            placeholder: 'Checkbox'
+        },
+        model: MaterialCheckboxComponent
+    })
+    public checkbox?: boolean;
+}
 
 @Group<keyof FormType>({
     id: 'GROUP',
@@ -28,6 +56,15 @@ import { CoreGroupComponent } from '@performular/ng-common';
                 layoutGap: '18px',
                 children: ['input', 'textarea', 'datepicker']
             }
+        },
+        'sub',
+        {
+            id: 'f',
+            model: FieldsetComponent,
+            attrs: {
+                legend: 'test'
+            },
+            children: ['subs']
         }
     ]
 })
@@ -86,8 +123,24 @@ export class FormType {
         model: MaterialDatepickerComponent
     })
     public datepicker?: Date;
+
+    @SubGroup({
+        childTarget: SubForm
+    })
+    public sub?: SubForm;
+
+    @List({
+        childTarget: SubForm,
+        model: CoreListComponent,
+        attrs: undefined
+    })
+    public subs?: SubForm[];
 }
 
 export function getTypedForm(): GroupFieldModel {
-    return Builder.buildFromTarget(FormType, { input: 800 });
+    return Builder.buildFromTarget(FormType, {
+        input: 800,
+        sub: { checkbox: true },
+        subs: [{ checkbox: true }, { checkbox: false }]
+    });
 }

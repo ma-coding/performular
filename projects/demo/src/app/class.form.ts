@@ -68,9 +68,8 @@ export function getClassForm(): GroupFieldModel {
                             placeholder: 'Textarea',
                             label: 'Textarea',
                             debounce: 500,
-                            maxRows: 10,
-                            minRows: 1,
-                            autoResize: true
+                            maxRows: 5,
+                            minRows: 5
                         },
                         defaultValue: 5
                     }),

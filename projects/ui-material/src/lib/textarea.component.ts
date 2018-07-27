@@ -25,7 +25,6 @@ export const PERFORMULAR_MODEL_MATERIALTEXTAREA: string =
 export interface MaterialTextareaAttrs extends MaterialFormFieldAttrs {
     readonly?: boolean;
     debounce?: number;
-    autoResize?: boolean;
     maxRows?: number;
     minRows?: number;
 }
@@ -60,7 +59,7 @@ export function MaterialTextareaBuilder(
         <textarea matInput
         (input)="textareaValueHandler?.setValue($event.target.value)"
         [value]="field?.value$ | async"
-        [matTextareaAutosize]="(field?.attrs$ | async)?.autoResize"
+        [matTextareaAutosize]="true"
         [matAutosizeMaxRows]="(field?.attrs$ | async)?.maxRows"
         [matAutosizeMinRows]="(field?.attrs$ | async)?.minRows"
         [placeholder]="(field?.attrs$ | async)?.placeholder"
