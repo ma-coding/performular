@@ -6,7 +6,7 @@ import {
     Injector,
     Input,
     OnDestroy,
-    ViewContainerRef,
+    ViewContainerRef
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -69,6 +69,7 @@ export class PerformularRendererDirective extends AbstractFieldRenderer
             componentRef.instance,
             componentRef.location.nativeElement
         );
+        componentRef.changeDetectorRef.detectChanges();
     }
 
     protected _destroyField(): void {

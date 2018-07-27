@@ -6,6 +6,7 @@ import { AbstractModel } from './abstract-model';
 import { ContainerModelOptions } from './types/container-model-options';
 import { ContainerModelState } from './types/container-model-state';
 import { ModelType } from '../builder/types/model-type';
+import { every } from '../../../../../node_modules/rxjs/operators';
 
 export class ContainerModel<ATTRS = any> extends AbstractModel<
     ContainerModelState<ATTRS>,
@@ -21,19 +22,21 @@ export class ContainerModel<ATTRS = any> extends AbstractModel<
         this._state$ = new State<ContainerModelState>({
             ...this._initAbstractModel(options),
             children: options.children || [],
-            type: ModelType.CONTAINER
+            type: ModelType.CONTAINER,
+            hideWhenNoChild: options.hideWhenNoChild || true
         });
     }
 
-    protected _getUpdateWhen(): Observable<AbstractModel<any>[]> {
-        return of([]); // Todo: add right actions
-    }
-
     protected _onTreeDown(context: RunContext): Observable<void> {
-        return of(); // Todo: add right actions
+        return of(undefined); // Todo: add right actions
     }
 
     protected _onTreeUp(): void {
-        // Todo: add right actions
+        const everyChildHidden: boolean = this.children.every(
+            (c: AbstractModel) => c.hidden
+        );
+        if (this.hidden !== everyChildHidden) {
+            this._state$.updateKey('hidden', everyChildHidden);
+        }
     }
 }

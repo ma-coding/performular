@@ -193,6 +193,7 @@ export abstract class AbstractFieldModel<
         this._state$.updateKey('validations', {
             [id]: new Validation(options)
         });
+        this.runUpdate();
     }
 
     public removeValidation(id: string): void {
@@ -211,6 +212,7 @@ export abstract class AbstractFieldModel<
                 return prev;
             }, {})
         });
+        this.runUpdate();
     }
 
     public addVisiblity(id: string, options: VisibilityOptions): void {
@@ -220,6 +222,7 @@ export abstract class AbstractFieldModel<
         this._state$.updateKey('visibilities', {
             [id]: new Visibility(options)
         });
+        this.runUpdate();
     }
 
     public removeVisibility(id: string): void {
@@ -238,18 +241,22 @@ export abstract class AbstractFieldModel<
                 return prev;
             }, {})
         });
+        this.runUpdate();
     }
 
     public setForcedDisabled(disabled: boolean): void {
         this._state$.updateKey('forcedDisabled', disabled);
+        this.runUpdate();
     }
 
     public setForcedHidden(hidden: boolean): void {
         this._state$.updateKey('forcedHidden', hidden);
+        this.runUpdate();
     }
 
     public setForcedError(error: string | undefined): void {
         this._state$.updateKey('forcedError', error);
+        this.runUpdate();
     }
 
     public updateValidationAndVisibility(
@@ -279,16 +286,6 @@ export abstract class AbstractFieldModel<
         } else {
             this._manualUpdates$.next(checklist);
         }
-    }
-
-    protected _getUpdateWhen(): Observable<AbstractModel[]> {
-        return merge(
-            this.visibilities$.pipe(skip(1)),
-            this.forcedDisabled$.pipe(skip(1)),
-            this.forcedHidden$.pipe(skip(1)),
-            this.validations$.pipe(skip(1)),
-            this.forcedError$.pipe(skip(1))
-        ).pipe(map(() => [this]));
     }
 
     protected _onTreeDown(context: RunContext): Observable<void> {

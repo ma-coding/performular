@@ -68,10 +68,6 @@ export class ItemModel extends AbstractModel<ItemModelState, any> {
         ItemModel._cnt++;
     }
 
-    protected _getUpdateWhen(): Observable<AbstractModel[]> {
-        return of([]);
-    }
-
     protected _onTreeUp(): void {}
     protected _onTreeDown(context: RunContext): Observable<void> {
         return of(undefined);

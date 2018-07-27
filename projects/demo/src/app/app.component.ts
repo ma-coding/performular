@@ -33,7 +33,7 @@ export class AppComponent {
                 'subs'
             );
             if (array) {
-                array.setForcedDisabled(value.checkbox);
+                array.setForcedHidden(value.checkbox);
                 console.log(array);
             }
             // this.classForm.setValue(value);

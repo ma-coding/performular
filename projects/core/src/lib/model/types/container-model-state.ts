@@ -1,3 +1,6 @@
 import { AbstractModelState } from './abstract-model-state';
 
-export type ContainerModelState<ATTRS = any> = AbstractModelState<ATTRS>;
+export interface ContainerModelState<ATTRS = any>
+    extends AbstractModelState<ATTRS> {
+    hideWhenNoChild: boolean;
+}

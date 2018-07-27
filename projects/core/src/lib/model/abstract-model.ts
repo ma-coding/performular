@@ -1,5 +1,5 @@
 import { forkJoin, merge, Observable, Subject } from 'rxjs';
-import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
+import { buffer, concatMap, debounceTime, map, tap } from 'rxjs/operators';
 
 import { Modeler } from '../handler/modeler/modeler';
 import { flatten } from '../util/flatten';
@@ -120,11 +120,9 @@ export abstract class AbstractModel<
         this._state$.updateKey('instance', instance);
     }
 
-    public runUpdate(models: AbstractModel[]): void {
-        this._manualUpdates$.next(models);
+    public runUpdate(models: AbstractModel[] = [this]): void {
+        this.root._manualUpdates$.next(models);
     }
-
-    protected abstract _getUpdateWhen(): Observable<AbstractModel[]>;
     protected abstract _onTreeDown(context: RunContext): Observable<void>;
     protected abstract _onTreeUp(): void;
 
@@ -178,12 +176,7 @@ export abstract class AbstractModel<
     }
 
     private _getUpdates$(): Observable<void> {
-        return this._getUpdateHandler(
-            merge(
-                ...this.root.all.map((c: AbstractModel) => c._getUpdateWhen()),
-                this.root._manualUpdates$
-            )
-        );
+        return this._getUpdateHandler(this.root._manualUpdates$);
     }
 
     private _getUpdateHandler(

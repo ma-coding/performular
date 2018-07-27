@@ -58,10 +58,6 @@ export class LayoutModel extends AbstractModel<LayoutModelState, any> {
         LayoutModel._cnt++;
     }
 
-    protected _getUpdateWhen(): Observable<AbstractModel[]> {
-        return of([]);
-    }
-
     protected _onTreeUp(): void {}
     protected _onTreeDown(context: RunContext): Observable<void> {
         return of(undefined);

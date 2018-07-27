@@ -132,5 +132,6 @@ export class ListFieldModel<ATTRS = any> extends AbstractFieldModel<
         this.children.forEach((child: AbstractModel) => child.setParent(this));
         this._createValue(ValueMode.SET, this._buildValue(this.childFields));
         this._updateParentValue([this], ValueMode.SET);
+        this.runUpdate();
     }
 }
