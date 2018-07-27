@@ -6,7 +6,8 @@ import {
     Injector,
     Input,
     OnDestroy,
-    ViewContainerRef
+    ViewContainerRef,
+    Renderer2
 } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -14,6 +15,9 @@ import { Subscription } from 'rxjs';
 import { AbstractFieldRenderer, AbstractModel } from '@performular/core';
 
 import { PerformularModel } from './performular.model';
+import { TemplateService } from './template.service';
+import { TemplatePosition, TemplateDirective } from './template.directive';
+import { FieldsetComponent } from './build-in/fieldset.component';
 
 @Directive({
     selector: '[performularRenderer]'
@@ -33,7 +37,9 @@ export class PerformularRendererDirective extends AbstractFieldRenderer
     constructor(
         private _cfr: ComponentFactoryResolver,
         private _injector: Injector,
-        private _viewContainerRef: ViewContainerRef
+        private _renderer: Renderer2,
+        private _viewContainerRef: ViewContainerRef,
+        private _templateService: TemplateService
     ) {
         super();
     }
@@ -69,10 +75,43 @@ export class PerformularRendererDirective extends AbstractFieldRenderer
             componentRef.instance,
             componentRef.location.nativeElement
         );
+        this._renderTemplate(this._field, componentRef, 'before');
+        this._renderTemplate(this._field, componentRef, 'after');
         componentRef.changeDetectorRef.detectChanges();
     }
 
     protected _destroyField(): void {
         this._viewContainerRef.clear();
+    }
+
+    private _renderTemplate(
+        field: AbstractModel,
+        componentRef: ComponentRef<any>,
+        position: TemplatePosition
+    ): void {
+        const template:
+            | TemplateDirective
+            | undefined = this._templateService.getTemplate(
+            field.id,
+            field.modelDef.metadata.name,
+            position
+        );
+        if (template) {
+            const h: HTMLElement = componentRef.location.nativeElement;
+            if (position === 'before') {
+                template
+                    .createView(field)
+                    .rootNodes.reverse()
+                    .forEach((node: any) =>
+                        this._renderer.insertBefore(h, node, h.firstChild)
+                    );
+            } else {
+                template
+                    .createView(field)
+                    .rootNodes.forEach((node: any) =>
+                        this._renderer.appendChild(h, node)
+                    );
+            }
+        }
     }
 }

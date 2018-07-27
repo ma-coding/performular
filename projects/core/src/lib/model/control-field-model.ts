@@ -55,5 +55,16 @@ export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
         }
     }
 
+    public conditionalValue(
+        condition: (field: AbstractFieldModel) => boolean = (
+            cond: AbstractFieldModel
+        ): boolean => true
+    ): any {
+        if (condition(this)) {
+            return this.value;
+        }
+    }
+
     protected _buildValue(childFields: AbstractFieldModel<any>[]): any {}
+
 }

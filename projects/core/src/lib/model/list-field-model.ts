@@ -101,15 +101,23 @@ export class ListFieldModel<ATTRS = any> extends AbstractFieldModel<
         this._updateChildren(children, true);
     }
 
-    public getIndex(field: AbstractModel): number {
-        const aResult: number = this.children.indexOf(field);
-        if (aResult >= 0) {
-            return aResult;
+    public getIndex(field: AbstractFieldModel): number {
+        return this.children.indexOf(field);
+    }
+
+    public conditionalValue(
+        condition: (field: AbstractFieldModel) => boolean = (
+            cond: AbstractFieldModel
+        ): boolean => true
+    ): any {
+        if (!condition(this)) {
+            return;
         }
-        const fResult: number = this.children.indexOf(<AbstractFieldModel>(
-            field
-        ));
-        return fResult || -1;
+        return this.childFields
+            .map((child: AbstractFieldModel) => {
+                return child.conditionalValue(condition);
+            })
+            .filter(Boolean);
     }
 
     protected _buildValue(childFields: AbstractFieldModel[]): any {

@@ -1,13 +1,22 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnDestroy,
+    ContentChildren,
+    QueryList
+} from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
 import { AbstractForm, AbstractModel } from '@performular/core';
+import { TemplateService } from './template.service';
+import { TemplateDirective } from './template.directive';
 
 @Component({
     selector: 'performular-form',
     template: `<ng-container [performularRenderer]="form"></ng-container>`,
-    styles: [``]
+    styles: [``],
+    providers: [TemplateService]
 })
 export class PerformularComponent extends AbstractForm implements OnDestroy {
     private _subscription: Subscription | undefined;
@@ -23,6 +32,15 @@ export class PerformularComponent extends AbstractForm implements OnDestroy {
 
     get form(): AbstractModel | undefined {
         return this._form;
+    }
+
+    @ContentChildren(TemplateDirective)
+    set templates(t: QueryList<TemplateDirective>) {
+        this._templateService.templates = t.toArray();
+    }
+
+    constructor(private _templateService: TemplateService) {
+        super();
     }
 
     public ngOnDestroy(): void {

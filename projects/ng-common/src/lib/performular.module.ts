@@ -20,6 +20,7 @@ import { CoreListComponent } from './build-in/list.component';
 import { PerformularComponent } from './form.component';
 import { NgInjector } from './ng-injector';
 import { PerformularRendererDirective } from './render.directive';
+import { TemplateDirective } from './template.directive';
 
 export interface PerformularOptions {
     models?: InstanceDef<any>[];
@@ -43,12 +44,14 @@ export const buildInModels: any[] = [
     declarations: [
         PerformularComponent,
         PerformularRendererDirective,
+        TemplateDirective,
         ...buildInModels
     ],
     exports: [
         FlexLayoutModule,
         PerformularComponent,
-        PerformularRendererDirective
+        PerformularRendererDirective,
+        TemplateDirective
     ],
     providers: [...CORE_RUN_DETECTORS, ...CORE_VALIDATORS],
     entryComponents: [...buildInModels]

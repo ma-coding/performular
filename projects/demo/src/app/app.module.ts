@@ -10,6 +10,7 @@ import { PerformularModule } from '@performular/ng-common';
 import { PerformularUiMaterialModule } from '@performular/ui-material';
 
 import { AppComponent } from './app.component';
+import { TestDatasource } from './datsource';
 
 @NgModule({
     imports: [
@@ -17,10 +18,13 @@ import { AppComponent } from './app.component';
         FlexLayoutModule,
         MatNativeDateModule,
         BrowserModule,
-        PerformularModule.withConfig({}),
+        PerformularModule.withConfig({
+            datasources: [TestDatasource]
+        }),
         PerformularUiMaterialModule
     ],
     declarations: [AppComponent],
+    providers: [TestDatasource],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

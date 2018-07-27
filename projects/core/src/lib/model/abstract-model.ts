@@ -44,6 +44,14 @@ export abstract class AbstractModel<
             .pipe(map((modeler: Modeler) => modeler.target));
     }
 
+    get modelDef(): AbstractModelState['model'] {
+        return this._state$.select('model');
+    }
+
+    get modelDef$(): Observable<AbstractModelState['model']> {
+        return this._state$.select$('model');
+    }
+
     get attrs(): AbstractModelState<ATTRS>['attrs'] {
         return this._state$.select('attrs');
     }

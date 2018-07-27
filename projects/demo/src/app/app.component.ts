@@ -25,16 +25,14 @@ export class AppComponent {
     public typedForm: GroupFieldModel = getTypedForm();
 
     constructor() {
-        // this.typedForm.value$.subscribe(console.log);
         // this.classForm.updates$.subscribe(() => console.log(this.classForm));
         this.typedForm.value$.subscribe((value: any) => {
-            console.log('NEW VALUE', value.checkbox);
+            console.log(value);
             const array: AbstractFieldModel | undefined = this.typedForm.find(
                 'subs'
             );
             if (array) {
                 array.setForcedHidden(value.checkbox);
-                console.log(array);
             }
             // this.classForm.setValue(value);
             // this.typedForm.setValue(value);
@@ -49,4 +47,6 @@ export class AppComponent {
             // }
         });
     }
+
+    public removeField(field: AbstractFieldModel): void {}
 }

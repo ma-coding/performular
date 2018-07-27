@@ -12,20 +12,23 @@ import {
     MaterialToggleComponent,
     MaterialInputComponent,
     MaterialTextareaComponent,
-    MaterialDatepickerComponent
+    MaterialDatepickerComponent,
+    MaterialSelectComponent,
+    MaterialSelectAttrs
 } from '@performular/ui-material';
 import {
     CoreGroupComponent,
     CoreListComponent,
     FieldsetComponent
 } from '@performular/ng-common';
+import { TestDatasource } from './datsource';
 
 @Group<keyof SubForm>({
     id: 'SUB',
     attrs: undefined,
     model: CoreGroupComponent,
     layout: 'column',
-    children: ['checkbox']
+    children: ['check']
 })
 export class SubForm {
     @Control({
@@ -34,7 +37,7 @@ export class SubForm {
         },
         model: MaterialCheckboxComponent
     })
-    public checkbox?: boolean;
+    public check?: boolean;
 }
 
 @Group<keyof FormType>({
@@ -54,10 +57,9 @@ export class SubForm {
             child: {
                 layout: 'row',
                 layoutGap: '18px',
-                children: ['input', 'textarea', 'datepicker']
+                children: ['input', 'textarea', 'datepicker', 'select']
             }
         },
-        'sub',
         {
             id: 'f',
             model: FieldsetComponent,
@@ -124,10 +126,19 @@ export class FormType {
     })
     public datepicker?: Date;
 
-    @SubGroup({
-        childTarget: SubForm
+    @Control({
+        attrs: <MaterialSelectAttrs>{
+            placeholder: 'Select',
+            label: 'Select',
+            options: {
+                target: TestDatasource,
+                resetInvisibleValue: true
+            },
+            addNoneValue: true
+        },
+        model: MaterialSelectComponent
     })
-    public sub?: SubForm;
+    public select?: number;
 
     @List({
         childTarget: SubForm,
@@ -140,7 +151,7 @@ export class FormType {
 export function getTypedForm(): GroupFieldModel {
     return Builder.buildFromTarget(FormType, {
         input: 800,
-        sub: { checkbox: true },
-        subs: [{ checkbox: true }, { checkbox: false }]
+        select: 0,
+        subs: [{ check: true }, { check: false }]
     });
 }

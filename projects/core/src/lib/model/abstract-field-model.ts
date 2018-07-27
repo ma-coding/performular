@@ -156,7 +156,7 @@ export abstract class AbstractFieldModel<
         let field: AbstractFieldModel = this;
         let jump: AbstractModel = this;
         while (jump.parent) {
-            jump = <AbstractModel>field.parent;
+            jump = <AbstractModel>jump.parent;
             if (jump instanceof AbstractFieldModel) {
                 field = jump;
             }
@@ -167,6 +167,9 @@ export abstract class AbstractFieldModel<
     public abstract setValue(value: any, emitUpdate: boolean): void;
     public abstract patchValue(value: any, emitUpdate: boolean): void;
     public abstract resetValue(emitUpdate: boolean): void;
+    public abstract conditionalValue(
+        condition: (field: AbstractFieldModel) => boolean
+    ): any;
 
     public find(...path: IndexType[]): AbstractFieldModel | undefined {
         return path.reduce(

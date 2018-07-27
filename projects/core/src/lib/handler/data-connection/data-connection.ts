@@ -3,9 +3,9 @@ import { DataConnectionStrategy } from './types/data-connection-strategy';
 import { DataConnectionOptions } from './types/data-connection-options';
 import { DataOption } from './types/data-option';
 import { AbstractFieldModel } from '../../model/abstract-field-model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { makeObservable } from '../../util/make-observable';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, skip } from 'rxjs/operators';
 
 export class DataConnection extends AbstractHandlerWithFunc<
     DataConnectionStrategy,
@@ -47,6 +47,7 @@ export class DataConnection extends AbstractHandlerWithFunc<
         option: any
     ): Observable<boolean> {
         return field.rootField.value$.pipe(
+            skip(1),
             map(
                 () =>
                     this.instance.isOptionDisabled

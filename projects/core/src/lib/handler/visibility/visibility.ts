@@ -30,7 +30,7 @@ export class Visibility extends AbstractHandlerWithFunc<
         this.runDetection = new RunDetection(
             options.runDetection ||
             (this.metadata && (<VisibleOptions>this.metadata).runDetector)
-                ? (<VisibleOptions>this.metadata).runDetector
+                ? { target: (<VisibleOptions>this.metadata).runDetector }
                 : { target: (context: RunContext): boolean => true }
         );
     }
