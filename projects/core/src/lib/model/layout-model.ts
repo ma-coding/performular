@@ -10,8 +10,9 @@ import { AbstractModel } from './abstract-model';
 import { LayoutModelOptions } from './types/layout-model-options';
 import { LayoutModelState } from './types/layout-model-state';
 import { ModelType } from '../builder/types/model-type';
+import { DisplayModel } from './display-model';
 
-export class LayoutModel extends AbstractModel<LayoutModelState, any> {
+export class LayoutModel extends DisplayModel<LayoutModelState, any> {
     private static _cnt: number = 0;
 
     protected _state$: State<LayoutModelState>;
@@ -44,7 +45,8 @@ export class LayoutModel extends AbstractModel<LayoutModelState, any> {
         super();
         options.children.forEach((c: AbstractModel) => c.setParent(this));
         this._state$ = new State<LayoutModelState>({
-            ...this._initAbstractModel({
+            ...this._initDisplayModel({
+                hideWhenNoChild: options.hideWhenNoChild,
                 id: LayoutModel._cnt + '-Layout',
                 attrs: undefined,
                 model: Framework.getLayoutModel()

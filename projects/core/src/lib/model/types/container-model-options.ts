@@ -1,8 +1,3 @@
-import { AbstractModel } from '../abstract-model';
-import { AbstractModelOptions } from './abstract-model-options';
+import { DisplayModelOptions } from './display-model-options';
 
-export interface ContainerModelOptions<ATTRS = any>
-    extends AbstractModelOptions<ATTRS> {
-    children?: AbstractModel[];
-    hideWhenNoChild?: boolean;
-}
+export type ContainerModelOptions<ATTRS = any> = DisplayModelOptions<ATTRS>;

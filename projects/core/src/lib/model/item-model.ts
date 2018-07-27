@@ -10,9 +10,10 @@ import { AbstractModel } from './abstract-model';
 import { ItemModelOptions } from './types/item-model-options';
 import { ItemModelState } from './types/item-model-state';
 import { ModelType } from '../builder/types/model-type';
+import { DisplayModel } from './display-model';
 
 // Todo: add full implementation
-export class ItemModel extends AbstractModel<ItemModelState, any> {
+export class ItemModel extends DisplayModel<ItemModelState, any> {
     private static _cnt: number = 0;
 
     protected _state$: State<ItemModelState>;
@@ -53,7 +54,8 @@ export class ItemModel extends AbstractModel<ItemModelState, any> {
         super();
         options.child.setParent(this);
         this._state$ = new State<ItemModelState>({
-            ...this._initAbstractModel({
+            ...this._initDisplayModel({
+                hideWhenNoChild: options.hideWhenNoChild,
                 id: ItemModel._cnt + '-Item',
                 attrs: undefined,
                 model: Framework.getItemModel()
@@ -66,11 +68,6 @@ export class ItemModel extends AbstractModel<ItemModelState, any> {
             type: ModelType.ITEM
         });
         ItemModel._cnt++;
-    }
-
-    protected _onTreeUp(): void {}
-    protected _onTreeDown(context: RunContext): Observable<void> {
-        return of(undefined);
     }
 
     private _initFlex(

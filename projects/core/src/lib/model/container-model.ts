@@ -6,9 +6,9 @@ import { AbstractModel } from './abstract-model';
 import { ContainerModelOptions } from './types/container-model-options';
 import { ContainerModelState } from './types/container-model-state';
 import { ModelType } from '../builder/types/model-type';
-import { every } from '../../../../../node_modules/rxjs/operators';
+import { DisplayModel } from './display-model';
 
-export class ContainerModel<ATTRS = any> extends AbstractModel<
+export class ContainerModel<ATTRS = any> extends DisplayModel<
     ContainerModelState<ATTRS>,
     ATTRS
 > {
@@ -16,27 +16,11 @@ export class ContainerModel<ATTRS = any> extends AbstractModel<
 
     constructor(options: ContainerModelOptions<ATTRS>) {
         super();
-        (options.children || []).forEach((child: AbstractModel) =>
-            child.setParent(this)
+        (options.children || []).forEach((c: AbstractModel) =>
+            c.setParent(this)
         );
         this._state$ = new State<ContainerModelState>({
-            ...this._initAbstractModel(options),
-            children: options.children || [],
-            type: ModelType.CONTAINER,
-            hideWhenNoChild: options.hideWhenNoChild || true
+            ...this._initDisplayModel(options)
         });
-    }
-
-    protected _onTreeDown(context: RunContext): Observable<void> {
-        return of(undefined); // Todo: add right actions
-    }
-
-    protected _onTreeUp(): void {
-        const everyChildHidden: boolean = this.children.every(
-            (c: AbstractModel) => c.hidden
-        );
-        if (this.hidden !== everyChildHidden) {
-            this._state$.updateKey('hidden', everyChildHidden);
-        }
     }
 }
