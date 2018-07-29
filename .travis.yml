@@ -6,5 +6,9 @@ addons:
   chrome: stable
 script:
   - npx ng build core
-#  - npm run tests:unit
-#  - npm run build:sample
+  - npm install ./dist/core/
+  - npx ng build ng-connector
+  - npm install ./dist/ng-connector/
+  - npx ng build ng-ui-material
+  - npm install ./dist/ng-ui-material/
+  - npx ng build demo
