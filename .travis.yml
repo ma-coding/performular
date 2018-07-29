@@ -1,0 +1,10 @@
+language: node_js
+sudo: required
+node_js:
+  - "node"
+addons:
+  chrome: stable
+script:
+  - npx ng build core
+#  - npm run tests:unit
+#  - npm run build:sample
