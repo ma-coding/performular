@@ -6,8 +6,8 @@ import {
     MaterialToggle,
     MaterialCheckbox,
     MaterialSlider
-} from '@performular/ui-material';
-import { CoreGroup } from '@performular/ng-common';
+} from '@performular/ng-ui-material';
+import { CoreGroup } from '@performular/ng-connector';
 
 export function getClassForm(): GroupFieldModel {
     return new CoreGroup({

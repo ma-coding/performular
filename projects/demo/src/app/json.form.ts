@@ -6,8 +6,8 @@ import {
     PERFORMULAR_MODEL_MATERIALCHECKBOX,
     PERFORMULAR_MODEL_MATERIALSLIDER,
     PERFORMULAR_MODEL_MATERIALTEXTAREA
-} from '@performular/ui-material';
-import { PERFORMULAR_MODEL_CORE_GROUP } from '@performular/ng-common';
+} from '@performular/ng-ui-material';
+import { PERFORMULAR_MODEL_CORE_GROUP } from '@performular/ng-connector';
 
 export function getJsonForm(value: any): GroupFieldModel {
     return Builder.buildFromJson(

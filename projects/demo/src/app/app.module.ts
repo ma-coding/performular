@@ -6,8 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import 'hammerjs';
 
-import { PerformularModule } from '@performular/ng-common';
-import { PerformularUiMaterialModule } from '@performular/ui-material';
+import { PerformularModule } from '@performular/ng-connector';
+import { PerformularUiMaterialModule } from '@performular/ng-ui-material';
 
 import { AppComponent } from './app.component';
 import { TestDatasource } from './datsource';

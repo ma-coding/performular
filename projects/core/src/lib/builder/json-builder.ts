@@ -27,7 +27,7 @@ export class JsonBuilder {
         options: JsonUnionOptions,
         value: any,
         paths: IndexType[] = []
-    ): AbstractModel {
+    ): any {
         const opt: any = cloneDeep(options);
         const model: string | InstanceDef<any> =
             options.type === ModelType.LAYOUT

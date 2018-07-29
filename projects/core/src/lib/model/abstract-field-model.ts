@@ -1,5 +1,5 @@
-import { forkJoin, merge, Observable, of, combineLatest } from 'rxjs';
-import { map, tap, skip } from 'rxjs/operators';
+import { forkJoin, Observable, of, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ValidationOptions } from '../handler/validation/types/validation-options';
 import { Validation } from '../handler/validation/validation';
@@ -15,7 +15,7 @@ import { AbstractModel } from './abstract-model';
 import { AbstractFieldModelOptions } from './types/abstract-field-model-options';
 import { AbstractFieldModelState } from './types/abstract-field-model-state';
 import { IndexType } from '../builder/json-builder';
-import { isString } from 'util';
+import { isString } from '../util/is-string';
 
 export abstract class AbstractFieldModel<
     STATE extends AbstractFieldModelState<ATTRS> = any,
@@ -235,7 +235,7 @@ export abstract class AbstractFieldModel<
         const visibilities: ObjectType<Visibility> = this._state$.select(
             'visibilities'
         );
-        this._state$.updateKey('validations', {
+        this._state$.updateKey('visibilities', {
             ...Object.keys(visibilities).reduce((prev: any, curr: string) => {
                 if (curr === id) {
                     return prev;

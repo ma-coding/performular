@@ -1,12 +1,10 @@
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Framework } from '../framework/framework';
 import { State } from '../util/state';
 import { ItemAlignValues } from '../util/types/item-align-values';
 import { ItemValues } from '../util/types/item-values';
-import { RunContext } from '../util/types/run-context';
 import { ViewScales } from '../util/types/view-scales';
-import { AbstractModel } from './abstract-model';
 import { ItemModelOptions } from './types/item-model-options';
 import { ItemModelState } from './types/item-model-state';
 import { ModelType } from '../builder/types/model-type';

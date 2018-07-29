@@ -1,5 +1,5 @@
-import { forkJoin, merge, Observable, Subject } from 'rxjs';
-import { buffer, concatMap, debounceTime, map, tap } from 'rxjs/operators';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
 
 import { Modeler } from '../handler/modeler/modeler';
 import { flatten } from '../util/flatten';

@@ -15,12 +15,12 @@ import {
     MaterialDatepickerComponent,
     MaterialSelectComponent,
     MaterialSelectAttrs
-} from '@performular/ui-material';
+} from '@performular/ng-ui-material';
 import {
     CoreGroupComponent,
     CoreListComponent,
     FieldsetComponent
-} from '@performular/ng-common';
+} from '@performular/ng-connector';
 import { TestDatasource } from './datsource';
 
 @Group<keyof SubForm>({
@@ -28,7 +28,16 @@ import { TestDatasource } from './datsource';
     attrs: undefined,
     model: CoreGroupComponent,
     layout: 'column',
-    children: ['check']
+    children: [
+        {
+            id: 'ft',
+            model: FieldsetComponent,
+            attrs: {
+                legend: 'item'
+            },
+            children: ['check']
+        }
+    ]
 })
 export class SubForm {
     @Control({
@@ -45,19 +54,38 @@ export class SubForm {
     attrs: undefined,
     model: CoreGroupComponent,
     layout: 'column',
+    layoutGap: '18px',
     children: [
         {
             child: {
-                layout: 'row',
-                layoutGap: '18px',
-                children: ['slider', 'checkbox', 'toggle']
+                id: 'ff',
+                model: FieldsetComponent,
+                attrs: {
+                    legend: 'CHECK'
+                },
+                children: [
+                    {
+                        layout: 'row',
+                        layoutGap: '18px',
+                        children: ['slider', 'checkbox', 'toggle']
+                    }
+                ]
             }
         },
         {
             child: {
-                layout: 'row',
-                layoutGap: '18px',
-                children: ['input', 'textarea', 'datepicker', 'select']
+                id: 'ffd',
+                model: FieldsetComponent,
+                attrs: {
+                    legend: 'INP'
+                },
+                children: [
+                    {
+                        layout: 'row',
+                        layoutGap: '18px',
+                        children: ['input', 'textarea', 'datepicker', 'select']
+                    }
+                ]
             }
         },
         {

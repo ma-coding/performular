@@ -1,14 +1,9 @@
 import { Component } from '@angular/core';
 
-import {
-    GroupFieldModel,
-    PERFORMULAR_VALIDATOR_REQUIRED,
-    AbstractFieldModel
-} from '@performular/core';
+import { GroupFieldModel } from '@performular/core';
 import { getJsonForm } from './json.form';
 import { getClassForm } from './class.form';
 import { getTypedForm } from './type.form';
-import { MaterialDatepicker } from '@performular/ui-material';
 
 @Component({
     selector: 'app-root',

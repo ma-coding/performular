@@ -2,7 +2,6 @@ import { Observable, of } from 'rxjs';
 
 import { RunContext } from '../util/types/run-context';
 import { AbstractModel } from './abstract-model';
-import { AbstractModelState } from '../model';
 import { DisplayModelOptions } from './types/display-model-options';
 import { DisplayModelState } from './types/display-model-state';
 

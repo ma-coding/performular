@@ -3,7 +3,7 @@ import { DataConnectionStrategy } from './types/data-connection-strategy';
 import { DataConnectionOptions } from './types/data-connection-options';
 import { DataOption } from './types/data-option';
 import { AbstractFieldModel } from '../../model/abstract-field-model';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { makeObservable } from '../../util/make-observable';
 import { map, tap, skip } from 'rxjs/operators';
 

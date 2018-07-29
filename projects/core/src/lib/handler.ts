@@ -10,3 +10,8 @@ export {
 export {
     DataConnectionStrategy
 } from './handler/data-connection/types/data-connection-strategy';
+export {
+    DataConnectionOptions
+} from './handler/data-connection/types/data-connection-options';
+export { DataConnection } from './handler/data-connection/data-connection';
+export { DataOption } from './handler/data-connection/types/data-option';
