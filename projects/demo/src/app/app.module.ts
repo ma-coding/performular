@@ -18,7 +18,7 @@ import { TestDatasource } from './datsource';
         FlexLayoutModule,
         MatNativeDateModule,
         BrowserModule,
-        PerformularModule.withConfig({
+        PerformularModule.forRoot({
             datasources: [TestDatasource]
         }),
         PerformularUiMaterialModule

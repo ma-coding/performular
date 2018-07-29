@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
+import {
+    Injector,
+    ModuleWithProviders,
+    NgModule,
+    ANALYZE_FOR_ENTRY_COMPONENTS
+} from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {
     Framework,
@@ -53,7 +58,6 @@ export const buildInModels: any[] = [
         PerformularRendererDirective,
         TemplateDirective
     ],
-    providers: [...CORE_RUN_DETECTORS, ...CORE_VALIDATORS],
     entryComponents: [...buildInModels]
 })
 export class PerformularModule {
@@ -64,9 +68,38 @@ export class PerformularModule {
         Framework.setItemModel(ItemComponent);
     }
 
-    public static withConfig(options: PerformularOptions): ModuleWithProviders {
+    public static forRoot(options: PerformularOptions): ModuleWithProviders {
         return {
-            providers: [],
+            providers: [
+                ...CORE_RUN_DETECTORS,
+                ...CORE_VALIDATORS,
+                {
+                    provide: ANALYZE_FOR_ENTRY_COMPONENTS,
+                    useValue: options.models || [],
+                    multi: true
+                },
+                ...(options.datasources || []),
+                ...(options.runDetectors || []),
+                ...(options.validators || []),
+                ...(options.visibles || [])
+            ],
+            ngModule: PerformularModule
+        };
+    }
+
+    public static forChild(options: PerformularOptions): ModuleWithProviders {
+        return {
+            providers: [
+                {
+                    provide: ANALYZE_FOR_ENTRY_COMPONENTS,
+                    useValue: options.models || [],
+                    multi: true
+                },
+                ...(options.datasources || []),
+                ...(options.runDetectors || []),
+                ...(options.validators || []),
+                ...(options.visibles || [])
+            ],
             ngModule: PerformularModule
         };
     }

@@ -77,12 +77,16 @@ export class GroupFieldModel<ATTRS = any> extends AbstractFieldModel<
         if (!condition(this)) {
             return;
         }
-        return this.childFields.reduce((prev: {}, child: AbstractFieldModel) => {
-            return {
-                ...prev,
-                [child.id]: child.conditionalValue(condition)
-            };
-        }, {});
+        return this.childFields.reduce(
+            (prev: {}, child: AbstractFieldModel) => {
+                const condChildValue: any = child.conditionalValue(condition);
+                return {
+                    ...prev,
+                    ...(condChildValue ? { [child.id]: condChildValue } : {})
+                };
+            },
+            {}
+        );
     }
 
     protected _buildValue(childFields: AbstractFieldModel[]): any {
@@ -93,5 +97,4 @@ export class GroupFieldModel<ATTRS = any> extends AbstractFieldModel<
             };
         }, {});
     }
-
 }
