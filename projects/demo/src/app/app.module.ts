@@ -6,28 +6,25 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import 'hammerjs';
 
-import { PerformularCoreModule } from '@performular/core';
-import { PerformularUiMaterialModule } from '@performular/ui-material';
+import { PerformularModule } from '@performular/ng-connector';
+import { PerformularUiMaterialModule } from '@performular/ng-ui-material';
 
 import { AppComponent } from './app.component';
-import { TestDatasource } from './test.datasource';
+import { TestDatasource } from './datsource';
 
 @NgModule({
-    declarations: [
-        AppComponent
-    ],
     imports: [
         BrowserAnimationsModule,
         FlexLayoutModule,
         MatNativeDateModule,
         BrowserModule,
-        PerformularCoreModule.withConfig({
-            controlDatasources: [
-                TestDatasource
-            ]
+        PerformularModule.forRoot({
+            datasources: [TestDatasource]
         }),
         PerformularUiMaterialModule
     ],
+    declarations: [AppComponent],
+    providers: [TestDatasource],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

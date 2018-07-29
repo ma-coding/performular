@@ -3,41 +3,7 @@
         "arrow-return-shorthand": true,
         "callable-types": true,
         "class-name": true,
-        "comment-format": [
-            true,
-            "check-space"
-        ],
-        "completed-docs": [
-            true,
-            {
-                "classes": true,
-                "enums": true,
-                "functions": {
-                    "visibilities": [
-                        "exported"
-                    ]
-                },
-                "methods": {
-                    "locations": "instance",
-                    "privacies": [
-                        "protected",
-                        "public"
-                    ]
-                },
-                "properties": {
-                    "tags": {
-                        "content": {
-                            "see": [
-                                "#.*"
-                            ]
-                        },
-                        "existence": [
-                            "inheritdoc"
-                        ]
-                    }
-                }
-            }
-        ],
+        "comment-format": [true, "check-space"],
         "component-class-suffix": true,
         "curly": true,
         "deprecation": {
@@ -46,21 +12,13 @@
         "directive-class-suffix": true,
         "eofline": true,
         "forin": true,
-        "import-blacklist": [
-            true
-        ],
+        "import-blacklist": [true],
         "import-spacing": true,
-        "indent": [
-            true,
-            "spaces"
-        ],
+        "indent": [true, "spaces"],
         "interface-over-type-literal": true,
         "jsdoc-format": true,
         "label-position": true,
-        "max-line-length": [
-            true,
-            140
-        ],
+        "max-line-length": [true, 140],
         "member-access": true,
         "member-ordering": [
             true,
@@ -89,14 +47,7 @@
         "no-bitwise": true,
         "no-boolean-literal-compare": true,
         "no-consecutive-blank-lines": true,
-        "no-console": [
-            true,
-            "debug",
-            "info",
-            "time",
-            "timeEnd",
-            "trace"
-        ],
+        "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
         "no-construct": true,
         "no-debugger": true,
         "no-duplicate-super": true,
@@ -111,6 +62,7 @@
         "no-output-rename": true,
         "no-parameter-reassignment": true,
         "no-redundant-jsdoc": true,
+        "no-unused-variable": true,
         "no-shadowed-variable": true,
         "no-string-literal": false,
         "no-string-throw": true,
@@ -130,19 +82,10 @@
             "check-whitespace"
         ],
         "prefer-const": true,
-        "quotemark": [
-            true,
-            "single"
-        ],
+        "quotemark": [true, "single"],
         "radix": true,
-        "semicolon": [
-            true,
-            "always"
-        ],
-        "triple-equals": [
-            true,
-            "allow-null-check"
-        ],
+        "semicolon": [true, "always"],
+        "triple-equals": [true, "allow-null-check"],
         "typedef": [
             true,
             "array-destructuring",
@@ -181,7 +124,5 @@
             "check-type"
         ]
     },
-    "rulesDirectory": [
-        "node_modules/codelyzer"
-    ]
+    "rulesDirectory": ["node_modules/codelyzer"]
 }

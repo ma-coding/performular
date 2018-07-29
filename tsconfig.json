@@ -12,13 +12,12 @@
         "strictNullChecks": true,
         "strictPropertyInitialization": true,
         "target": "es5",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "lib": [
-            "es2017",
-            "dom"
-        ],
-        "paths": {}
+        "typeRoots": ["node_modules/@types"],
+        "lib": ["es2017", "dom"],
+        "paths": {
+            // "@performular/ng-connector": ["projects/ng-connector/src/index.ts"],
+            // "@performular/core": ["projects/core/src/index.ts"],
+            // "@performular/ng-ui-material": ["projects/ng-ui-material/src/index.ts"]
+        }
     }
 }
