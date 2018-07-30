@@ -8,14 +8,14 @@ export { isFunction } from './util/is-function';
 export { isInstance } from './util/is-instance';
 export { isString } from './util/is-string';
 export { makeObservable } from './util/make-observable';
-export {
-    Constructor,
-    getAllPropertyDescriptors,
-    getOwnDescriptors,
-    mix,
-    Mixin,
-    use
-} from './util/mixin';
+// export {
+//     Constructor,
+//     getAllPropertyDescriptors,
+//     getOwnDescriptors,
+//     mix,
+//     Mixin,
+//     use
+// } from './util/mixin';
 export { State } from './util/state';
 export { InputValueBuilder } from './util/input-value-builder';
 

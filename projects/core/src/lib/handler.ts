@@ -7,6 +7,7 @@ export {
 export {
     VisibilityExecuter
 } from './handler/visibility/types/visibility-executer';
+export { VisibilityType } from './handler/visibility/types/visibility-type';
 export {
     DataConnectionStrategy
 } from './handler/data-connection/types/data-connection-strategy';
