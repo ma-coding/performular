@@ -14,7 +14,7 @@ export class Visibility extends AbstractHandlerWithFunc<
     VisibilityExecuter,
     VisibilityFunction
 > {
-    public type: VisibilityType;
+    public type: VisibilityType | 'HIDE' | 'DISABLE';
     public runDetection: RunDetection;
     public result?: boolean;
 
