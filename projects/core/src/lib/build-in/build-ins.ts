@@ -5,8 +5,11 @@ import { MaxValidator } from './validators/max.validator';
 import { MinValidator } from './validators/min.validator';
 import { DefaultRunDetector } from './run-detection/default.run-detection';
 import { OnChangeRunDetector } from './run-detection/on-change.run-detection';
+import { InstanceDef } from '../util/types/instance-def';
+import { ValidationExecuter } from '../handler/validation/types/validation-executer';
+import { RunDetectionStrategy } from '../handler/run-detection/types/run-detection-strategy';
 
-export const CORE_VALIDATORS: any[] = [
+export const CORE_VALIDATORS: InstanceDef<ValidationExecuter>[] = [
     MaxLengthValidator,
     MinLengthValidator,
     RequiredValidator,
@@ -14,7 +17,7 @@ export const CORE_VALIDATORS: any[] = [
     MinValidator
 ];
 
-export const CORE_RUN_DETECTORS: any[] = [
+export const CORE_RUN_DETECTORS: InstanceDef<RunDetectionStrategy>[] = [
     DefaultRunDetector,
     OnChangeRunDetector
 ];

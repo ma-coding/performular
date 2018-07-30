@@ -4,7 +4,6 @@ import { CDecorator } from '../../util/types/c-decorator';
 import { InstanceDef } from '../../util/types/instance-def';
 import { RunDetectorOptions } from '../types/run-detector.options';
 
-// Todo set right CDecorator type
 export function RunDetector(
     options: RunDetectorOptions
 ): CDecorator<InstanceDef<RunDetectionStrategy>> {

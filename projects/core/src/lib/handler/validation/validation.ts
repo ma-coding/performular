@@ -8,6 +8,7 @@ import { RunDetection } from '../run-detection/run-detection';
 import { ValidationExecuter } from './types/validation-executer';
 import { ValidationFunction } from './types/validation-function';
 import { ValidationOptions } from './types/validation-options';
+import { RunDetectionTarget } from '../run-detection/types/run-detection-target';
 
 export class Validation extends AbstractHandlerWithFunc<
     ValidationExecuter,
@@ -26,11 +27,14 @@ export class Validation extends AbstractHandlerWithFunc<
             options.params
         );
         this.errorMsg = options.errorMsg || '';
+        const metaTarget: RunDetectionTarget | undefined = (<VisibleOptions>(
+            this.metadata
+        )).runDetector;
         this.runDetection = new RunDetection(
             options.runDetection ||
-            (this.metadata && (<VisibleOptions>this.metadata).runDetector)
-                ? { target: (<VisibleOptions>this.metadata).runDetector }
-                : { target: (context: RunContext): boolean => true }
+                (metaTarget
+                    ? { target: metaTarget }
+                    : { target: (context: RunContext): boolean => true })
         );
     }
 
