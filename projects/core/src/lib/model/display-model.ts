@@ -17,6 +17,8 @@ export abstract class DisplayModel<
         return this._state$.select$('hideWhenNoChild');
     }
 
+    protected _buildRunContext(checkedFields: any[]): any {}
+
     protected _initDisplayModel(
         options: DisplayModelOptions
     ): DisplayModelState {

@@ -133,6 +133,7 @@ export abstract class AbstractModel<
     }
     protected abstract _onTreeDown(context: RunContext): Observable<void>;
     protected abstract _onTreeUp(): void;
+    protected abstract _buildRunContext(checkedFields: any[]): RunContext;
 
     protected _treeUp(): void {
         this._onTreeUp();
@@ -157,14 +158,6 @@ export abstract class AbstractModel<
                 )
             )
         );
-    }
-
-    protected _buildRunContext(checkedFields: AbstractModel[]): RunContext {
-        return {
-            checkedFields: checkedFields,
-            checked: checkedFields.indexOf(this as any) >= 0,
-            field: this as any
-        };
     }
 
     protected _initAbstractModel(

@@ -278,6 +278,16 @@ export abstract class AbstractFieldModel<
 
     protected abstract _buildValue(childFields: AbstractFieldModel[]): any;
 
+    protected _buildRunContext(
+        checkedFields: AbstractFieldModel[]
+    ): RunContext {
+        return {
+            checkedFields: checkedFields,
+            checked: checkedFields.indexOf(this) >= 0,
+            field: this
+        };
+    }
+
     protected _updateParentValue(
         checklist: AbstractFieldModel[] = [this],
         mode: ValueMode
