@@ -1,7 +1,7 @@
-import { AbstractModel } from '../../model/abstract-model';
+import { AbstractFieldModel } from '../../model/abstract-field-model';
 
 export interface RunContext {
     checked: boolean;
-    checkedFields: AbstractModel[];
-    field: AbstractModel;
+    checkedFields: AbstractFieldModel[];
+    field: AbstractFieldModel;
 }
