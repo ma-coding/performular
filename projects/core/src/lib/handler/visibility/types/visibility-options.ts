@@ -4,7 +4,7 @@ import { VisibilityType } from './visibility-type';
 
 export interface VisibilityOptions {
     target: VisibilityTarget;
-    type: VisibilityType;
+    type: 'HIDE' | 'DISABLE' | VisibilityType;
     params?: any;
     runDetection?: RunDetectionOptions;
 }
