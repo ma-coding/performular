@@ -10,7 +10,6 @@ import { ItemModelState } from './types/item-model-state';
 import { ModelType } from '../builder/types/model-type';
 import { DisplayModel } from './display-model';
 
-// Todo: add full implementation
 export class ItemModel extends DisplayModel<ItemModelState, any> {
     private static _cnt: number = 0;
 
