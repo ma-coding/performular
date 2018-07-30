@@ -14,6 +14,10 @@ export class Metadata {
         this._formstate[key] = [...this._formstate[key], item];
     }
 
+    public static getFormstate(): MetadataFormstate {
+        return this._formstate;
+    }
+
     public static getFormItem(target: any): MetadataFormstate {
         return {
             groups: this._formstate.groups.filter(
