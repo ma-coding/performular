@@ -10,6 +10,7 @@ import { VisibilityFunction } from './types/visibility-function';
 import { VisibilityOptions } from './types/visibility-options';
 import { VisibilityType } from './types/visibility-type';
 import { RunDetectionTarget } from '../run-detection/types/run-detection-target';
+import { RunDetectionOptions } from '../run-detection/types/run-detection-options';
 
 export class Visibility extends AbstractHandlerWithFunc<
     VisibilityExecuter,
@@ -28,14 +29,23 @@ export class Visibility extends AbstractHandlerWithFunc<
             options.params
         );
         this.type = options.type;
-        const metaTarget: RunDetectionTarget | undefined = (<VisibleOptions>(
-            this.metadata
-        )).runDetector;
+        let runDetectionOptions: RunDetectionOptions = {
+            target: (context: RunContext): boolean => true
+        };
+        if (this.metadata) {
+            const runDetector: RunDetectionTarget | undefined = (<
+                VisibleOptions
+            >this.metadata).runDetector;
+            if (runDetector) {
+                runDetectionOptions = { target: runDetector };
+            }
+        }
+
         this.runDetection = new RunDetection(
             options.runDetection ||
-                (metaTarget
-                    ? { target: metaTarget }
-                    : { target: (context: RunContext): boolean => true })
+                runDetectionOptions || {
+                    target: (context: RunContext): boolean => true
+                }
         );
     }
 

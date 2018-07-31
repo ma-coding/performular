@@ -4,7 +4,8 @@ import {
     GroupFieldModel,
     Builder,
     SubGroup,
-    List
+    List,
+    RequiredValidator
 } from '@performular/core';
 import {
     MaterialSliderComponent,
@@ -44,7 +45,12 @@ export class SubForm {
         attrs: {
             placeholder: 'Checkbox'
         },
-        model: MaterialCheckboxComponent
+        model: MaterialCheckboxComponent,
+        validations: {
+            required: {
+                target: RequiredValidator
+            }
+        }
     })
     public check?: boolean;
 }
