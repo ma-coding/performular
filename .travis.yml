@@ -10,14 +10,8 @@ jobs:
         script:
             - npx ng build core
             - npm install ./dist/core/
-      - stage: build-ng-connector
-        script:
             - npx ng build ng-connector
             - npm install ./dist/ng-connector/
-      - stage: build-ng-ui-material
-        script:
             - npx ng build ng-ui-material
             - npm install ./dist/ng-ui-material/
-      - stage: build-demo
-        script:
             - npx ng build demo
