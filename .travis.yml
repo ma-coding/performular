@@ -6,7 +6,7 @@ addons:
   chrome: stable
 jobs:
     include:
-      - stage: build-core
+      - stage: build
         script:
             - npx ng build core
             - npm install ./dist/core/
