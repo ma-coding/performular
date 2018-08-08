@@ -19,7 +19,7 @@ export class MinLengthValidator implements ValidationExecuter {
         }
         if (params) {
             const length: number = value ? value.length : 0;
-            return length > params
+            return length < params
                 ? {
                       __value__: value,
                       __length__: length,

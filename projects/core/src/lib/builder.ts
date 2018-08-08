@@ -1,2 +1,10 @@
 export { Builder } from './builder/builder';
 export { ModelType } from './builder/types/model-type';
+export { JsonAbstractModelOptions } from './builder/types/json-abstract-model-options';
+export { JsonContainerOptions } from './builder/types/json-container-options';
+export { JsonControlOptions } from './builder/types/json-control-options';
+export { JsonGroupOptions } from './builder/types/json-group-options';
+export { JsonItemOptions } from './builder/types/json-item-options';
+export { JsonLayoutOptions } from './builder/types/json-layout-options';
+export { JsonListOptions } from './builder/types/json-list-options';
+export { JsonUnionOptions } from './builder/types/json-unions-options';
