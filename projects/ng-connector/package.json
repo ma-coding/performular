@@ -14,14 +14,14 @@
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
-    "version": "1.0.0-beta.6",
+    "version": "1.0.0-beta.7",
     "private": false,
     "peerDependencies": {
         "@angular/cdk": "^6.0.0",
         "@angular/common": "^6.0.0",
         "@angular/core": "^6.0.0",
         "@angular/flex-layout": "^6.0.0-beta.16",
-        "@performular/core": "^1.0.0-beta.6",
+        "@performular/core": "^1.0.0-beta.7",
         "rxjs": "^6.0.0"
     }
 }

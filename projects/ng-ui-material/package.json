@@ -21,8 +21,8 @@
         "@angular/common": "^6.0.0",
         "@angular/core": "^6.0.0",
         "@angular/material": "^6.0.0",
-        "@performular/core": "^1.0.0-beta.6",
-        "@performular/ng-connector": "^1.0.0-beta.6",
+        "@performular/core": "^1.0.0-beta.7",
+        "@performular/ng-connector": "^1.0.0-beta.7",
         "rxjs": "^6.0.0"
     }
 }
