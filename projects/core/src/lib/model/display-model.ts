@@ -25,7 +25,7 @@ export abstract class DisplayModel<
         return {
             ...this._initAbstractModel(options),
             children: options.children || [],
-            hideWhenNoChild: options.hideWhenNoChild || true
+            hideWhenNoChild: options.hideWhenNoChild === undefined ? true : options.hideWhenNoChild
         };
     }
 
