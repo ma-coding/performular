@@ -1,7 +1,8 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { StateFn } from '../types/state-fn';
-import { TransactionQueue, TransactionNode } from './transaction';
+import { getProjector } from '../utils/projector';
+import { TransactionNode, TransactionQueue } from './transaction';
 
 export class AbstractStore<T> {
     private _store: BehaviorSubject<T>;
@@ -37,22 +38,8 @@ export class AbstractStore<T> {
     public select<K extends keyof T = any>(projector?: K): Observable<T[K]>;
     public select<K = any>(projector?: (state: T) => K): Observable<K>;
     public select(projector?: any): Observable<any> {
-        if (!projector) {
-            return this._store.pipe(distinctUntilChanged());
-        }
-        let project: (value: T, index: number) => any;
-        if (typeof projector === 'function') {
-            project = projector;
-        } else {
-            project = (state: T): any => state[projector];
-        }
-
-        if (!projector) {
-            throw new Error('Unknown projector value ' + projector);
-        }
-
         return this._store.pipe(
-            map(project),
+            map(getProjector(projector)),
             distinctUntilChanged()
         );
     }
@@ -76,6 +63,7 @@ export class AbstractStore<T> {
             return;
         }
 
+        // handle transactions in queue
         this.setState((state: T) => {
             return this._handleTransaction(state);
         }, true);
