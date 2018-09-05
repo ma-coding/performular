@@ -1,9 +1,3 @@
-export type ObjectKey = string | number | symbol;
-
-export interface HashMap<T> {
-    [id: string]: T;
-}
-
 export interface Newable<T> {
     new (): T;
 }

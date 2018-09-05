@@ -1,5 +1,5 @@
 import { isFunction } from '../../utils/is';
-import { StateFn } from '../types/state-fn';
+import { StateFn } from './types';
 
 export function getProjector<S>(
     project?: StateFn<S, any> | string

@@ -1,43 +1,42 @@
 import { isFunction } from '../../utils/is';
-import { HashMap, ObjectKey } from '../../utils/types';
 import { AbstractStore } from '../abstract-store/abstract-store';
-import { StateFn } from '../types/state-fn';
-import { MapNodeStore } from './map-node-store';
+import { HashMap, ObjectKey, StateFn } from '../utils/types';
+import { MapNode } from './map-node';
 import { MapState } from './map-state';
 
 export class MapStore<
-    S,
-    T extends MapState<S> = MapState<S>
-> extends AbstractStore<T> {
-    private _idKey: ObjectKey;
-
-    constructor(idKey: keyof S, ...initialState: S[]) {
-        super(MapStore._toMap<S, T>(idKey, ...initialState));
-        this._idKey = idKey;
+    STATE,
+    ID_KEY extends keyof STATE,
+    MAP_STATE extends MapState<STATE> = MapState<STATE>
+> extends AbstractStore<MAP_STATE> {
+    constructor(private _idKey: ID_KEY, ...initialState: STATE[]) {
+        super(MapStore._toMap<STATE, MAP_STATE>(_idKey, ...initialState));
     }
 
-    private static _toArray<S, T extends MapState<S>>(entities: T): S[] {
+    private static _toArray<STATE, MAP_STATE extends MapState<STATE>>(
+        entities: MAP_STATE
+    ): STATE[] {
         return Object.keys(entities || {}).map((key: string) => entities[key]);
     }
 
-    private static _toMap<S, T extends MapState<S>>(
+    private static _toMap<STATE, MAP_STATE extends MapState<STATE>>(
         idKey: ObjectKey,
-        ...entities: S[]
-    ): T {
+        ...entities: STATE[]
+    ): MAP_STATE {
         return this._reduceEntity(
-            (acc: T, entity: S) => entity,
+            (acc: MAP_STATE, entity: STATE) => ({ ...(<any>entity) }),
             idKey,
             ...entities
         );
     }
 
-    private static _reduceEntity<S, T extends MapState<S>>(
-        reducer: (acc: T, entity: S) => S | undefined,
+    private static _reduceEntity<STATE, MAP_STATE extends MapState<STATE>>(
+        reducer: (acc: MAP_STATE, entity: STATE) => STATE | undefined,
         idKey: ObjectKey,
-        ...entities: S[]
-    ): T {
-        return entities.reduce((acc: T, entity: S) => {
-            const reducedEntity: S | undefined = reducer(acc, entity);
+        ...entities: STATE[]
+    ): MAP_STATE {
+        return entities.reduce((acc: MAP_STATE, entity: STATE) => {
+            const reducedEntity: STATE | undefined = reducer(acc, entity);
             if (!reducedEntity) {
                 return acc;
             }
@@ -48,40 +47,43 @@ export class MapStore<
         }, {});
     }
 
-    public getNodeStore(id: string): MapNodeStore<S, T> {
-        return new MapNodeStore<S, T>(this, id);
+    public getNode<MAP_KEY extends keyof MAP_STATE>(
+        id: MAP_KEY
+    ): MapNode<STATE, ID_KEY, MAP_KEY, MAP_STATE> {
+        return new MapNode<STATE, ID_KEY, MAP_KEY, MAP_STATE>(this, id);
     }
 
-    public reset(...entities: S[]): void {
-        this.setState((state: T) =>
+    public reset(...entities: STATE[]): void {
+        this.setState((state: MAP_STATE) =>
             this._updateMap(
-                <T>{},
-                MapStore._toMap<S, T>(this._idKey, ...entities)
+                <MAP_STATE>{},
+                MapStore._toMap<STATE, MAP_STATE>(this._idKey, ...entities)
             )
         );
     }
 
-    public add(...entities: S[]): void {
-        this.setState((state: T) =>
+    public add(...entities: STATE[]): void {
+        this.setState((state: MAP_STATE) =>
             this._updateMap(
                 state,
-                MapStore._toMap<S, T>(this._idKey, ...entities)
+                MapStore._toMap<STATE, MAP_STATE>(this._idKey, ...entities)
             )
         );
     }
 
     public update(
-        newState: StateFn<S, Partial<S>>,
-        condition?: string[] | StateFn<S, boolean>
+        newState: StateFn<STATE, Partial<STATE>>,
+        condition?: string[] | StateFn<STATE, boolean>
     ): void {
-        this.setState((state: T) => {
-            const updatedableEntities: S[] = MapStore._toArray<S, T>(
-                state
-            ).filter(this._getConditionFn(condition));
+        this.setState((state: MAP_STATE) => {
+            const updatedableEntities: STATE[] = MapStore._toArray<
+                STATE,
+                MAP_STATE
+            >(state).filter(this._getConditionFn(condition));
             return this._updateMap(
                 state,
-                MapStore._reduceEntity<S, T>(
-                    (acc: HashMap<S>, entity: S) =>
+                MapStore._reduceEntity<STATE, MAP_STATE>(
+                    (acc: HashMap<STATE>, entity: STATE) =>
                         this._updateEntity(entity, newState(entity)),
                     this._idKey,
                     ...updatedableEntities
@@ -90,17 +92,17 @@ export class MapStore<
         });
     }
 
-    public remove(condition?: string[] | StateFn<S, boolean>): void {
-        this.setState((state: T) => {
-            const conditionFn: (entity: S) => boolean = this._getConditionFn(
-                condition
-            );
-            const mapedEntities: S[] = MapStore._toArray(state);
-            const toRemoveEntities: S[] = mapedEntities.filter(conditionFn);
+    public remove(condition?: string[] | StateFn<STATE, boolean>): void {
+        this.setState((state: MAP_STATE) => {
+            const conditionFn: (
+                entity: STATE
+            ) => boolean = this._getConditionFn(condition);
+            const mapedEntities: STATE[] = MapStore._toArray(state);
+            const toRemoveEntities: STATE[] = mapedEntities.filter(conditionFn);
             return this._updateMap(
                 state,
-                MapStore._reduceEntity<S, T>(
-                    (acc: T, entity: S) => {
+                MapStore._reduceEntity<STATE, MAP_STATE>(
+                    (acc: MAP_STATE, entity: STATE) => {
                         if (toRemoveEntities.indexOf(entity) >= 0) {
                             return undefined;
                         }
@@ -113,14 +115,14 @@ export class MapStore<
         });
     }
 
-    private _updateMap(prevMap: T, nextMap: T): T {
+    private _updateMap(prevMap: MAP_STATE, nextMap: MAP_STATE): MAP_STATE {
         return {
             ...(<any>prevMap),
             ...(<any>nextMap)
         };
     }
 
-    private _updateEntity(prevEntity: S, newEntity: Partial<S>): S {
+    private _updateEntity(prevEntity: STATE, newEntity: Partial<STATE>): STATE {
         return {
             ...(<any>prevEntity),
             ...(<any>newEntity)
@@ -128,18 +130,18 @@ export class MapStore<
     }
 
     private _getConditionFn(
-        condition?: string[] | StateFn<S, boolean>
-    ): StateFn<S, boolean> {
+        condition?: string[] | StateFn<STATE, boolean>
+    ): StateFn<STATE, boolean> {
         if (!condition) {
-            return (_: S): boolean => true;
+            return (_: STATE): boolean => true;
         } else if (isFunction(condition)) {
             return condition;
         } else {
             const cond: string[] = Array.isArray(condition)
                 ? condition
                 : [condition];
-            return (entity: S): boolean =>
-                cond.some((c: string) => entity[this._idKey] === c);
+            return (entity: STATE): boolean =>
+                cond.some((c: string) => entity[<string>this._idKey] === c);
         }
     }
 }

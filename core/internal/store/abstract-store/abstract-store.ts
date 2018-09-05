@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { StateFn } from '../types/state-fn';
 import { getProjector } from '../utils/projector';
+import { StateFn } from '../utils/types';
 import { TransactionNode, TransactionQueue } from './transaction';
 
 export class AbstractStore<T> {
@@ -36,8 +36,8 @@ export class AbstractStore<T> {
 
     public select(): Observable<T>;
     public select<K extends keyof T = any>(projector?: K): Observable<T[K]>;
-    public select<K = any>(projector?: (state: T) => K): Observable<K>;
-    public select(projector?: any): Observable<any> {
+    public select<K = any>(projector?: StateFn<T, K>): Observable<K>;
+    public select(projector?: string | StateFn<T, any>): Observable<any> {
         return this._store.pipe(
             map(getProjector(projector)),
             distinctUntilChanged()

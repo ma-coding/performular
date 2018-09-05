@@ -1,3 +1,3 @@
-import { HashMap } from '../../utils/types';
+import { HashMap } from '../utils/types';
 
 export type MapState<T = any> = HashMap<T>;

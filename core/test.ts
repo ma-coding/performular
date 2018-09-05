@@ -5,7 +5,7 @@ export interface State {
     b: number;
 }
 
-const st: MapStore<State> = new MapStore<State>('a', {
+const st: MapStore<State, 'a'> = new MapStore<State, 'a'>('a', {
     a: 'test',
     b: 3
 });
@@ -17,7 +17,7 @@ st.add({
     b: 2
 });
 
-st.getNodeStore('test').update((state: State) => {
+st.getNode('test').update((state: State) => {
     return {
         b: 8
     };
