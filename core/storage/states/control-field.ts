@@ -1,11 +1,11 @@
+import { HashMap } from '../../memory-store/utils/types';
 import {
-    isAbstractFieldOptions,
-    AbstractFieldOptions,
     AbstractField,
-    BuildContext
+    AbstractFieldOptions,
+    BuildContext,
+    isAbstractFieldOptions
 } from './abstract-field';
-import { HashMap } from '../../internal/utils/types';
-import { FieldState, addToPath } from './all';
+import { addToPath, FieldState } from './all';
 
 export interface ControlFieldOptions extends AbstractFieldOptions<'CONTROL'> {
     label: string;

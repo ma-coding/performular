@@ -1,4 +1,4 @@
-import { SWITCHER } from '../../../internal/utils/types';
+import { SWITCHER } from '../../../memory-store/utils/types';
 
 export interface VisibleOptions<M extends boolean = true> {
     params: any;

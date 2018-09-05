@@ -1,10 +1,10 @@
 import { EntityClass } from '../../internal/store/entity-store/entity';
+import { EntityManager } from '../../internal/store/entity-store/entity-manager';
+import { HashMap } from '../../memory-store/utils/types';
+import { Form, FormState } from '../form';
+import { FieldState } from './all';
 import { ValidationsOptions } from './types/validations';
 import { VisibilitiesOptions } from './types/visibilities';
-import { HashMap } from '../../internal/utils/types';
-import { FieldState } from './all';
-import { Form, FormState } from '../form';
-import { EntityManager } from '../../internal/store/entity-store/entity-manager';
 
 export type FieldTypes = 'CONTROL' | 'GROUP' | 'LIST';
 

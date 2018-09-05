@@ -1,27 +1,34 @@
-import { MapStore } from './internal/store/map-store/map-store';
+import { EntityStore } from './memory-store/entity';
+import { Entity } from './memory-store/metadata/entity';
+import { ManyToOne } from './memory-store/metadata/many-to-one';
+import { MemoryStoreMetadata } from './memory-store/metadata/metadata';
+import { PrimaryKey } from './memory-store/metadata/primary-key';
+import { Property } from './memory-store/metadata/property';
+import { PRIMARYKEY_GENERATE } from './memory-store/utils/generate-uuid';
+import { Newable } from './memory-store/utils/types';
 
-export interface State {
-    a: string;
-    b: number;
+@Entity()
+export class StateOne extends EntityStore {
+    @PrimaryKey()
+    public id: string = PRIMARYKEY_GENERATE;
+
+    @Property()
+    public text?: string;
 }
 
-const st: MapStore<State, 'a'> = new MapStore<State, 'a'>('a', {
-    a: 'test',
-    b: 3
-});
+@Entity()
+export class StateTwo extends EntityStore {
+    @PrimaryKey()
+    public id: string = PRIMARYKEY_GENERATE;
 
-st.select().subscribe(console.log);
-// st.transaction(() => {
-st.add({
-    a: 'v',
-    b: 2
-});
+    @ManyToOne({
+        referenceEntity: (): Newable<StateOne> => StateOne
+    })
+    public ones: StateOne[] = [];
+}
 
-st.getNode('test').update((state: State) => {
-    return {
-        b: 8
-    };
-});
+console.log(MemoryStoreMetadata.instance);
+
 // });
 
 // import { Form } from './storage/form';

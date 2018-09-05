@@ -5,7 +5,7 @@ import {
     BuildContext
 } from './abstract-field';
 import { GroupFieldOptionsWithOutName } from './group-field';
-import { HashMap } from '../../internal/utils/types';
+import { HashMap } from '../../memory-store/utils/types';
 import { addToPath, buildEntities, FieldState } from './all';
 import { FormState } from '../form';
 import { EntityManager } from '../../internal/store/entity-store/entity-manager';

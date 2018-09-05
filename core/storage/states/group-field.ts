@@ -1,14 +1,14 @@
+import { ExclueKeys, HashMap } from '../../memory-store/utils/types';
+import { FormState } from '../form';
 import {
-    isAbstractFieldOptions,
-    AbstractFieldOptions,
     AbstractField,
-    BuildContext
+    AbstractFieldOptions,
+    BuildContext,
+    isAbstractFieldOptions
 } from './abstract-field';
+import { addToPath, buildEntities } from './all';
 import { ControlFieldOptions } from './control-field';
 import { ListFieldOptions } from './list-field';
-import { ExclueKeys, HashMap } from '../../internal/utils/types';
-import { addToPath, buildEntities } from './all';
-import { FormState } from '../form';
 
 export type GroupFieldOptionsWithOutName = ExclueKeys<
     GroupFieldOptions,
