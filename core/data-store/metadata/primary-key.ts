@@ -1,14 +1,26 @@
-import { ObjectKey } from '../utils/types';
-import { MemoryStoreMetadata } from './metadata';
+import { ObjectKey, Newable } from '../utils/types';
+import { MetadataStorage } from './metadata-storage';
+import { EntityOptions } from './entity';
 
 export function PrimaryKey(): PropertyDecorator {
     return (target: Object, propertyKey: ObjectKey): void => {
-        MemoryStoreMetadata.instance.registerPrimaryKey(
-            new PrimaryKeyMetadata(target.constructor, propertyKey)
+        MetadataStorage.instance.registerPrimaryKey(
+            new PrimaryKeyMetadata(<any>target.constructor, propertyKey)
         );
     };
 }
 
 export class PrimaryKeyMetadata {
-    constructor(private _target: Function, private _propertyKey: ObjectKey) {}
+    get target(): Newable<any> {
+        return this._target;
+    }
+
+    get propertyKey(): ObjectKey {
+        return this._propertyKey;
+    }
+
+    constructor(
+        private _target: Newable<any>,
+        private _propertyKey: ObjectKey
+    ) {}
 }

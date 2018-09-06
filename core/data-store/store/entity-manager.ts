@@ -1,45 +1,77 @@
-import { Driver } from './driver';
 import { Newable } from '../utils/types';
-import { Observable } from 'rxjs';
 import { UpdateResult } from './types/update-result';
 import { Where } from './types/where';
 import { DeleteResult } from './types/delete-result';
-import { EntityMetadata } from '../metadata/entity';
-import { MemoryStoreMetadata } from '../metadata/metadata';
+import { QueryRunner } from './query-runner';
+import { Store } from './store';
 
-export class EntityManager<ENTITY> {
-    constructor(private _entity: Newable<ENTITY>, private _driver: Driver) {}
+export class EntityManager {
+    constructor(private _store: Store, private _queryRunner?: QueryRunner) {}
 
-    public create(entity: ENTITY): ENTITY {
-        const instance: ENTITY = new this._entity();
-        Object.assign(instance, entity);
-        return instance;
+    public create<ENTITY>(type: Newable<ENTITY>, entity: ENTITY): ENTITY {
+        return this._store.getMetadata<ENTITY>(type).create(entity);
     }
 
-    public insert(data: ENTITY): Observable<ENTITY> {
-        return this._driver.insert<ENTITY>(this._entity, data);
+    public async transaction<T>(
+        runInTransaction: (entityManager: EntityManager) => Promise<T>
+    ): Promise<T> {
+        if (this._queryRunner && this._queryRunner.isTransactionActive) {
+            throw new Error('Allready inside Transaction');
+        }
+
+        const queryRunner: QueryRunner = this._getQueryRunner();
+        try {
+            await queryRunner.startTransaction();
+            const result: T = await runInTransaction(queryRunner.manager);
+            await queryRunner.commitTransaction();
+            return result;
+        } catch (err) {
+            try {
+                await queryRunner.rollbackTransaction();
+                return Promise.reject(err);
+            } catch (rollbackError) {
+                throw err;
+            }
+        }
     }
 
-    public update(
+    public async insert<ENTITY>(
+        type: Newable<ENTITY>,
+        data: ENTITY
+    ): Promise<ENTITY> {
+        return this._getQueryRunner().insert(type, data);
+    }
+
+    public async update<ENTITY>(
+        type: Newable<ENTITY>,
         data: Partial<ENTITY>,
         where?: Where<ENTITY>
-    ): Observable<UpdateResult<ENTITY>> {
-        return this._driver.update<ENTITY>(this._entity, data, where);
+    ): Promise<UpdateResult<ENTITY>> {
+        return this._getQueryRunner().update(type, data, where);
     }
 
-    public delete(where?: Where<ENTITY>): Observable<DeleteResult> {
-        return this._driver.delete<ENTITY>(this._entity, where);
+    public async delete<ENTITY>(
+        type: Newable<ENTITY>,
+        where?: Where<ENTITY>
+    ): Promise<DeleteResult> {
+        return this._getQueryRunner().delete<ENTITY>(type, where);
     }
 
-    public getMany(where?: Where<ENTITY>): Observable<ENTITY[]> {
-        return this._driver.getMany<ENTITY>(this._entity, where);
+    public async getMany<ENTITY>(
+        type: Newable<ENTITY>,
+        where?: Where<ENTITY>
+    ): Promise<ENTITY[]> {
+        return this._getQueryRunner().getMany<ENTITY>(type, where);
     }
 
-    public getOne(where?: Where<ENTITY>): Observable<ENTITY> {
-        return this._driver.getOne<ENTITY>(this._entity, where);
+    public async getOne<ENTITY>(
+        type: Newable<ENTITY>,
+        where?: Where<ENTITY>
+    ): Promise<ENTITY> {
+        return this._getQueryRunner().getOne<ENTITY>(type, where);
     }
 
-    public getMetadata(): EntityMetadata {
-        return this._driver.getMetadata<ENTITY>(this._entity);
+    private _getQueryRunner(): QueryRunner {
+        return this._queryRunner || this._store.createQueryRunner();
     }
 }

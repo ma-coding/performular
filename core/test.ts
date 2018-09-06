@@ -1,33 +1,42 @@
-import { EntityStore } from './memory-store/entity';
-import { Entity } from './memory-store/metadata/entity';
-import { ManyToOne } from './memory-store/metadata/many-to-one';
-import { MemoryStoreMetadata } from './memory-store/metadata/metadata';
-import { PrimaryKey } from './memory-store/metadata/primary-key';
-import { Property } from './memory-store/metadata/property';
-import { PRIMARYKEY_GENERATE } from './memory-store/utils/generate-uuid';
-import { Newable } from './memory-store/utils/types';
+import { Entity } from './data-store/metadata/entity';
+import { PrimaryKey } from './data-store/metadata/primary-key';
+import { Property } from './data-store/metadata/property';
+import { IS_DEFINED } from './data-store/utils/strict-defined';
+import { MetadataStorage } from './data-store/metadata/metadata-storage';
+import { Store } from './data-store/store/store';
+import { MemoryDriver } from './data-store/drivers/memory/memory.driver';
 
-@Entity()
-export class StateOne extends EntityStore {
+@Entity({
+    name: 'StateOne'
+})
+export class StateOne {
     @PrimaryKey()
-    public id: string = PRIMARYKEY_GENERATE;
+    public id: string = IS_DEFINED;
 
     @Property()
     public text?: string;
 }
 
-@Entity()
-export class StateTwo extends EntityStore {
+@Entity({
+    name: 'StateTwo'
+})
+export class StateTwo {
     @PrimaryKey()
-    public id: string = PRIMARYKEY_GENERATE;
+    public id2: string = IS_DEFINED;
 
-    @ManyToOne({
-        referenceEntity: (): Newable<StateOne> => StateOne
-    })
-    public ones: StateOne[] = [];
+    @Property()
+    public text2?: string;
 }
 
-console.log(MemoryStoreMetadata.instance);
+const driver: MemoryDriver = new MemoryDriver();
+const store: Store = new Store(driver);
+console.log(driver.getSnapshot());
+
+store.createEntityManager().insert(StateOne, {
+    id: 'test',
+    text: 'ABC'
+});
+console.log(driver.getSnapshot());
 
 // });
 
