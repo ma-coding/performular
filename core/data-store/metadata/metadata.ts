@@ -2,6 +2,7 @@ import { EntityMetadata } from './entity';
 import { ManyToOneMetadata } from './many-to-one';
 import { PrimaryKeyMetadata } from './primary-key';
 import { PropertyMetadata } from './property';
+import { Newable } from '../utils/types';
 
 export class MemoryStoreMetadata {
     private static _instance?: MemoryStoreMetadata;
@@ -18,6 +19,14 @@ export class MemoryStoreMetadata {
         return MemoryStoreMetadata._instance;
     }
     private constructor() {}
+
+    public getEntity<ENTITY>(
+        entity: Newable<ENTITY>
+    ): EntityMetadata | undefined {
+        return this._entities.find(
+            (search: EntityMetadata) => search.target === entity
+        );
+    }
 
     public registerEntityConfig(entity: EntityMetadata): void {
         this._entities.push(entity);

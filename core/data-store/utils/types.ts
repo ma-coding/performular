@@ -4,6 +4,10 @@ export interface Newable<T> {
 
 export type ClassDecoratorType<T> = (target: Newable<T>) => void;
 
+export interface HashMap<T> {
+    [id: string]: T;
+}
+
 export type ObjectKey = string | number | symbol;
 
 export type FPN<T> = {
