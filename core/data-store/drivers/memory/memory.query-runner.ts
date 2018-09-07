@@ -1,31 +1,23 @@
+import { Observable, of } from 'rxjs';
+import { Newable } from '../../../internal/utils/types';
+import { EntityMetadata } from '../../metadata/entity';
+import { EntityManager } from '../../store/entity-manager';
 import { QueryRunner } from '../../store/query-runner';
+import { Store } from '../../store/store';
+import { DeleteResult } from '../../store/types/delete-result';
 import { UpdateResult } from '../../store/types/update-result';
 import { Where } from '../../store/types/where';
-import { Newable } from '../../../internal/utils/types';
-import { DeleteResult } from '../../store/types/delete-result';
-import { EntityManager } from '../../store/entity-manager';
 import { IS_DEFINED } from '../../utils/strict-defined';
-import { Store } from '../../store/store';
-import { TransactionTree } from '../../transaction/transaction-tree';
-import { MemoryState } from './types';
-import { StateFn, ObjectKey } from '../../utils/types';
+import { ObjectKey } from '../../utils/types';
 import { MemoryDriver } from './memory.driver';
-import { EntityMetadata } from '../../metadata/entity';
-
-export interface MemoryTransaction {
-    stateModifier: StateFn<MemoryState, MemoryState | void>;
-}
+import { MemoryAction, MemoryState } from './types';
 
 export class MemoryQueryRunner implements QueryRunner {
     public store: Store = IS_DEFINED;
     public manager: EntityManager = IS_DEFINED;
 
-    public transactionTree?: TransactionTree<
-        StateFn<MemoryState, MemoryState | void>
-    >;
-
     get isTransactionActive(): boolean {
-        return !!this.transactionTree;
+        return false;
     }
 
     get driver(): MemoryDriver {
@@ -33,15 +25,12 @@ export class MemoryQueryRunner implements QueryRunner {
     }
 
     public startTransaction(): Promise<void> {
-        this.transactionTree = new TransactionTree((): void => {});
         return Promise.resolve();
     }
 
     public commitTransaction(): Promise<void> {
-        if (!this.transactionTree) {
+        if (!this.isTransactionActive) {
             throw new Error('There is no active transaction to commit');
-        }
-        if (this.transactionTree.isEmpty()) {
         }
         return Promise.resolve();
     }
@@ -57,8 +46,13 @@ export class MemoryQueryRunner implements QueryRunner {
         const metadata: EntityMetadata<ENTITY> = this.store.getMetadata(entity);
         const entityName: string = metadata.options.name;
         const pkName: ObjectKey = metadata.pk.propertyKey;
-        this._setState((state: MemoryState) => {
-            return {
+
+        const reducer: (
+            state: MemoryState
+        ) => MemoryState | Observable<MemoryState> = (
+            state: MemoryState
+        ): MemoryState | Observable<MemoryState> => {
+            return of({
                 ...state,
                 [entityName]: {
                     ...state[entityName],
@@ -68,9 +62,16 @@ export class MemoryQueryRunner implements QueryRunner {
                     },
                     ids: [...state[entityName].ids, data[pkName]]
                 }
-            };
-        });
-        return Promise.resolve(data);
+            });
+        };
+
+        const action: MemoryAction = new MemoryAction(
+            this._getActionType(entityName, 'INSERT'),
+            this.driver,
+            reducer
+        );
+        this.driver.dispatch(action);
+        return action.result.toPromise();
     }
 
     public insertBulk<ENTITY>(
@@ -109,15 +110,11 @@ export class MemoryQueryRunner implements QueryRunner {
         throw new Error('Method not implemented.');
     }
 
-    private _setState<T>(newStateFn: StateFn<MemoryState>): void {
-        if (this.transactionTree) {
-            this.transactionTree.addNode(newStateFn);
-        } else {
-            this._dispatch(newStateFn(this.driver.getSnapshot()));
-        }
+    private _getActionType(entityName: string, actionName: string): string {
+        return `[${entityName}] ${actionName}`;
     }
 
-    private _dispatch(state: MemoryState): void {
-        this.driver.dispatch(state);
+    private _setState<T>(memoryAction: MemoryAction): void {
+        this.driver.dispatch(memoryAction);
     }
 }
