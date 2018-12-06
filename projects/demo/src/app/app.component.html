@@ -1,18 +1,15 @@
 <div style="margin: 18px">
-    <!-- <h3>JSON FORM</h3>
-    <hr>
-    <performular-form [form]="jsonForm">
-    </performular-form>
+    <h3>JSON FORM</h3>
+    <hr />
+    <performular-form [form]="jsonForm"> </performular-form>
     <h3>CLASS FORM</h3>
-    <hr>
-    <performular-form [form]="classForm">
-    </performular-form> -->
+    <hr />
+    <performular-form [form]="classForm"> </performular-form>
     <h3>TYPED FORM</h3>
-    <hr>
+    <hr />
     <performular-form [form]="typedForm">
-
         <ng-template performularTemplate id="slider" position="after" let-field>
-            <div>Count: {{field.value || 0}} %</div>
+            <div>Count: {{ field.value || 0 }} %</div>
         </ng-template>
 
         <ng-template performularTemplate id="f" position="before" let-field>
@@ -20,8 +17,17 @@
         </ng-template>
 
         <ng-template performularTemplate id="check" position="after" let-field>
-            <button (click)="field?.parentField?.parentField?.removeFieldAtIndex(field?.parentField?.parentField?.getIndex(field?.parentField))">REMOVE</button>
+            <button
+                (click)="
+                    field?.parentField?.parentField?.removeFieldAtIndex(
+                        field?.parentField?.parentField?.getIndex(
+                            field?.parentField
+                        )
+                    )
+                "
+            >
+                REMOVE
+            </button>
         </ng-template>
-
     </performular-form>
 </div>
