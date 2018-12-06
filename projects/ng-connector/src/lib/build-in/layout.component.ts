@@ -1,16 +1,24 @@
 import { Directionality } from '@angular/cdk/bidi';
-import { ChangeDetectionStrategy, Component, ElementRef, Inject, NgZone, OnDestroy, Renderer2 } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    Inject,
+    NgZone,
+    OnDestroy,
+    Renderer2
+} from '@angular/core';
 import {
     Layout,
     LayoutAlignDirective,
     LayoutDirective,
     LayoutGapDirective,
     MediaMonitor,
-    StyleUtils,
+    StyleUtils
 } from '@angular/flex-layout';
 
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import { startWith, switchMap, tap } from 'rxjs/operators';
+import { startWith, switchMap, tap, map } from 'rxjs/operators';
 
 import { LayoutModel, Model } from '@performular/core';
 
@@ -29,7 +37,12 @@ export const PERFORMULAR_MODEL_LAYOUT: string = 'PERFORMULAR_MODEL_LAYOUT';
 })
 @Component({
     selector: 'performular-layout',
-    template: `<ng-container *ngFor="let c of field?.children$ | async" [performularRenderer]="c"></ng-container>`,
+    template: `
+        <ng-container
+            *ngFor="let c of (field?.children$ | async)"
+            [performularRenderer]="c"
+        ></ng-container>
+    `,
     styles: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -82,10 +95,12 @@ export class LayoutComponent implements OnDestroy {
         this._layoutGapHandler.ngOnInit();
         this._layoutGapHandler.ngAfterContentInit();
         return this.layoutHandler.layout$.pipe(
-            startWith(this.layoutHandler.layout),
-            tap((layout?: Layout) =>
-                this._setHostStyle(layout ? layout.direction : '')
-            )
+            map((l: Layout) => `${l.direction} ${l.wrap}`.trim()),
+            startWith(this.layoutHandler.activatedValue),
+            tap((layout: any) => {
+                this._setHostStyle(layout || '');
+                (<any>this.layoutHandler)._updateWithDirection();
+            })
         );
     }
 
@@ -110,6 +125,7 @@ export class LayoutComponent implements OnDestroy {
             this._elementRef,
             this._styleUtils
         );
+
         layout = Object.assign(
             layout,
             mapToInputs('layout', this.field.layout)
