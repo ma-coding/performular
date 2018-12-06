@@ -149,7 +149,7 @@ export class FormType {
         },
         model: MaterialTextareaComponent
     })
-    public textarea?: number;
+    public textarea?: string;
 
     @Control({
         attrs: {
@@ -186,6 +186,7 @@ export function getTypedForm(): GroupFieldModel {
     return Builder.buildFromTarget(FormType, {
         input: 800,
         select: 0,
+        textarea: 'abc defg',
         subs: [{ check: true }, { check: false }]
     });
 }

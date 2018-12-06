@@ -51,9 +51,7 @@ export const buildInModels: any[] = [
         MatRadioModule,
         MatDatepickerModule,
         MatSelectModule,
-        PerformularModule.forChild({
-            models: buildInModels
-        })
+        PerformularModule
     ]
 })
 export class PerformularUiMaterialModule {}

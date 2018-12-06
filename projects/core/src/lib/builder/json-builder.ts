@@ -33,8 +33,8 @@ export class JsonBuilder {
             options.type === ModelType.LAYOUT
                 ? Framework.getLayoutModel()
                 : options.type === ModelType.ITEM
-                    ? Framework.getItemModel()
-                    : (<any>options).model;
+                ? Framework.getItemModel()
+                : (<any>options).model;
         const modeler: Modeler = new Modeler(model);
         switch (options.type) {
             case ModelType.CONTROL: {
@@ -66,7 +66,9 @@ export class JsonBuilder {
 
     private static _getValue(value: any, path: IndexType[]): any {
         return path.reduce((prev: any, current: IndexType) => {
-            return prev && prev[current] ? prev[current] : null;
+            return prev && prev[current] !== null && prev[current] !== undefined
+                ? prev[current]
+                : null;
         }, value);
     }
 

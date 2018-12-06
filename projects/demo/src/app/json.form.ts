@@ -74,7 +74,7 @@ export function getJsonForm(value: any): GroupFieldModel {
                                 label: 'Textarea',
                                 autoResize: true
                             },
-                            defaultValue: 6
+                            defaultValue: '666'
                         },
                         {
                             id: 'datepicker',
