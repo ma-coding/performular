@@ -6,15 +6,19 @@ import {
     Inject,
     NgZone,
     OnDestroy,
-    Renderer2
+    Renderer2,
+    SimpleChange
 } from '@angular/core';
 import {
-    Layout,
-    LayoutAlignDirective,
-    LayoutDirective,
-    LayoutGapDirective,
-    MediaMonitor,
-    StyleUtils
+    StyleUtils,
+    MediaMarshaller,
+    DefaultLayoutDirective,
+    DefaultLayoutAlignDirective,
+    DefaultLayoutGapDirective,
+    LayoutStyleBuilder,
+    LayoutAlignStyleBuilder,
+    LayoutGapStyleBuilder,
+    ElementMatcher
 } from '@angular/flex-layout';
 
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -48,16 +52,19 @@ export const PERFORMULAR_MODEL_LAYOUT: string = 'PERFORMULAR_MODEL_LAYOUT';
 })
 export class LayoutComponent implements OnDestroy {
     private _subscription: Subscription;
-    private _layoutGapHandler?: LayoutGapDirective;
-    private _layoutAlignHandler?: LayoutAlignDirective;
-    public layoutHandler?: LayoutDirective;
+    private _layoutGapHandler?: DefaultLayoutGapDirective;
+    private _layoutAlignHandler?: DefaultLayoutAlignDirective;
+    public layoutHandler?: DefaultLayoutDirective;
 
     constructor(
         @Inject(PerformularModel) public field: LayoutModel,
         private _renderer: Renderer2,
-        private _monitor: MediaMonitor,
+        private _marshaler: MediaMarshaller,
         private _elementRef: ElementRef,
         private _styleUtils: StyleUtils,
+        private _layoutStyleBuilder: LayoutStyleBuilder,
+        private _layoutAlignStyleBuilder: LayoutAlignStyleBuilder,
+        private _layoutGapStyleBuilder: LayoutGapStyleBuilder,
         private _zone: NgZone,
         private _directionality: Directionality
     ) {
@@ -84,24 +91,18 @@ export class LayoutComponent implements OnDestroy {
 
     private _createDirectives(): Observable<any> {
         this.layoutHandler = this._createLayoutHandler();
-        this._layoutAlignHandler = this._createLayoutAlignHandler(
-            this.layoutHandler
-        );
-        this._layoutGapHandler = this._createLayoutGapHandler(
-            this.layoutHandler
-        );
-        this.layoutHandler.ngOnInit();
-        this._layoutAlignHandler.ngOnInit();
-        this._layoutGapHandler.ngOnInit();
+        this._layoutAlignHandler = this._createLayoutAlignHandler();
+        this._layoutGapHandler = this._createLayoutGapHandler();
         this._layoutGapHandler.ngAfterContentInit();
-        return this.layoutHandler.layout$.pipe(
-            map((l: Layout) => `${l.direction} ${l.wrap}`.trim()),
-            startWith(this.layoutHandler.activatedValue),
-            tap((layout: any) => {
-                this._setHostStyle(layout || '');
-                (<any>this.layoutHandler)._updateWithDirection();
-            })
-        );
+        return this._marshaler
+            .trackValue(this._elementRef.nativeElement, 'layout')
+            .pipe(
+                map((l: ElementMatcher) => l.value.trim()),
+                startWith(this.layoutHandler.activatedValue),
+                tap((layout: any) => {
+                    this._setHostStyle(layout || '');
+                })
+            );
     }
 
     private _destroyDirectives(): void {
@@ -119,55 +120,54 @@ export class LayoutComponent implements OnDestroy {
         }
     }
 
-    private _createLayoutHandler(): LayoutDirective {
-        let layout: LayoutDirective = new LayoutDirective(
-            this._monitor,
+    private _createLayoutHandler(): DefaultLayoutDirective {
+        const layout: DefaultLayoutDirective = new DefaultLayoutDirective(
             this._elementRef,
-            this._styleUtils
+            this._styleUtils,
+            this._layoutStyleBuilder,
+            this._marshaler
         );
-
-        layout = Object.assign(
-            layout,
-            mapToInputs('layout', this.field.layout)
+        const value: any = mapToInputs(
+            'fxLayout',
+            this.field.layout,
+            (val: any) => new SimpleChange(undefined, val, true)
         );
+        layout.ngOnChanges(value);
         return layout;
     }
 
-    private _createLayoutAlignHandler(
-        layout: LayoutDirective
-    ): LayoutAlignDirective {
-        let layoutAlign: LayoutAlignDirective = new LayoutAlignDirective(
-            this._monitor,
+    private _createLayoutAlignHandler(): DefaultLayoutAlignDirective {
+        const layoutAlign: DefaultLayoutAlignDirective = new DefaultLayoutAlignDirective(
             this._elementRef,
-            layout,
-            this._styleUtils
+            this._styleUtils,
+            this._layoutAlignStyleBuilder,
+            this._marshaler
         );
-        layoutAlign = Object.assign(
-            layoutAlign,
-            mapToInputs(
-                'align',
-                this.field.layoutAlign,
-                (val: any) => `${val.main} ${val.cross}`
-            )
+        const value: any = mapToInputs(
+            'fxLayoutAlign',
+            this.field.layoutAlign,
+            (val: any) =>
+                new SimpleChange(undefined, `${val.main} ${val.cross}`, true)
         );
+        layoutAlign.ngOnChanges(value);
         return layoutAlign;
     }
 
-    private _createLayoutGapHandler(
-        layout: LayoutDirective
-    ): LayoutGapDirective {
-        let layoutGap: LayoutGapDirective = new LayoutGapDirective(
-            this._monitor,
+    private _createLayoutGapHandler(): DefaultLayoutGapDirective {
+        const layoutGap: DefaultLayoutGapDirective = new DefaultLayoutGapDirective(
             this._elementRef,
-            layout,
             this._zone,
             this._directionality,
-            this._styleUtils
+            this._styleUtils,
+            this._layoutGapStyleBuilder,
+            this._marshaler
         );
-        layoutGap = Object.assign(
-            layoutGap,
-            mapToInputs('gap', this.field.layoutGap)
+        const value: any = mapToInputs(
+            'fxLayoutGap',
+            this.field.layoutGap || { main: '' },
+            (val: any) => new SimpleChange(undefined, val, true)
         );
+        layoutGap.ngOnChanges(value);
         return layoutGap;
     }
 

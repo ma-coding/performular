@@ -18,33 +18,27 @@ export function getClassForm(): GroupFieldModel {
                 layout: 'row',
                 layoutGap: '18px',
                 children: [
-                    new ItemModel({
-                        child: new MaterialSlider({
-                            id: 'slider',
-                            attrs: {
-                                max: 100,
-                                min: 0
-                            },
-                            defaultValue: 5
-                        })
+                    new MaterialSlider({
+                        id: 'slider',
+                        attrs: {
+                            max: 100,
+                            min: 0
+                        },
+                        defaultValue: 5
                     }),
-                    new ItemModel({
-                        child: new MaterialCheckbox({
-                            id: 'checkbox',
-                            attrs: {
-                                placeholder: 'Checkbox'
-                            },
-                            defaultValue: false
-                        })
+                    new MaterialCheckbox({
+                        id: 'checkbox',
+                        attrs: {
+                            placeholder: 'Checkbox'
+                        },
+                        defaultValue: false
                     }),
-                    new ItemModel({
-                        child: new MaterialToggle({
-                            id: 'toggle',
-                            attrs: {
-                                placeholder: 'Toggle'
-                            },
-                            defaultValue: 5
-                        })
+                    new MaterialToggle({
+                        id: 'toggle',
+                        attrs: {
+                            placeholder: 'Toggle'
+                        },
+                        defaultValue: 5
                     })
                 ]
             }),

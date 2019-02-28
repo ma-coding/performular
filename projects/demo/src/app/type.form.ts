@@ -15,7 +15,8 @@ import {
     MaterialTextareaComponent,
     MaterialDatepickerComponent,
     MaterialSelectComponent,
-    MaterialSelectAttrs
+    MaterialSelectAttrs,
+    MaterialRadioComponent
 } from '@performular/ng-ui-material';
 import {
     CoreGroupComponent,
@@ -29,6 +30,7 @@ import { TestDatasource } from './datsource';
     attrs: undefined,
     model: CoreGroupComponent,
     layout: 'column',
+    layoutGap: '18px',
     children: [
         {
             id: 'ft',
@@ -60,7 +62,6 @@ export class SubForm {
     attrs: undefined,
     model: CoreGroupComponent,
     layout: 'column',
-    layoutGap: '18px',
     children: [
         {
             child: {
@@ -89,10 +90,18 @@ export class SubForm {
                     {
                         layout: 'row',
                         layoutGap: '18px',
-                        children: ['input', 'textarea', 'datepicker', 'select']
+                        children: ['input', 'textarea', 'datepicker']
                     }
                 ]
             }
+        },
+        {
+            id: 'f',
+            model: FieldsetComponent,
+            attrs: {
+                legend: 'test'
+            },
+            children: ['select']
         },
         {
             id: 'f',
@@ -185,7 +194,7 @@ export class FormType {
 export function getTypedForm(): GroupFieldModel {
     return Builder.buildFromTarget(FormType, {
         input: 800,
-        select: 0,
+        select: 2,
         textarea: 'abc defg',
         subs: [{ check: true }, { check: false }]
     });

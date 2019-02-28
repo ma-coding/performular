@@ -41,27 +41,35 @@ export function MaterialCheckboxBuilder(
     return new MaterialCheckbox(options);
 }
 
+export function MaterialCheckboxEmptyValue(): any {
+    return false;
+}
+
 @Model({
     name: PERFORMULAR_MODEL_MATERIALCHECKBOX,
-    builder: MaterialCheckboxBuilder
+    builder: MaterialCheckboxBuilder,
+    emptyValue: MaterialCheckboxEmptyValue
 })
 @Component({
     selector: 'performular-material-checkbox',
-    template: `<mat-checkbox
-    [disabled]="(field?.disabled$ | async)"
-    [aria-label]="(field?.attrs$ | async)?.ariaLabel"
-    [aria-labelledby]="(field?.attrs$ | async)?.ariaLabelledby"
-    [disableRipple]="(field?.attrs$ | async)?.disableRipple"
-    [color]="(field?.attrs$ | async)?.color"
-    [labelPosition]="(field?.attrs$ | async)?.labelPosition"
-    [name]="(field?.attrs$ | async)?.name"
-    (change)="change($event)"
-    [value]="field?.value$ | async"
-    [checked]="field?.value">
-        <span>
-            {{(field?.attrs$ | async)?.placeholder}}
-        </span>
-</mat-checkbox>`,
+    template: `
+        <mat-checkbox
+            [disabled]="field?.disabled$ | async"
+            [aria-label]="(field?.attrs$ | async)?.ariaLabel"
+            [aria-labelledby]="(field?.attrs$ | async)?.ariaLabelledby"
+            [disableRipple]="(field?.attrs$ | async)?.disableRipple"
+            [color]="(field?.attrs$ | async)?.color"
+            [labelPosition]="(field?.attrs$ | async)?.labelPosition"
+            [name]="(field?.attrs$ | async)?.name"
+            (change)="change($event)"
+            [value]="field?.value$ | async"
+            [checked]="field?.value"
+        >
+            <span>
+                {{ (field?.attrs$ | async)?.placeholder }}
+            </span>
+        </mat-checkbox>
+    `,
     styles: [
         `
             :host {

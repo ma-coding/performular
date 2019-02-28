@@ -1,19 +1,39 @@
 import { Directionality } from '@angular/cdk/bidi';
-import { ChangeDetectionStrategy, Component, ElementRef, Inject, OnDestroy, Optional } from '@angular/core';
 import {
-    FlexAlignDirective,
-    FlexDirective,
-    FlexOffsetDirective,
-    FlexOrderDirective,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    Inject,
+    OnDestroy,
+    Optional,
+    SimpleChange,
+    SimpleChanges
+} from '@angular/core';
+import {
     LayoutDirective,
-    MediaMonitor,
     StyleUtils,
+    DefaultFlexDirective,
+    DefaultFlexOrderDirective,
+    DefaultFlexAlignDirective,
+    DefaultFlexOffsetDirective,
+    FlexStyleBuilder,
+    FlexOrderStyleBuilder,
+    FlexOffsetStyleBuilder,
+    FlexAlignStyleBuilder,
+    LAYOUT_CONFIG,
+    LayoutConfigOptions,
+    MediaMarshaller
 } from '@angular/flex-layout';
 
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
-import { AbstractModel, ItemModel, LayoutModel, Model } from '@performular/core';
+import {
+    AbstractModel,
+    ItemModel,
+    LayoutModel,
+    Model
+} from '@performular/core';
 
 import { PerformularModel } from '../performular.model';
 import { mapToInputs } from './misc';
@@ -37,17 +57,22 @@ export const PERFORMULAR_MODEL_ITEM: string = 'PERFORMULAR_MODEL_ITEM';
 })
 export class ItemComponent implements OnDestroy {
     private _subscription: Subscription;
-    private _flexHandler?: FlexDirective;
-    private _flexOrderHandler?: FlexOrderDirective;
-    private _flexOffsetHandler?: FlexOffsetDirective;
-    private _flexAlignHandler?: FlexAlignDirective;
+    private _flexHandler?: DefaultFlexDirective;
+    private _flexOrderHandler?: DefaultFlexOrderDirective;
+    private _flexOffsetHandler?: DefaultFlexOffsetDirective;
+    private _flexAlignHandler?: DefaultFlexAlignDirective;
 
     constructor(
         @Optional()
         @Inject(PerformularModel)
         public field: ItemModel,
-        private _monitor: MediaMonitor,
         private _elementRef: ElementRef,
+        @Inject(LAYOUT_CONFIG) protected _layoutConfig: LayoutConfigOptions,
+        private _marshaller: MediaMarshaller,
+        private _flexStyleBuilder: FlexStyleBuilder,
+        private _flexOrderStyleBuilder: FlexOrderStyleBuilder,
+        private _flexOffsetStyleBuilder: FlexOffsetStyleBuilder,
+        private _flexAlignStyleBuilder: FlexAlignStyleBuilder,
         private _styleUtils: StyleUtils,
         private _directionality: Directionality
     ) {
@@ -93,66 +118,75 @@ export class ItemComponent implements OnDestroy {
     }
 
     private _createDirectives(layout: LayoutDirective): void {
-        this._flexHandler = this._createFlex(layout);
+        this._flexHandler = this._createFlex();
         this._flexOrderHandler = this._createFlexOrder();
-        this._flexOffsetHandler = this._createFlexOffset(layout);
+        this._flexOffsetHandler = this._createFlexOffset();
         this._flexAlignHandler = this._createFlexAlign();
-        this._flexHandler.ngOnInit();
-        this._flexOrderHandler.ngOnInit();
-        this._flexOffsetHandler.ngOnInit();
-        this._flexAlignHandler.ngOnInit();
     }
 
-    private _createFlex(layout: LayoutDirective): FlexDirective {
-        let flex: FlexDirective = new FlexDirective(
-            this._monitor,
+    private _createFlex(): DefaultFlexDirective {
+        const flex: DefaultFlexDirective = new DefaultFlexDirective(
             this._elementRef,
-            layout,
             this._styleUtils,
-            {}
+            this._layoutConfig,
+            this._flexStyleBuilder,
+            this._marshaller
         );
-        flex = Object.assign(flex, mapToInputs('flex', this.field.flex));
+        const value: SimpleChanges = mapToInputs(
+            'fxFlex',
+            this.field.flex,
+            (v: string) => new SimpleChange(undefined, v, true)
+        );
+        flex.ngOnChanges(value);
         return flex;
     }
 
-    private _createFlexOffset(layout: LayoutDirective): FlexOffsetDirective {
-        let offset: FlexOffsetDirective = new FlexOffsetDirective(
-            this._monitor,
+    private _createFlexOffset(): DefaultFlexOffsetDirective {
+        const offset: DefaultFlexOffsetDirective = new DefaultFlexOffsetDirective(
             this._elementRef,
-            layout,
             this._directionality,
+            this._flexOffsetStyleBuilder,
+            this._marshaller,
             this._styleUtils
         );
-        offset = Object.assign(
-            offset,
-            mapToInputs('offset', this.field.flexOffset)
+        const value: SimpleChanges = mapToInputs(
+            'fxFlexOffset',
+            this.field.flexOffset,
+            (v: string) => new SimpleChange(undefined, v, true)
         );
+        offset.ngOnChanges(value);
         return offset;
     }
 
-    private _createFlexOrder(): FlexOrderDirective {
-        let order: FlexOrderDirective = new FlexOrderDirective(
-            this._monitor,
+    private _createFlexOrder(): DefaultFlexOrderDirective {
+        const order: DefaultFlexOrderDirective = new DefaultFlexOrderDirective(
             this._elementRef,
-            this._styleUtils
+            this._styleUtils,
+            this._flexOrderStyleBuilder,
+            this._marshaller
         );
-        order = Object.assign(
-            order,
-            mapToInputs('order', this.field.flexOffset)
+        const value: SimpleChanges = mapToInputs(
+            'fxFlexOrder',
+            this.field.flexOrder,
+            (v: string) => new SimpleChange(undefined, v, true)
         );
+        order.ngOnChanges(value);
         return order;
     }
 
-    private _createFlexAlign(): FlexAlignDirective {
-        let align: FlexAlignDirective = new FlexAlignDirective(
-            this._monitor,
+    private _createFlexAlign(): DefaultFlexAlignDirective {
+        const align: DefaultFlexAlignDirective = new DefaultFlexAlignDirective(
             this._elementRef,
-            this._styleUtils
+            this._styleUtils,
+            this._flexAlignStyleBuilder,
+            this._marshaller
         );
-        align = Object.assign(
-            align,
-            mapToInputs('align', this.field.flexOffset)
+        const value: SimpleChanges = mapToInputs(
+            'fxFlexAlign',
+            this.field.flexAlign,
+            (v: string) => new SimpleChange(undefined, v, true)
         );
+        align.ngOnChanges(value);
         return align;
     }
 
