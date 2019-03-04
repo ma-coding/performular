@@ -179,7 +179,7 @@ export class FormType {
             },
             addNoneValue: true
         },
-        model: MaterialSelectComponent
+        model: MaterialRadioComponent
     })
     public select?: number;
 

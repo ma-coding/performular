@@ -11,6 +11,7 @@ import { PerformularUiMaterialModule } from '@performular/ng-ui-material';
 
 import { AppComponent } from './app.component';
 import { TestDatasource } from './datsource';
+import { DemoReactor } from './action';
 
 @NgModule({
     imports: [
@@ -19,6 +20,7 @@ import { TestDatasource } from './datsource';
         MatNativeDateModule,
         BrowserModule,
         PerformularModule.forRoot({
+            actions: [DemoReactor],
             datasources: [TestDatasource]
         }),
         PerformularUiMaterialModule

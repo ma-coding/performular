@@ -63,7 +63,13 @@ export function getJsonForm(value: any): GroupFieldModel {
                             attrs: {
                                 placeholder: 'Input',
                                 label: 'Input',
-                                type: 'number'
+                                type: 'text'
+                            },
+                            actions: {
+                                test: {
+                                    target: 'DEMO_ALERT',
+                                    params: 'textarea'
+                                }
                             },
                             defaultValue: 6
                         },

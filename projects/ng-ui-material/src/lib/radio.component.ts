@@ -54,22 +54,33 @@ export function MaterialRadioBuilder(
 @Component({
     selector: 'performular-material-radio',
     template: `
-    <mat-radio-group
-        (change)="change($event)"
-        [name]="(field?.attrs$ | async)?.name"
-        [value]="field?.value$ | async"
-        [disabled]="field.disabled$ | async"
-        [fxLayout]="field?.attrs.buttonDirection === 'vertical' ? 'column' : 'row'">
-            <ng-container *ngFor="let option of options | async">
-                <mat-radio-button [ngClass]="field?.attrs.buttonDirection === 'vertical' ? 'vertical' : 'horizontal'"
+        <mat-radio-group
+            (change)="change($event)"
+            [name]="field.uuid"
+            [value]="field?.value$ | async"
+            [disabled]="field.disabled$ | async"
+            [fxLayout]="
+                field?.attrs.buttonDirection === 'vertical' ? 'column' : 'row'
+            "
+        >
+            <ng-container
+                *ngFor="let option of (options | async); let i = index"
+            >
+                <mat-radio-button
+                    [ngClass]="
+                        field?.attrs.buttonDirection === 'vertical'
+                            ? 'vertical'
+                            : 'horizontal'
+                    "
                     *ngIf="!(option.hidden$ | async)"
                     [disabled]="option.disabled$ | async"
                     [color]="(field?.attrs$ | async)?.color"
-                    [value]="option.value">
+                    [value]="option.value"
+                >
                     <span>{{ option.viewValue }}</span>
                 </mat-radio-button>
             </ng-container>
-    </mat-radio-group>
+        </mat-radio-group>
     `,
     styles: [
         `

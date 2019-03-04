@@ -59,7 +59,7 @@ export class Metadata {
             (k: string) => this._state[key][k].target === target
         );
         if (objKey) {
-            return this._state[key][objKey];
+            return <any>this._state[key][objKey];
         } else {
             throw new Error('Todo:');
         }
@@ -71,7 +71,8 @@ export class Metadata {
             validators: {},
             visibles: {},
             models: {},
-            datasources: {}
+            datasources: {},
+            actions: {}
         };
     }
 

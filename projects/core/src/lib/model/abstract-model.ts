@@ -1,5 +1,11 @@
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { buffer, concatMap, debounceTime, map } from 'rxjs/operators';
+import { forkJoin, Observable, Subject, merge, of } from 'rxjs';
+import {
+    buffer,
+    concatMap,
+    debounceTime,
+    map,
+    switchMap
+} from 'rxjs/operators';
 
 import { Modeler } from '../handler/modeler/modeler';
 import { flatten } from '../util/flatten';
@@ -9,6 +15,8 @@ import { RunContext } from '../util/types/run-context';
 import { AbstractModelOptions } from './types/abstract-model-options';
 import { AbstractModelState } from './types/abstract-model-state';
 import { ModelType } from '../builder/types/model-type';
+import { ObjectType } from '../util/types/object-type';
+import { Effect } from '../handler/effect/effect';
 
 export abstract class AbstractModel<
     STATE extends AbstractModelState<ATTRS> = any,
@@ -100,6 +108,14 @@ export abstract class AbstractModel<
         return this._state$.select$('elementRef');
     }
 
+    get actions(): AbstractModelState['actions'] {
+        return this._state$.select('actions');
+    }
+
+    get actions$(): Observable<AbstractModelState['actions']> {
+        return this._state$.select$('actions');
+    }
+
     get root(): AbstractModel {
         let field: AbstractModel = this;
         while (field.parent) {
@@ -117,6 +133,17 @@ export abstract class AbstractModel<
 
     get updates$(): Observable<void> {
         return this._getUpdates$();
+    }
+
+    get reactions$(): Observable<void> {
+        return this.children$.pipe(
+            switchMap((children: AbstractModel[]) =>
+                merge(
+                    this._getActions(),
+                    ...children.map((child: AbstractModel) => child.reactions$)
+                )
+            )
+        );
     }
 
     public setParent(parent: AbstractModel): void {
@@ -172,8 +199,25 @@ export abstract class AbstractModel<
             hidden: false,
             elementRef: undefined,
             instance: undefined,
-            type: ModelType.CONTROL
+            type: ModelType.CONTROL,
+            actions: Object.keys(options.actions || {}).reduce(
+                (prev: ObjectType<Effect>, next: string) => {
+                    return {
+                        ...prev,
+                        // tslint:disable-next-line:no-non-null-assertion
+                        [next]: new Effect(options.actions![next])
+                    };
+                },
+                {}
+            )
         };
+    }
+
+    private _getActions(): Observable<void> {
+        const obs: Observable<void>[] = Object.keys(this.actions).map(
+            (k: string) => this.actions[k].runEffect(this)
+        );
+        return merge(...obs, of(undefined));
     }
 
     private _getUpdates$(): Observable<void> {
