@@ -12,8 +12,8 @@ import { getTypedForm } from './type.form';
 })
 export class AppComponent {
     public jsonForm: GroupFieldModel = getJsonForm({
-        input: 900,
-        slider: 33
+        slider: 33,
+        select: 2
     });
 
     public classForm: GroupFieldModel = getClassForm();

@@ -15,4 +15,9 @@ export class Modeler extends AbstractHandler<any> {
             options
         );
     }
+
+    public emptyValue(): any {
+        return ((<MetadataType<ModelOptions, any>>this.metadata).emptyValue ||
+            ((): any => null))();
+    }
 }

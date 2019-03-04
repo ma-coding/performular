@@ -14,7 +14,8 @@ import {
     VisibilityExecuter,
     DataConnectionStrategy,
     CORE_RUN_DETECTORS,
-    CORE_VALIDATORS
+    CORE_VALIDATORS,
+    Action
 } from '@performular/core';
 import { FieldsetComponent } from './build-in/fieldset.component';
 import { CoreGroupComponent } from './build-in/group.component';
@@ -28,6 +29,7 @@ import { PerformularRendererDirective } from './render.directive';
 import { TemplateDirective } from './template.directive';
 
 export interface PerformularOptions {
+    actions?: InstanceDef<Action>[];
     models?: InstanceDef<any>[];
     datasources?: InstanceDef<DataConnectionStrategy>[];
     runDetectors?: InstanceDef<RunDetectionStrategy>[];
@@ -78,6 +80,7 @@ export class PerformularModule {
                     useValue: options.models || [],
                     multi: true
                 },
+                ...(options.actions || []),
                 ...(options.datasources || []),
                 ...(options.runDetectors || []),
                 ...(options.validators || []),
@@ -95,6 +98,7 @@ export class PerformularModule {
                     useValue: options.models || [],
                     multi: true
                 },
+                ...(options.actions || []),
                 ...(options.datasources || []),
                 ...(options.runDetectors || []),
                 ...(options.validators || []),

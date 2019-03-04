@@ -16,7 +16,7 @@ export function getKeyName(keyName: string, current: string): string {
     if (current === 'main') {
         return keyName;
     } else {
-        return `${keyName}${capitalizeFirstLetter(current)}`;
+        return `${keyName}.${current}`;
     }
 }
 

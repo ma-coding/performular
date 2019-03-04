@@ -3,6 +3,7 @@ export { Validator } from './decorator/static/validator';
 export { Visible } from './decorator/static/visible';
 export { Model } from './decorator/static/model';
 export { Datasource } from './decorator/static/datasource';
+export { Reactor } from './decorator/static/reactor';
 
 export { Control } from './decorator/target/control';
 export { Group } from './decorator/target/group';

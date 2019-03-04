@@ -7,6 +7,7 @@
     <performular-form [form]="classForm"> </performular-form>
     <h3>TYPED FORM</h3>
     <hr />
+
     <performular-form [form]="typedForm">
         <ng-template performularTemplate id="slider" position="after" let-field>
             <div>Count: {{ field.value || 0 }} %</div>

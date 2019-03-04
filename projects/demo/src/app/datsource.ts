@@ -11,6 +11,7 @@ import {
 export class TestDatasource implements DataConnectionStrategy {
     public loadData(params: any): MaybeObservable<any[]> {
         return [
+            { id: 0, value: 'test0' },
             { id: 1, value: 'test1' },
             { id: 2, value: 'test2' },
             { id: 3, value: 'test3' },
