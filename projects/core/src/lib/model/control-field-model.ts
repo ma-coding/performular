@@ -7,6 +7,8 @@ import { AbstractFieldModel } from './abstract-field-model';
 import { ControlFieldModelOptions } from './types/control-field-model-options';
 import { ControlFieldModelState } from './types/control-field-model-state';
 import { ModelType } from '../builder/types/model-type';
+import { isEmptyValue } from '../util/is-empty-value';
+import { AbstractFieldModelState } from './types/abstract-field-model-state';
 
 export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
     ControlFieldModelState<ATTRS>,
@@ -24,9 +26,16 @@ export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
 
     constructor(options: ControlFieldModelOptions<ATTRS>) {
         super();
-        const value: any = options.value || options.defaultValue || null;
+        const abstractFieldModelState: AbstractFieldModelState = this._initAbstractFieldModel(
+            options
+        );
+        const value: any = !isEmptyValue(options.value)
+            ? options.value
+            : !isEmptyValue(options.defaultValue)
+            ? options.defaultValue
+            : abstractFieldModelState.model.emptyValue();
         this._state$ = new State<ControlFieldModelState>({
-            ...this._initAbstractFieldModel(options),
+            ...abstractFieldModelState,
             initialValue: cloneDeep(value),
             value: cloneDeep(value),
             defaultValue: options.defaultValue,
@@ -66,5 +75,4 @@ export class ControlFieldModel<ATTRS = any> extends AbstractFieldModel<
     }
 
     protected _buildValue(childFields: AbstractFieldModel<any>[]): any {}
-
 }

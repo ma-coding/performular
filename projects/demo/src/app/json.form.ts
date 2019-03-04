@@ -5,7 +5,9 @@ import {
     PERFORMULAR_MODEL_MATERIALTOGGLE,
     PERFORMULAR_MODEL_MATERIALCHECKBOX,
     PERFORMULAR_MODEL_MATERIALSLIDER,
-    PERFORMULAR_MODEL_MATERIALTEXTAREA
+    PERFORMULAR_MODEL_MATERIALTEXTAREA,
+    PERFORMULAR_MODEL_MATERIALSELECT,
+    PERFORMULAR_MODEL_MATERIALRADIO
 } from '@performular/ng-ui-material';
 import { PERFORMULAR_MODEL_CORE_GROUP } from '@performular/ng-connector';
 
@@ -61,7 +63,13 @@ export function getJsonForm(value: any): GroupFieldModel {
                             attrs: {
                                 placeholder: 'Input',
                                 label: 'Input',
-                                type: 'number'
+                                type: 'text'
+                            },
+                            actions: {
+                                test: {
+                                    target: 'DEMO_ALERT',
+                                    params: 'textarea'
+                                }
                             },
                             defaultValue: 6
                         },
@@ -73,8 +81,7 @@ export function getJsonForm(value: any): GroupFieldModel {
                                 placeholder: 'Textarea',
                                 label: 'Textarea',
                                 autoResize: true
-                            },
-                            defaultValue: '666'
+                            }
                         },
                         {
                             id: 'datepicker',
@@ -83,6 +90,27 @@ export function getJsonForm(value: any): GroupFieldModel {
                             attrs: {
                                 placeholder: 'Datepicker',
                                 label: 'Datepicker'
+                            }
+                        }
+                    ]
+                },
+                {
+                    type: ModelType.LAYOUT,
+                    layout: 'row',
+                    layoutGap: '18px',
+                    children: [
+                        {
+                            id: 'select',
+                            type: ModelType.CONTROL,
+                            model: PERFORMULAR_MODEL_MATERIALRADIO,
+                            attrs: {
+                                placeholder: 'Select',
+                                label: 'Select',
+                                options: {
+                                    target: 'TEST_DATASOURCE',
+                                    resetInvisibleValue: true
+                                },
+                                addNoneValue: true
                             }
                         }
                     ]

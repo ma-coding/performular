@@ -8,7 +8,7 @@ export class InputValueBuilder {
 
     constructor(public type: string, public debounce: number) {
         this.valueChanges = this._valueSubject.pipe(
-            debounceTime(debounce || 500),
+            debounceTime(debounce || 100),
             map((value: any) => {
                 return InputValueBuilder.validateValue(value, type);
             })

@@ -16,3 +16,7 @@ export {
 } from './handler/data-connection/types/data-connection-options';
 export { DataConnection } from './handler/data-connection/data-connection';
 export { DataOption } from './handler/data-connection/types/data-option';
+export { Effect } from './handler/effect/effect';
+export { Action } from './handler/effect/types/action';
+export { ActionOptions } from './handler/effect/types/action-options';
+export { ActionTarget } from './handler/effect/types/action-target';
