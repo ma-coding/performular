@@ -16,12 +16,12 @@ export class InputValueBuilder {
     }
 
     public static validateValue(value: any, type: string): any {
-        if (!value) {
-            return null;
-        }
         if (type === 'number') {
             const val: number = parseFloat(value);
             return isNaN(val) ? null : val;
+        }
+        if (!value) {
+            return null;
         }
         return value;
     }
