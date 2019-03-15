@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-
 import {
     ContainerModel,
     ContainerModelOptions,
     Model,
     RemoveKey
 } from '@performular/core';
-
 import { PerformularModel } from '../performular.model';
 
 export interface FieldsetAttrs {
@@ -39,18 +37,15 @@ export const PERFORMULAR_MODEL_FIELDSET: string = 'PERFORMULAR_MODEL_FIELDSET';
 @Component({
     selector: 'performular-fieldset',
     template: `
-    <fieldset [id]="field?.uuid">
-        <legend>{{(field?.attrs$ | async)?.legend}}</legend>
-        <ng-container *ngFor="let child of field?.children$ | async" [performularRenderer]="child"></ng-container>
-    </fieldset>
-        `,
-    styles: [
-        `
-            fieldset {
-                height: 100%;
-            }
-        `
-    ],
+        <fieldset [id]="field?.uuid">
+            <legend>{{ (field?.attrs$ | async)?.legend }}</legend>
+            <ng-container
+                *ngFor="let child of (field?.children$ | async)"
+                [performularRenderer]="child"
+            ></ng-container>
+        </fieldset>
+    `,
+    styles: [],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldsetComponent {
